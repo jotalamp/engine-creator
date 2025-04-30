@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall CMakeFiles/test.dir/mainTest.cpp.o CMakeFiles/test.dir/EngineCreator.cpp.o CMakeFiles/test.dir/EngineCreatorTest.cpp.o -o /home/lampinen/Ohjelmointi/github/engine-creator/bin/test   -L/mybuild  -L/gtest/mybuild  -Wl,-rpath,/mybuild:/gtest/mybuild -lpthread -lgmock -lgtest
