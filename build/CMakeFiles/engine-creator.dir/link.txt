@@ -1,1 +1,0 @@
-/usr/bin/c++  -Wall "CMakeFiles/engine-creator.dir/main.cpp.o" "CMakeFiles/engine-creator.dir/EngineCreator.cpp.o" -o /home/lampinen/Ohjelmointi/github/engine-creator/bin/engine-creator   -L/mybuild  -L/gtest/mybuild

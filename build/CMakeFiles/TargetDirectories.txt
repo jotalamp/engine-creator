@@ -1,4 +1,0 @@
-/home/lampinen/Ohjelmointi/github/engine-creator/build/CMakeFiles/test.dir
-/home/lampinen/Ohjelmointi/github/engine-creator/build/CMakeFiles/engine-creator.dir
-/home/lampinen/Ohjelmointi/github/engine-creator/build/CMakeFiles/edit_cache.dir
-/home/lampinen/Ohjelmointi/github/engine-creator/build/CMakeFiles/rebuild_cache.dir
