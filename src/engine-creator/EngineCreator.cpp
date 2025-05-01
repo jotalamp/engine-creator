@@ -68,11 +68,6 @@ void EngineCreator::changeLineTo(unsigned int lineNumber, std::string newLineTex
     lines[lineNumber] = newLineText;
 }
 
-void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText)
-{
-    lines[lineNumber] = std::regex_replace(lines[lineNumber], std::regex("%200%"), newText);
-}
-
 void EngineCreator::writeAllLinesToFile()
 {
     std::ofstream file(path + createdEngineName);

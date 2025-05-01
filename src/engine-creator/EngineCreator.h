@@ -10,7 +10,6 @@ public:
     std::string getLine(unsigned int lineNumber);
     std::string getLineFromCreatedFile(unsigned int lineNumber);
     void changeLineTo(unsigned int lineNumber, std::string newLineText);
-    void replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText);
     void writeAllLinesToFile();
     bool setCreatedEngineFileName(std::string newFileName);
     std::string getAllLinesAsString();
