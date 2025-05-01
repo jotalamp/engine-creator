@@ -68,6 +68,11 @@ void EngineCreator::changeLineTo(unsigned int lineNumber, std::string newLineTex
     lines[lineNumber] = newLineText;
 }
 
+void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText)
+{
+    lines[lineNumber] = std::regex_replace(lines[lineNumber], std::regex("%200%"), newText);
+}
+
 void EngineCreator::writeAllLinesToFile()
 {
     std::ofstream file(path + createdEngineName);
@@ -80,9 +85,14 @@ void EngineCreator::writeAllLinesToFile()
     file.close();
 }
 
-void EngineCreator::setCreatedEngineFileName(std::string newFileName)
+bool EngineCreator::setCreatedEngineFileName(std::string newFileName)
 {
-    createdEngineName = newFileName + ".mr";
+    if (fileNameIsCorrect(newFileName))
+    {
+        createdEngineName = newFileName + ".mr";
+        return true;
+    }
+    return false;
 }
 
 std::string EngineCreator::getAllLinesAsString()
@@ -93,4 +103,11 @@ std::string EngineCreator::getAllLinesAsString()
         allLines += line + "\n";
     }
     return allLines;
+}
+
+bool EngineCreator::fileNameIsCorrect(std::string newFileName)
+{
+    if(newFileName=="")
+        return false;
+    return true;
 }
