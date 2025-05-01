@@ -84,3 +84,13 @@ void EngineCreator::setCreatedEngineFileName(std::string newFileName)
 {
     createdEngineName = newFileName + ".mr";
 }
+
+std::string EngineCreator::getAllLinesAsString()
+{
+    std::string allLines;
+    for (auto line : lines)
+    {
+        allLines += line + "\n";
+    }
+    return allLines;
+}

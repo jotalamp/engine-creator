@@ -12,6 +12,7 @@ public:
     void changeLineTo(unsigned int lineNumber, std::string newLineText);
     void writeAllLinesToFile();
     void setCreatedEngineFileName(std::string newFileName);
+    std::string getAllLinesAsString();
 private:
     std::vector<std::string> lines;
     std::string getLineFromFile(std::string fileName, unsigned int lineNumber);
