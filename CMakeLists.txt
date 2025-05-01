@@ -1,22 +1,16 @@
 cmake_minimum_required(VERSION 3.10)
-project(engine-creator)
+project(MinimalImGui)
 
-include_directories($ENV{GMOCK_HOME}/include $ENV{GMOCK_HOME}/gtest/include)
-link_directories($ENV{GMOCK_HOME}/mybuild $ENV{GMOCK_HOME}/gtest/mybuild)
-#add_definitions(-std=c++0x)
-set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -Wall")
+set(CMAKE_CXX_STANDARD 17)
 
-set(EXECUTABLE_OUTPUT_PATH "../bin")
 
-set(testSources
-    mainTest.cpp
-    EngineCreator.cpp
-    EngineCreatorTest.cpp)
-add_executable(test ${testSources})
-set(sources
-    main.cpp
-    EngineCreator.cpp)
-add_executable(engine-creator ${sources})
-target_link_libraries(test pthread)
-target_link_libraries(test gmock)
-target_link_libraries(test gtest)
+set(OpenGL_GL_PREFERENCE GLVND)
+
+# 3rd party libraries
+include(cmake/3rdparty.cmake)
+
+# macro and configurations
+include(cmake/config.cmake)
+
+# projects
+add_subdirectory(src)
