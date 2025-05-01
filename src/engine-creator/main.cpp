@@ -149,8 +149,8 @@ int main(int, char **)
         ImGui::NewFrame();
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        //show_demo_window = false;
-        
+        // show_demo_window = false;
+
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
@@ -158,23 +158,21 @@ int main(int, char **)
             ImGui::Begin("Engine Creator"); // Create a window called "Engine Creator" and append into it.
 
             static char newEngineName[128] = "New engine";
-            //ImGui::InputText("Engine name", newEngineName, IM_ARRAYSIZE(newEngineName));
-
-            // ImGui::InputText("File name", engineCreator.setCreatedEngineFileName());
-            //if (ImGui::Button("Change engine name"))
-            if(ImGui::InputText("Engine name", newEngineName, IM_ARRAYSIZE(newEngineName)))
+            if (ImGui::InputText("Engine name", newEngineName, IM_ARRAYSIZE(newEngineName)))
             {
                 std::string newName = newEngineName;
                 std::string newLine = "        name: \"" + newName + "\",";
                 engineCreator.changeLineTo(134, newLine);
             }
-/*
-            static char newText[128] = "123";
-            if(ImGui::InputText("Text", newText, IM_ARRAYSIZE(newText)))
+
+            static char newText[128] = "200";
+            if (ImGui::InputText("Text", newText, IM_ARRAYSIZE(newText)))
             {
-                engineCreator.replaceTextInLine(135, "200", newText);
+                std::string newText2 = newText;
+                std::string newLine = "\t\tstarter_torque: " + newText2 + " * units.lb_ft,";
+                engineCreator.changeLineTo(135, newLine);
             }
-*/
+
             if (ImGui::Button("Save as"))
             {
                 show_save_as_window = true;
@@ -185,8 +183,8 @@ int main(int, char **)
                 engineCreator.writeAllLinesToFile();
             }
 
-            ImGui::Text("%s",engineCreator.getLine(0).c_str());     // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
+            ImGui::Text("%s", engineCreator.getLine(0).c_str()); // Display some text (you can use a format strings too)
+            ImGui::Checkbox("Demo Window", &show_demo_window);   // Edit bools storing our window open/close state
             // ImGui::Checkbox("Another Window", &show_another_window);
 
             // ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
@@ -218,9 +216,10 @@ int main(int, char **)
                 {
                     engineCreator.setCreatedEngineFileName(newFileName);
                     engineCreator.writeAllLinesToFile();
-                    std::string textFileSaved = "Saved file '"+std::string(newFileName)+"'";
-                    //ImGui::Text("%s",textFileSaved.c_str());
-                    std::cout << "\n" << textFileSaved << "\n";
+                    std::string textFileSaved = "Saved file '" + std::string(newFileName) + "'";
+                    // ImGui::Text("%s",textFileSaved.c_str());
+                    std::cout << "\n"
+                              << textFileSaved << "\n";
                 }
             }
             else
