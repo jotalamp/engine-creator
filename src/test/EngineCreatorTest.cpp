@@ -44,3 +44,23 @@ TEST_F(EngineCreatorTest, EngineNameIsCorrectAfterChanging)
     engineCreator.writeAllLinesToFile();
     ASSERT_THAT(engineCreator.getLineFromCreatedFile(134), Eq(newLine));
 }
+
+TEST_F(EngineCreatorTest, TextExistsInLine)
+{
+    unsigned int lineNumberWhereTextToReplaceIs = 135;
+    std::string textToReplace = "200";
+    ASSERT_THAT(engineCreator.textExistsInLine(lineNumberWhereTextToReplaceIs, textToReplace), true);
+}
+
+TEST_F(EngineCreatorTest, TextIsCorrectAfterReplacingPartOfLine)
+{
+    unsigned int lineNumberWhereTextToReplaceIs = 135;
+    std::string textToReplace = "200";
+    std::string newText = "123";
+    unsigned int lineLengthBeforeReplace = engineCreator.getLine(lineNumberWhereTextToReplaceIs).length();
+    engineCreator.replaceTextInLine(lineNumberWhereTextToReplaceIs, textToReplace, newText);
+    unsigned int lineLengthAfterReplace = engineCreator.getLine(lineNumberWhereTextToReplaceIs).length();
+    ASSERT_THAT(engineCreator.textExistsInLine(lineNumberWhereTextToReplaceIs, newText), true);
+    ASSERT_THAT(lineLengthAfterReplace, Eq(lineLengthBeforeReplace));
+    //ASSERT_THAT(engineCreator.getLine(lineNumberWhereTextToReplaceIs), Eq(newText));
+}

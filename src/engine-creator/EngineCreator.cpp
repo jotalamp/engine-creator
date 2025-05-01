@@ -102,7 +102,25 @@ std::string EngineCreator::getAllLinesAsString()
 
 bool EngineCreator::fileNameIsCorrect(std::string newFileName)
 {
-    if(newFileName=="")
+    if (newFileName == "")
         return false;
     return true;
+}
+
+bool EngineCreator::textExistsInLine(unsigned int lineNumber, std::string textToFind)
+{
+    return (lines[lineNumber].find(textToFind) != std::string::npos);
+}
+
+void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText)
+{
+    std::string line = lines[lineNumber];
+
+    auto &&pos = line.find(textToReplace, size_t{});
+    if (pos != std::string::npos)
+    {
+        line.replace(pos, textToReplace.length(), newText);
+        pos = textToReplace.find(textToReplace, pos + newText.length());
+    }
+    lines[lineNumber] = line;
 }

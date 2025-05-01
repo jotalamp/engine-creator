@@ -14,6 +14,8 @@ public:
     bool setCreatedEngineFileName(std::string newFileName);
     std::string getAllLinesAsString();
     bool fileNameIsCorrect(std::string newFileName);
+    bool textExistsInLine(unsigned int lineNumber, std::string textToFind);
+    void replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText);
 private:
     std::vector<std::string> lines;
     std::string getLineFromFile(std::string fileName, unsigned int lineNumber);
