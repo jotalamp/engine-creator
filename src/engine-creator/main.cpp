@@ -43,13 +43,6 @@ int main(int, char **)
 {
     std::cout << "\n\nEngine Creator v0.01\n";
     EngineCreator engineCreator;
-    /*
-    engineCreator.setCreatedEngineFileName("created_engine_2");
-    std::string newName = "CreatedEngine2";
-    std::string newLine = "        name: \"" + newName + "\",";
-    engineCreator.changeLineTo(134, newLine);
-    engineCreator.writeAllLinesToFile();
-    */
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -157,20 +150,23 @@ int main(int, char **)
         {
             ImGui::Begin("Engine Creator"); // Create a window called "Engine Creator" and append into it.
 
-            static char newEngineName[128] = "New engine";
-            if (ImGui::InputText("Engine name", newEngineName, IM_ARRAYSIZE(newEngineName)))
+
+            static char engineName[128] = "Audi 2.3 inline 5";
+            if (ImGui::InputText("engine.name", engineName, IM_ARRAYSIZE(engineName)))
             {
-                std::string newName = newEngineName;
-                std::string newLine = "        name: \"" + newName + "\",";
-                engineCreator.changeLineTo(134, newLine);
+                engineCreator.replaceTextInLine(134, "Audi 2.3 inline 5", engineName);
             }
 
             static char newText[128] = "200";
-            if (ImGui::InputText("Text", newText, IM_ARRAYSIZE(newText)))
+            if (ImGui::InputText("starter_torque", newText, IM_ARRAYSIZE(newText)))
             {
-                std::string newText2 = newText;
-                std::string newLine = "\t\tstarter_torque: " + newText2 + " * units.lb_ft,";
-                engineCreator.changeLineTo(135, newLine);
+                engineCreator.replaceTextInLine(135, "200", newText);
+            }
+
+            static char newText2[128] = "6000";
+            if (ImGui::InputText("redline", newText2, IM_ARRAYSIZE(newText2)))
+            {
+                engineCreator.replaceTextInLine(136, "6000", newText2);
             }
 
             if (ImGui::Button("Save as"))
@@ -183,8 +179,8 @@ int main(int, char **)
                 engineCreator.writeAllLinesToFile();
             }
 
-            ImGui::Text("%s", engineCreator.getLine(0).c_str()); // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);   // Edit bools storing our window open/close state
+            // ImGui::Text("%s", engineCreator.getLine(0).c_str()); // Display some text (you can use a format strings too)
+            ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
             // ImGui::Checkbox("Another Window", &show_another_window);
 
             // ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
@@ -198,8 +194,8 @@ int main(int, char **)
             // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();
 
-            ImGui::Begin("Engine Creator 2");
-            ImGui::TextUnformatted(engineCreator.getAllLinesAsString().c_str());
+            ImGui::Begin("Edited engine file");
+            ImGui::TextUnformatted(engineCreator.getAllEditedLinesAsString().c_str());
             ImGui::End();
         }
 

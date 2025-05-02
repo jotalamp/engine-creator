@@ -4,6 +4,8 @@ EngineCreator::EngineCreator()
 {
     std::ifstream file = std::ifstream(path + exampleEngineName);
 
+    unsigned int i = 0;
+
     // Check if the file is successfully opened
     if (!file.is_open())
     {
@@ -13,21 +15,35 @@ EngineCreator::EngineCreator()
     // String variable to store the read data
     std::string s;
 
+    char empty[128] = "";
+
     // Read each line of the file and print it to the
     // standard output stream till the whole file is
     // completely read
     while (getline(file, s))
     {
         // std::cout << s << "\n";
-        lines.push_back(s);
+        originalLines.push_back(s);
+        editedLines.push_back(s);
+
+        changeableText[i] = "";
+        i++;
     }
 
     // Close the file
     file.close();
+
+    setChangeAbleTextInLine(134, "Audi 2.3 inline 5");
+}
+
+void EngineCreator::setChangeAbleTextInLine(unsigned int lineNumber, char newChangeableText[128])
+{
+    changeableText[lineNumber] = newChangeableText;
 }
 
 std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber)
 {
+    std::vector<std::string> lines;
     std::ifstream file = std::ifstream(path + fileName);
 
     // Check if the file is successfully opened
@@ -53,9 +69,14 @@ std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int li
     return lines[lineNumber];
 }
 
-std::string EngineCreator::getLine(unsigned int lineNumber)
+std::string EngineCreator::getOriginalLine(unsigned int lineNumber)
 {
-    return lines[lineNumber];
+    return originalLines[lineNumber];
+}
+
+std::string EngineCreator::getEditedLine(unsigned int lineNumber)
+{
+    return editedLines[lineNumber];
 }
 
 std::string EngineCreator::getLineFromCreatedFile(unsigned int lineNumber)
@@ -65,14 +86,14 @@ std::string EngineCreator::getLineFromCreatedFile(unsigned int lineNumber)
 
 void EngineCreator::changeLineTo(unsigned int lineNumber, std::string newLineText)
 {
-    lines[lineNumber] = newLineText;
+    editedLines[lineNumber] = newLineText;
 }
 
 void EngineCreator::writeAllLinesToFile()
 {
     std::ofstream file(path + createdEngineName);
 
-    for (auto line : lines)
+    for (auto line : editedLines)
     {
         file << line << std::endl;
     }
@@ -90,10 +111,10 @@ bool EngineCreator::setCreatedEngineFileName(std::string newFileName)
     return false;
 }
 
-std::string EngineCreator::getAllLinesAsString()
+std::string EngineCreator::getAllEditedLinesAsString()
 {
     std::string allLines;
-    for (auto line : lines)
+    for (auto line : editedLines)
     {
         allLines += line + "\n";
     }
@@ -107,14 +128,19 @@ bool EngineCreator::fileNameIsCorrect(std::string newFileName)
     return true;
 }
 
-bool EngineCreator::textExistsInLine(unsigned int lineNumber, std::string textToFind)
+bool EngineCreator::textExistsInOriginalLine(unsigned int lineNumber, std::string textToFind)
 {
-    return (lines[lineNumber].find(textToFind) != std::string::npos);
+    return (originalLines[lineNumber].find(textToFind) != std::string::npos);
+}
+
+bool EngineCreator::textExistsInEditedLine(unsigned int lineNumber, std::string textToFind)
+{
+    return (editedLines[lineNumber].find(textToFind) != std::string::npos);
 }
 
 void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText)
 {
-    std::string line = lines[lineNumber];
+    std::string line = originalLines[lineNumber];
 
     auto &&pos = line.find(textToReplace, size_t{});
     if (pos != std::string::npos)
@@ -122,5 +148,10 @@ void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textT
         line.replace(pos, textToReplace.length(), newText);
         pos = textToReplace.find(textToReplace, pos + newText.length());
     }
-    lines[lineNumber] = line;
+    editedLines[lineNumber] = line;
+}
+
+char* EngineCreator::getChangeableTextInLine(unsigned int lineNumber)
+{
+    return changeableText[lineNumber];
 }
