@@ -23,7 +23,7 @@ EngineCreator::EngineCreator()
         // std::cout << s << "\n";
         originalLines.push_back(s);
         editedLines.push_back(s);
-        changeableText.push_back("");
+        changeableTexts[i] = "";
         i++;
     }
 
@@ -31,11 +31,13 @@ EngineCreator::EngineCreator()
     file.close();
 
     setChangeAbleTextInLine(134, "Audi 2.3 inline 5");
+    setChangeAbleTextInLine(135, "200");
+    setChangeAbleTextInLine(136, "6000");
 }
 
-void EngineCreator::setChangeAbleTextInLine(unsigned int lineNumber, std::string newChangeableText)
+void EngineCreator::setChangeAbleTextInLine(unsigned int lineNumber, char* newChangeableText)
 {
-    changeableText[lineNumber] = newChangeableText;
+    changeableTexts[lineNumber] = newChangeableText;
 }
 
 std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber)
@@ -148,7 +150,7 @@ void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textT
     editedLines[lineNumber] = line;
 }
 
-std::string EngineCreator::getChangeableTextInLine(unsigned int lineNumber)
+char* EngineCreator::getChangeableTextInLine(unsigned int lineNumber)
 {
-    return changeableText[lineNumber];
+    return changeableTexts[lineNumber];
 }

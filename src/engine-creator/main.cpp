@@ -19,6 +19,8 @@
 
 #include <iostream>
 
+#include <string.h>
+
 #include "EngineCreator.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
@@ -38,11 +40,29 @@ static void glfw_error_callback(int error, const char *description)
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
+std::unordered_map<unsigned int, char[128]> texts;
+
+void replaceTextInLine(EngineCreator &engineCreator, std::string name, unsigned int lineNumber)
+{
+    if (ImGui::InputTextWithHint(name.c_str(), engineCreator.getChangeableTextInLine(lineNumber), texts[lineNumber], IM_ARRAYSIZE(texts[lineNumber])))
+    {
+        engineCreator.replaceTextInLine(lineNumber, engineCreator.getChangeableTextInLine(lineNumber), texts[lineNumber]);
+    }
+    if (strlen(texts[lineNumber]) == 0)
+    {
+        strcpy(texts[lineNumber], engineCreator.getChangeableTextInLine(lineNumber));
+        engineCreator.replaceTextInLine(lineNumber, engineCreator.getChangeableTextInLine(lineNumber), texts[lineNumber]);
+    }
+}
+
 // Main code
 int main(int, char **)
 {
     std::cout << "\n\nEngine Creator v0.01\n";
     EngineCreator engineCreator;
+    strcpy(texts[134], "");
+    strcpy(texts[135], "");
+    strcpy(texts[136], "");
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -149,26 +169,30 @@ int main(int, char **)
 
         {
             ImGui::Begin("Engine Creator"); // Create a window called "Engine Creator" and append into it.
+                                            /*
+                                                        if (ImGui::InputTextWithHint("engine.name", engineCreator.getChangeableTextInLine(134), engineName, IM_ARRAYSIZE(engineName)))
+                                                        {
+                                                            if (strlen(engineName) == 0)
+                                                                strcpy(engineName, engineCreator.getChangeableTextInLine(134));
+                                                            engineCreator.replaceTextInLine(134, engineCreator.getChangeableTextInLine(134), engineName);
+                                                        }
+                                            */
+            replaceTextInLine(engineCreator, "engine.name", 134);
+            replaceTextInLine(engineCreator, "starter_torque", 135);
+            replaceTextInLine(engineCreator, "redline", 136);
+            /*
+                        static char newText[128] = "200";
+                        if (ImGui::InputText("starter_torque", newText, IM_ARRAYSIZE(newText)))
+                        {
+                            engineCreator.replaceTextInLine(135, "200", newText);
+                        }
 
-
-            static char engineName[128] = "Audi 2.3 inline 5";
-            if (ImGui::InputText("engine.name", engineName, IM_ARRAYSIZE(engineName)))
-            {
-                engineCreator.replaceTextInLine(134, "Audi 2.3 inline 5", engineName);
-            }
-
-            static char newText[128] = "200";
-            if (ImGui::InputText("starter_torque", newText, IM_ARRAYSIZE(newText)))
-            {
-                engineCreator.replaceTextInLine(135, "200", newText);
-            }
-
-            static char newText2[128] = "6000";
-            if (ImGui::InputText("redline", newText2, IM_ARRAYSIZE(newText2)))
-            {
-                engineCreator.replaceTextInLine(136, "6000", newText2);
-            }
-
+                        static char newText2[128] = "6000";
+                        if (ImGui::InputText("redline", newText2, IM_ARRAYSIZE(newText2)))
+                        {
+                            engineCreator.replaceTextInLine(136, "6000", newText2);
+                        }
+            */
             if (ImGui::Button("Save as"))
             {
                 show_save_as_window = true;
