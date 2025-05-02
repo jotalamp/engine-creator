@@ -15,8 +15,6 @@ EngineCreator::EngineCreator()
     // String variable to store the read data
     std::string s;
 
-    char empty[128] = "";
-
     // Read each line of the file and print it to the
     // standard output stream till the whole file is
     // completely read
@@ -25,8 +23,7 @@ EngineCreator::EngineCreator()
         // std::cout << s << "\n";
         originalLines.push_back(s);
         editedLines.push_back(s);
-
-        changeableText[i] = "";
+        changeableText.push_back("");
         i++;
     }
 
@@ -36,7 +33,7 @@ EngineCreator::EngineCreator()
     setChangeAbleTextInLine(134, "Audi 2.3 inline 5");
 }
 
-void EngineCreator::setChangeAbleTextInLine(unsigned int lineNumber, char newChangeableText[128])
+void EngineCreator::setChangeAbleTextInLine(unsigned int lineNumber, std::string newChangeableText)
 {
     changeableText[lineNumber] = newChangeableText;
 }
@@ -151,7 +148,7 @@ void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textT
     editedLines[lineNumber] = line;
 }
 
-char* EngineCreator::getChangeableTextInLine(unsigned int lineNumber)
+std::string EngineCreator::getChangeableTextInLine(unsigned int lineNumber)
 {
     return changeableText[lineNumber];
 }

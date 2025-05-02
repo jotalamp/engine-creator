@@ -40,7 +40,7 @@ TEST_F(EngineCreatorTest, EngineNameIsCorrectAfterChanging)
     std::string newName = "NEW_NAME";
     std::string newLine = "        name: \"" + newName + "\",";
     engineCreator.changeLineTo(134, newLine);
-    //ASSERT_THAT(engineCreator.getLine(134), Eq(newLine));
+    // ASSERT_THAT(engineCreator.getLine(134), Eq(newLine));
     engineCreator.writeAllLinesToFile();
     ASSERT_THAT(engineCreator.getLineFromCreatedFile(134), Eq(newLine));
 }
@@ -68,5 +68,5 @@ TEST_F(EngineCreatorTest, GetsCorrectChangeableText)
 {
     unsigned int lineNumber = 134;
     std::string changeableText = "Audi 2.3 inline 5";
-    ASSERT_THAT(engineCreator.getChangeableTextInLine(lineNumber),Eq(changeableText));
+    ASSERT_THAT(engineCreator.getChangeableTextInLine(lineNumber), Eq(changeableText));
 }

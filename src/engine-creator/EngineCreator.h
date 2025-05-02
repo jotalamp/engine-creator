@@ -18,12 +18,12 @@ public:
     bool textExistsInOriginalLine(unsigned int lineNumber, std::string textToFind);
     bool textExistsInEditedLine(unsigned int lineNumber, std::string textToFind);
     void replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText);
-    char* getChangeableTextInLine(unsigned int lineNumber);
+    std::string getChangeableTextInLine(unsigned int lineNumber);
 private:
     std::vector<std::string> originalLines;
     std::vector<std::string> editedLines;
-    char* changeableText[500];
-    void setChangeAbleTextInLine(unsigned int lineNumber, char changeableText[128]);
+    std::vector<std::string> changeableText;
+    void setChangeAbleTextInLine(unsigned int lineNumber, std::string changeableText);
     std::string getLineFromFile(std::string fileName, unsigned int lineNumber);
     static const inline std::string path = "../bin/";
     static const inline std::string exampleEngineName = "example_engine.mr";
