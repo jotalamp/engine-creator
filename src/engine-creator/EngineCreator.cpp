@@ -164,12 +164,13 @@ EditableLine* EngineCreator::getEditableLine(unsigned int lineNumber)
     }
 }
 
-EditableLine::EditableLine(unsigned int lineNumber, std::string name, std::string editableText, ValueType type)
+EditableLine::EditableLine(unsigned int lineNumber, std::string name, std::string editableText, ValueType valueType)
 {
     this->lineNumber = lineNumber;
     this->name = name;
     this->editableText = editableText;
     this->editedText = editableText;
+    this->valueType = valueType;
 }
 
 std::string EditableLine::getName() const

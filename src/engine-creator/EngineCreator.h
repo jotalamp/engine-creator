@@ -13,10 +13,10 @@ enum class ValueType
 class EditableLine
 {
 public:
-    EditableLine(unsigned int lineNumber, std::string name, std::string editableText, ValueType type=ValueType::Text);
+    EditableLine(unsigned int lineNumber, std::string name, std::string editableText, ValueType valueType=ValueType::Text);
     bool operator==(const EditableLine &e2) const
     {
-        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
+        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && valueType == e2.getValueType();
     }
     std::string getName() const;
     std::string getEditableText() const;

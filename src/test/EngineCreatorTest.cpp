@@ -83,7 +83,11 @@ TEST_F(EngineCreatorTest, CanAddEditableLine)
 
 TEST_F(EngineCreatorTest, CanGetTypeOfValueInEditableLine)
 {
-    ValueType valueType = ValueType::Text;
-    EditableLine line(1,"","",ValueType::Text);
-    ASSERT_THAT(line.getValueType(),Eq(valueType));
+    ValueType valueType1 = ValueType::Text;
+    EditableLine line1(1, "", "", valueType1);
+    ASSERT_THAT(line1.getValueType(), Eq(valueType1));
+
+    ValueType valueType2 = ValueType::Decimal;
+    EditableLine line2(2, "", "", valueType2);
+    ASSERT_THAT(line2.getValueType(), Eq(valueType2));
 }
