@@ -16,7 +16,7 @@ public:
     std::string editableText;
     std::string originalLineText;
     std::string editedLineText;
-    char editedText[128] = "";
+    std::string editedText;
 };
 
 class EngineCreator
@@ -35,8 +35,8 @@ public:
     bool textExistsInEditedLine(unsigned int lineNumber, std::string textToFind);
     void replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText);
     // char* getChangeableTextInLine(unsigned int lineNumber);
-    void addEditableLine(const EditableLine &editableLine);
-    EditableLine getEditableLine(unsigned int lineNumber);
+    void addEditableLine(const EditableLine& editableLine);
+    EditableLine* getEditableLine(unsigned int lineNumber);
 
 private:
     std::vector<std::string> originalLines;

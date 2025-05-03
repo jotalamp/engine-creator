@@ -21,6 +21,8 @@
 
 #include <string.h>
 
+#include <misc/cpp/imgui_stdlib.h>
+
 #include "EngineCreator.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
@@ -40,55 +42,22 @@ static void glfw_error_callback(int error, const char *description)
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
-std::unordered_map<unsigned int, char[128]> texts;
-std::unordered_map<unsigned int, int> numbers;
 float fileTextScrollPosition = 1662.0f;
-/*
-void editTextInLine(EngineCreator &engineCreator, std::string name, unsigned int lineNumber)
-{
-    if (ImGui::InputTextWithHint(name.c_str(), engineCreator.getChangeableTextInLine(lineNumber), texts[lineNumber], IM_ARRAYSIZE(texts[lineNumber])))
-    //if (ImGui::InputInt(name.c_str(), &numbers[lineNumber]))
-    {
-        fileTextScrollPosition = 1662.0f;
-        engineCreator.replaceTextInLine(lineNumber, engineCreator.getChangeableTextInLine(lineNumber), texts[lineNumber]);
-    }
-    if (strlen(texts[lineNumber]) == 0)
-    {
-        strcpy(texts[lineNumber], engineCreator.getChangeableTextInLine(lineNumber));
-        engineCreator.replaceTextInLine(lineNumber, engineCreator.getChangeableTextInLine(lineNumber), texts[lineNumber]);
-    }
-}
-*/
-/*
-void editTextInLine(EngineCreator &engineCreator, std::string name, unsigned int lineNumber)
-{
-    if (ImGui::InputTextWithHint(name.c_str(), engineCreator.getEditableLine(lineNumber).editableText.c_str(), texts[lineNumber], IM_ARRAYSIZE(texts[lineNumber])))
-    //if (ImGui::InputInt(name.c_str(), &numbers[lineNumber]))
-    {
-        fileTextScrollPosition = 1662.0f;
-        engineCreator.replaceTextInLine(lineNumber, engineCreator.getEditableLine(lineNumber).editableText.c_str(), texts[lineNumber]);
-    }
-    if (strlen(texts[lineNumber]) == 0)
-    {
-        strcpy(texts[lineNumber], engineCreator.getEditableLine(lineNumber).editableText.c_str());
-        engineCreator.replaceTextInLine(lineNumber, engineCreator.getEditableLine(lineNumber).editableText.c_str(), texts[lineNumber]);
-    }
-}*/
+
 void editTextInLine(EngineCreator& engineCreator, unsigned int lineNumber)
 {
-    EditableLine line = engineCreator.getEditableLine(lineNumber);
-    //auto a = &line.editedText;
-    if (ImGui::InputTextWithHint(line.name.c_str(), line.editableText.c_str(), texts[lineNumber], IM_ARRAYSIZE(texts[lineNumber])))
-    //if (ImGui::InputInt(name.c_str(), &numbers[lineNumber]))
+    EditableLine* line = engineCreator.getEditableLine(lineNumber);
+
+    if (ImGui::InputTextWithHint(line->name.c_str(), line->editableText.c_str(), &line->editedText))
     {
         fileTextScrollPosition = 1662.0f;
-        engineCreator.replaceTextInLine(lineNumber, line.editableText.c_str(), texts[lineNumber]);
+        engineCreator.replaceTextInLine(lineNumber, line->editableText, line->editedText);
     }
     
-    if (strlen(texts[lineNumber]) == 0)
+    if (line->editedText.size() == 0)
     {
-        strcpy(texts[lineNumber], line.editableText.c_str());
-        engineCreator.replaceTextInLine(lineNumber, line.editableText.c_str(), texts[lineNumber]);
+        line->editedText = line->editableText;
+        engineCreator.replaceTextInLine(lineNumber, line->editableText, line->editedText);
     }
 }
 
@@ -97,15 +66,6 @@ int main(int, char **)
 {
     std::cout << "\n\nEngine Creator v0.01\n";
     EngineCreator engineCreator;
-    strcpy(texts[134], engineCreator.getEditableLine(134).editedText);
-    strcpy(texts[135], engineCreator.getEditableLine(135).editedText);
-    strcpy(texts[136], engineCreator.getEditableLine(136).editedText);
-    strcpy(texts[138], engineCreator.getEditableLine(138).editedText);
-
-    numbers[134] = 123;
-    numbers[135] = 123;
-    numbers[136] = 123;
-
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())

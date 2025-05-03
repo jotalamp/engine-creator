@@ -73,9 +73,10 @@ TEST_F(EngineCreatorTest, CanAddEditableLine)
     std::string editableText = "Audi 2.3 inline 5";
     EditableLine editableLine(lineNumber, name, editableText);
     engineCreator.addEditableLine(editableLine);
-    //ASSERT_THAT(editableLine, Eq(editableLine));
-    ASSERT_THAT(engineCreator.getEditableLine(lineNumber), Eq(editableLine));
-    ASSERT_THAT(engineCreator.getEditableLine(lineNumber).editableText, Eq(editableLine.editableText));
-    ASSERT_THAT(engineCreator.getEditableLine(lineNumber).lineNumber, Eq(editableLine.lineNumber));
-    ASSERT_THAT(engineCreator.getEditableLine(lineNumber).name, Eq(editableLine.name));
+
+    ASSERT_THAT(*engineCreator.getEditableLine(lineNumber), Eq(editableLine));
+
+    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->editableText, Eq(editableLine.editableText));
+    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->lineNumber, Eq(editableLine.lineNumber));
+    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->name, Eq(editableLine.name));
 }
