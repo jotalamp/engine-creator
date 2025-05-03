@@ -147,7 +147,7 @@ void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textT
 
 void EngineCreator::addEditableLine(const EditableLine& editableLine)
 {
-    editableLines.insert(std::make_pair(editableLine.lineNumber, editableLine));
+    editableLines.insert(std::make_pair(editableLine.getLineNumber(), editableLine));
 }
 
 EditableLine* EngineCreator::getEditableLine(unsigned int lineNumber)
@@ -164,10 +164,35 @@ EditableLine* EngineCreator::getEditableLine(unsigned int lineNumber)
     }
 }
 
-EditableLine::EditableLine(unsigned int lineNumber, std::string name, std::string editableText)
+EditableLine::EditableLine(unsigned int lineNumber, std::string name, std::string editableText, ValueType type)
 {
     this->lineNumber = lineNumber;
     this->name = name;
     this->editableText = editableText;
     this->editedText = editableText;
+}
+
+std::string EditableLine::getName() const
+{
+    return name;
+}
+
+std::string EditableLine::getEditableText() const
+{
+    return editableText;
+}
+
+std::string* EditableLine::getEditedText()
+{
+    return &editedText;
+}
+
+ValueType EditableLine::getValueType() const
+{
+    return valueType;
+}
+
+unsigned int EditableLine::getLineNumber() const
+{
+    return lineNumber;
 }

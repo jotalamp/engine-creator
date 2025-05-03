@@ -76,7 +76,14 @@ TEST_F(EngineCreatorTest, CanAddEditableLine)
 
     ASSERT_THAT(*engineCreator.getEditableLine(lineNumber), Eq(editableLine));
 
-    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->editableText, Eq(editableLine.editableText));
-    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->lineNumber, Eq(editableLine.lineNumber));
-    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->name, Eq(editableLine.name));
+    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->getEditableText(), Eq(editableLine.getEditableText()));
+    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->getLineNumber(), Eq(editableLine.getLineNumber()));
+    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->getName(), Eq(editableLine.getName()));
+}
+
+TEST_F(EngineCreatorTest, CanGetTypeOfValueInEditableLine)
+{
+    ValueType valueType = ValueType::Text;
+    EditableLine line(1,"","",ValueType::Text);
+    ASSERT_THAT(line.getValueType(),Eq(valueType));
 }

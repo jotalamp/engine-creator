@@ -48,16 +48,16 @@ void editTextInLine(EngineCreator& engineCreator, unsigned int lineNumber)
 {
     EditableLine* line = engineCreator.getEditableLine(lineNumber);
 
-    if (ImGui::InputTextWithHint(line->name.c_str(), line->editableText.c_str(), &line->editedText))
+    if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
     {
         fileTextScrollPosition = 1662.0f;
-        engineCreator.replaceTextInLine(lineNumber, line->editableText, line->editedText);
+        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
     }
     
-    if (line->editedText.size() == 0)
+    if ((*line->getEditedText()).size() == 0)
     {
-        line->editedText = line->editableText;
-        engineCreator.replaceTextInLine(lineNumber, line->editableText, line->editedText);
+        *line->getEditedText() = line->getEditableText();
+        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
     }
 }
 
