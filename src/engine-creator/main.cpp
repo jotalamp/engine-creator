@@ -20,6 +20,7 @@
 #include <iostream>
 
 #include <string.h>
+#include <bits/stdc++.h>
 
 #include <misc/cpp/imgui_stdlib.h>
 
@@ -44,21 +45,74 @@ static void glfw_error_callback(int error, const char *description)
 
 float fileTextScrollPosition = 1662.0f;
 
-void editTextInLine(EngineCreator& engineCreator, unsigned int lineNumber)
-{
-    EditableLine* line = engineCreator.getEditableLine(lineNumber);
+// TODO Editing float values needs fixing
 
-    if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
+void editTextInLine(EngineCreator &engineCreator, unsigned int lineNumber)
+{
+    EditableLine *line = engineCreator.getEditableLine(lineNumber);
+
+    switch (line->getValueType())
     {
-        fileTextScrollPosition = 1662.0f;
-        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
+
+    //case ValueType::Text:
+    default:
+        if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
+        {
+            fileTextScrollPosition = 1662.0f;
+            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
+        }
+
+        if ((*line->getEditedText()).size() == 0)
+        {
+            *line->getEditedText() = line->getEditableText();
+            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
+        }
+        break;
+/*
+    case ValueType::Decimal:
+        if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloat(), 10, 100))
+        {
+            fileTextScrollPosition = 1662.0f;
+            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), std::to_string((float)*line->getEditedFloat()));
+        }
+
+        if ((*line->getEditedText()).size() == 0)
+        {
+            *line->getEditedText() = line->getEditableText();
+            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), std::to_string((float)*line->getEditedFloat()));
+        }
+        break;
+
+    case ValueType::Int:
+        if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloat(), 10, 100))
+        {
+            fileTextScrollPosition = 1662.0f;
+            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), std::to_string((float)*line->getEditedFloat()));
+        }
+
+        if ((*line->getEditedText()).size() == 0)
+        {
+            *line->getEditedText() = line->getEditableText();
+            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), std::to_string((float)*line->getEditedFloat()));
+        }
+        break;
+
+    default:
+        if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
+        {
+            fileTextScrollPosition = 1662.0f;
+            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
+        }
+
+        if ((*line->getEditedText()).size() == 0)
+        {
+            *line->getEditedText() = line->getEditableText();
+            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
+        }
+        break;
+        */
     }
-    
-    if ((*line->getEditedText()).size() == 0)
-    {
-        *line->getEditedText() = line->getEditableText();
-        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
-    }
+        
 }
 
 // Main code
@@ -172,6 +226,10 @@ int main(int, char **)
 
         {
             ImGui::Begin("Engine Creator"); // Create a window called "Engine Creator" and append into it.
+
+            // TODO Editing float values needs fixing!!
+            ImGui::Text("TODO Editing float values needs fixing!!");
+
                                             /*
                                                         if (ImGui::InputTextWithHint("engine.name", engineCreator.getChangeableTextInLine(134), engineName, IM_ARRAYSIZE(engineName)))
                                                         {
@@ -234,13 +292,13 @@ int main(int, char **)
             printf("\nScroll: %f", ImGui::GetScrollY());
             ImGui::SetScrollY(ImGui::GetScrollY()+0.1f);
             */
-            if(!ImGui::IsWindowFocused())
+            if (!ImGui::IsWindowFocused())
             {
                 ImGui::SetScrollHereY(0.4f);
             }
 
-            //if (ImGui::GetScrollY() >= 0.5f * ImGui::GetScrollMaxY())
-               // ImGui::SetScrollHereY(1.0f);
+            // if (ImGui::GetScrollY() >= 0.5f * ImGui::GetScrollMaxY())
+            //  ImGui::SetScrollHereY(1.0f);
 
             ImGui::End();
         }

@@ -68,7 +68,7 @@ TEST_F(EngineCreatorTest, TextIsCorrectAfterReplacingPartOfLine)
 
 TEST_F(EngineCreatorTest, CanAddEditableLine)
 {
-    unsigned int lineNumber = 134;
+    unsigned int lineNumber = 3;
     std::string name = "engine.name";
     std::string editableText = "Audi 2.3 inline 5";
     EditableLine editableLine(lineNumber, name, editableText);

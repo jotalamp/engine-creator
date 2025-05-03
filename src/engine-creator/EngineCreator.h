@@ -21,8 +21,10 @@ public:
     std::string getName() const;
     std::string getEditableText() const;
     std::string* getEditedText();
+    float* getEditedFloat();
     unsigned int getLineNumber() const;
     ValueType getValueType() const;
+    float editedFloat;
 private:
     unsigned int lineNumber;
     std::string name;
@@ -30,6 +32,7 @@ private:
     std::string originalLineText;
     std::string editedLineText;
     std::string editedText;
+    
     ValueType valueType = ValueType::Text;
 };
 

@@ -30,7 +30,7 @@ EngineCreator::EngineCreator()
     // Close the file
     file.close();
 
-    addEditableLine(EditableLine(134, "engine.name", "Audi 2.3 inline 5"));
+    addEditableLine(EditableLine(134, "engine.name", "Audi 2.3 inline 5", ValueType::Text));
     addEditableLine(EditableLine(135, "starter_torque", "200"));
     addEditableLine(EditableLine(136, "redline", "6000"));
     addEditableLine(EditableLine(138, "fuel.max_turbulence_effect", "2.5"));
@@ -186,6 +186,11 @@ std::string EditableLine::getEditableText() const
 std::string* EditableLine::getEditedText()
 {
     return &editedText;
+}
+
+float *EditableLine::getEditedFloat()
+{
+    return &editedFloat;
 }
 
 ValueType EditableLine::getValueType() const
