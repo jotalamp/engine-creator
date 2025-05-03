@@ -23,23 +23,28 @@ EngineCreator::EngineCreator()
         // std::cout << s << "\n";
         originalLines.push_back(s);
         editedLines.push_back(s);
-        changeableTexts[i] = "";
+        // changeableTexts[i] = "";
         i++;
     }
 
     // Close the file
     file.close();
 
-    setChangeAbleTextInLine(134, "Audi 2.3 inline 5");
-    setChangeAbleTextInLine(135, "200");
-    setChangeAbleTextInLine(136, "6000");
+    addEditableLine(EditableLine(134, "engine.name", "Audi 2.3 inline 5"));
+    addEditableLine(EditableLine(135, "starter_torque", "200"));
+    addEditableLine(EditableLine(136, "redline", "6000"));
+    addEditableLine(EditableLine(138, "fuel.max_turbulence_effect", "2.5"));
+    // setChangeAbleTextInLine(134, "Audi 2.3 inline 5");
+    // setChangeAbleTextInLine(135, "200");
+    // setChangeAbleTextInLine(136, "6000");
+    // setChangeAbleTextInLine(138, "2.5");
 }
-
+/*
 void EngineCreator::setChangeAbleTextInLine(unsigned int lineNumber, char* newChangeableText)
 {
     changeableTexts[lineNumber] = newChangeableText;
 }
-
+*/
 std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber)
 {
     std::vector<std::string> lines;
@@ -149,8 +154,30 @@ void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textT
     }
     editedLines[lineNumber] = line;
 }
-
+/*
 char* EngineCreator::getChangeableTextInLine(unsigned int lineNumber)
 {
     return changeableTexts[lineNumber];
+}
+*/
+void EngineCreator::addEditableLine(const EditableLine &editableLine)
+{
+    editableLines.insert(std::make_pair(editableLine.lineNumber, editableLine));
+}
+
+EditableLine EngineCreator::getEditableLine(unsigned int lineNumber)
+{
+    EditableLine val(lineNumber,"","");
+    auto it = editableLines.find(lineNumber);
+    if (it != editableLines.end())
+        val = it->second;
+    return val;
+}
+
+EditableLine::EditableLine(unsigned int lineNumber, std::string name, std::string editableText)
+{
+    this->lineNumber = lineNumber;
+    this->name = name;
+    this->editableText = editableText;
+    strcpy(this->editedText,editableText.c_str());
 }

@@ -5,6 +5,8 @@
 using namespace testing;
 using ::testing::Eq;
 
+class EditableLine;
+
 class EngineCreatorTest : public Test
 {
 public:
@@ -64,9 +66,16 @@ TEST_F(EngineCreatorTest, TextIsCorrectAfterReplacingPartOfLine)
     ASSERT_THAT(lineLengthAfterReplace, Eq(lineLengthBeforeReplace));
 }
 
-TEST_F(EngineCreatorTest, GetsCorrectChangeableText)
+TEST_F(EngineCreatorTest, CanAddEditableLine)
 {
     unsigned int lineNumber = 134;
-    std::string changeableText = "Audi 2.3 inline 5";
-    ASSERT_THAT(engineCreator.getChangeableTextInLine(lineNumber), Eq(changeableText));
+    std::string name = "engine.name";
+    std::string editableText = "Audi 2.3 inline 5";
+    EditableLine editableLine(lineNumber, name, editableText);
+    engineCreator.addEditableLine(editableLine);
+    //ASSERT_THAT(editableLine, Eq(editableLine));
+    ASSERT_THAT(engineCreator.getEditableLine(lineNumber), Eq(editableLine));
+    ASSERT_THAT(engineCreator.getEditableLine(lineNumber).editableText, Eq(editableLine.editableText));
+    ASSERT_THAT(engineCreator.getEditableLine(lineNumber).lineNumber, Eq(editableLine.lineNumber));
+    ASSERT_THAT(engineCreator.getEditableLine(lineNumber).name, Eq(editableLine.name));
 }

@@ -3,6 +3,22 @@
 #include <iostream>
 #include <bits/stdc++.h>
 
+class EditableLine
+{
+public:
+    EditableLine(unsigned int lineNumber, std::string name, std::string editableText);
+    bool operator==(const EditableLine &e2) const
+    {
+        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
+    }
+    unsigned int lineNumber;
+    std::string name;
+    std::string editableText;
+    std::string originalLineText;
+    std::string editedLineText;
+    char editedText[128] = "";
+};
+
 class EngineCreator
 {
 public:
@@ -18,12 +34,16 @@ public:
     bool textExistsInOriginalLine(unsigned int lineNumber, std::string textToFind);
     bool textExistsInEditedLine(unsigned int lineNumber, std::string textToFind);
     void replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText);
-    char* getChangeableTextInLine(unsigned int lineNumber);
+    // char* getChangeableTextInLine(unsigned int lineNumber);
+    void addEditableLine(const EditableLine &editableLine);
+    EditableLine getEditableLine(unsigned int lineNumber);
+
 private:
     std::vector<std::string> originalLines;
     std::vector<std::string> editedLines;
-    std::unordered_map<unsigned int,char*> changeableTexts;
-    void setChangeAbleTextInLine(unsigned int lineNumber, char* changeableText);
+    // std::unordered_map<unsigned int,char*> changeableTexts;
+    std::unordered_map<unsigned int, EditableLine> editableLines;
+    // void setChangeAbleTextInLine(unsigned int lineNumber, char* changeableText);
     std::string getLineFromFile(std::string fileName, unsigned int lineNumber);
     static const inline std::string path = "../bin/";
     static const inline std::string exampleEngineName = "example_engine.mr";

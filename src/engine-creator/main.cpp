@@ -41,11 +41,15 @@ static void glfw_error_callback(int error, const char *description)
 }
 
 std::unordered_map<unsigned int, char[128]> texts;
-
-void replaceTextInLine(EngineCreator &engineCreator, std::string name, unsigned int lineNumber)
+std::unordered_map<unsigned int, int> numbers;
+float fileTextScrollPosition = 1662.0f;
+/*
+void editTextInLine(EngineCreator &engineCreator, std::string name, unsigned int lineNumber)
 {
     if (ImGui::InputTextWithHint(name.c_str(), engineCreator.getChangeableTextInLine(lineNumber), texts[lineNumber], IM_ARRAYSIZE(texts[lineNumber])))
+    //if (ImGui::InputInt(name.c_str(), &numbers[lineNumber]))
     {
+        fileTextScrollPosition = 1662.0f;
         engineCreator.replaceTextInLine(lineNumber, engineCreator.getChangeableTextInLine(lineNumber), texts[lineNumber]);
     }
     if (strlen(texts[lineNumber]) == 0)
@@ -54,15 +58,54 @@ void replaceTextInLine(EngineCreator &engineCreator, std::string name, unsigned 
         engineCreator.replaceTextInLine(lineNumber, engineCreator.getChangeableTextInLine(lineNumber), texts[lineNumber]);
     }
 }
+*/
+/*
+void editTextInLine(EngineCreator &engineCreator, std::string name, unsigned int lineNumber)
+{
+    if (ImGui::InputTextWithHint(name.c_str(), engineCreator.getEditableLine(lineNumber).editableText.c_str(), texts[lineNumber], IM_ARRAYSIZE(texts[lineNumber])))
+    //if (ImGui::InputInt(name.c_str(), &numbers[lineNumber]))
+    {
+        fileTextScrollPosition = 1662.0f;
+        engineCreator.replaceTextInLine(lineNumber, engineCreator.getEditableLine(lineNumber).editableText.c_str(), texts[lineNumber]);
+    }
+    if (strlen(texts[lineNumber]) == 0)
+    {
+        strcpy(texts[lineNumber], engineCreator.getEditableLine(lineNumber).editableText.c_str());
+        engineCreator.replaceTextInLine(lineNumber, engineCreator.getEditableLine(lineNumber).editableText.c_str(), texts[lineNumber]);
+    }
+}*/
+void editTextInLine(EngineCreator& engineCreator, unsigned int lineNumber)
+{
+    EditableLine line = engineCreator.getEditableLine(lineNumber);
+    //auto a = &line.editedText;
+    if (ImGui::InputTextWithHint(line.name.c_str(), line.editableText.c_str(), texts[lineNumber], IM_ARRAYSIZE(texts[lineNumber])))
+    //if (ImGui::InputInt(name.c_str(), &numbers[lineNumber]))
+    {
+        fileTextScrollPosition = 1662.0f;
+        engineCreator.replaceTextInLine(lineNumber, line.editableText.c_str(), texts[lineNumber]);
+    }
+    
+    if (strlen(texts[lineNumber]) == 0)
+    {
+        strcpy(texts[lineNumber], line.editableText.c_str());
+        engineCreator.replaceTextInLine(lineNumber, line.editableText.c_str(), texts[lineNumber]);
+    }
+}
 
 // Main code
 int main(int, char **)
 {
     std::cout << "\n\nEngine Creator v0.01\n";
     EngineCreator engineCreator;
-    strcpy(texts[134], "");
-    strcpy(texts[135], "");
-    strcpy(texts[136], "");
+    strcpy(texts[134], engineCreator.getEditableLine(134).editedText);
+    strcpy(texts[135], engineCreator.getEditableLine(135).editedText);
+    strcpy(texts[136], engineCreator.getEditableLine(136).editedText);
+    strcpy(texts[138], engineCreator.getEditableLine(138).editedText);
+
+    numbers[134] = 123;
+    numbers[135] = 123;
+    numbers[136] = 123;
+
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -177,9 +220,10 @@ int main(int, char **)
                                                             engineCreator.replaceTextInLine(134, engineCreator.getChangeableTextInLine(134), engineName);
                                                         }
                                             */
-            replaceTextInLine(engineCreator, "engine.name", 134);
-            replaceTextInLine(engineCreator, "starter_torque", 135);
-            replaceTextInLine(engineCreator, "redline", 136);
+            editTextInLine(engineCreator, 134);
+            editTextInLine(engineCreator, 135);
+            editTextInLine(engineCreator, 136);
+            editTextInLine(engineCreator, 138);
             /*
                         static char newText[128] = "200";
                         if (ImGui::InputText("starter_torque", newText, IM_ARRAYSIZE(newText)))
@@ -217,9 +261,27 @@ int main(int, char **)
 
             // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();
+        }
 
+        {
             ImGui::Begin("Edited engine file");
             ImGui::TextUnformatted(engineCreator.getAllEditedLinesAsString().c_str());
+            // ImGui::SetScrollHereY(0.5f*fileTextScrollPosition+0.5f*ImGui::GetScrollY());
+            /*
+            float f = 0.1f;
+            float scroll = f*ImGui::GetScrollY()+(1.0f-f)*fileTextScrollPosition;
+            if(scroll>0.999f) scroll = 0.999f;
+            printf("\nScroll: %f", ImGui::GetScrollY());
+            ImGui::SetScrollY(ImGui::GetScrollY()+0.1f);
+            */
+            if(!ImGui::IsWindowFocused())
+            {
+                ImGui::SetScrollHereY(0.4f);
+            }
+
+            //if (ImGui::GetScrollY() >= 0.5f * ImGui::GetScrollMaxY())
+               // ImGui::SetScrollHereY(1.0f);
+
             ImGui::End();
         }
 
