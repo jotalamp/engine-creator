@@ -42,7 +42,6 @@ TEST_F(EngineCreatorTest, EngineNameIsCorrectAfterChanging)
     std::string newName = "NEW_NAME";
     std::string newLine = "        name: \"" + newName + "\",";
     engineCreator.changeLineTo(134, newLine);
-    // ASSERT_THAT(engineCreator.getLine(134), Eq(newLine));
     engineCreator.writeAllLinesToFile();
     ASSERT_THAT(engineCreator.getLineFromCreatedFile(134), Eq(newLine));
 }
@@ -51,7 +50,7 @@ TEST_F(EngineCreatorTest, TextExistsInOriginalLine)
 {
     unsigned int lineNumberWhereTextToReplaceIs = 135;
     std::string textToReplace = "200";
-    ASSERT_THAT(engineCreator.textExistsInOriginalLine(lineNumberWhereTextToReplaceIs, textToReplace), true);
+    ASSERT_THAT(engineCreator.textExistsInOriginalLine(lineNumberWhereTextToReplaceIs, textToReplace), Eq(true));
 }
 
 TEST_F(EngineCreatorTest, TextIsCorrectAfterReplacingPartOfLine)
@@ -73,12 +72,7 @@ TEST_F(EngineCreatorTest, CanAddEditableLine)
     std::string editableText = "Audi 2.3 inline 5";
     EditableLine editableLine(lineNumber, name, editableText);
     engineCreator.addEditableLine(editableLine);
-
     ASSERT_THAT(*engineCreator.getEditableLine(lineNumber), Eq(editableLine));
-
-    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->getEditableText(), Eq(editableLine.getEditableText()));
-    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->getLineNumber(), Eq(editableLine.getLineNumber()));
-    ASSERT_THAT(engineCreator.getEditableLine(lineNumber)->getName(), Eq(editableLine.getName()));
 }
 
 TEST_F(EngineCreatorTest, CanGetTypeOfValueInEditableLine)
@@ -90,4 +84,10 @@ TEST_F(EngineCreatorTest, CanGetTypeOfValueInEditableLine)
     ValueType valueType2 = ValueType::Decimal;
     EditableLine line2(2, "", "", valueType2);
     ASSERT_THAT(line2.getValueType(), Eq(valueType2));
+}
+
+TEST_F(EngineCreatorTest, ThrowsWhenEditableLineNotExist)
+{
+    unsigned int lineNumberOfLineThatNotExist = -1;
+    ASSERT_THROW(engineCreator.getEditableLine(lineNumberOfLineThatNotExist), EditableLineNotExistException);
 }

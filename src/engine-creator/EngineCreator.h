@@ -10,29 +10,27 @@ enum class ValueType
     Decimal
 };
 
+class EditableLineNotExistException : std::exception{};
+class FileNotFoundException : std::exception{};
+
 class EditableLine
 {
 public:
     EditableLine(unsigned int lineNumber, std::string name, std::string editableText, ValueType valueType=ValueType::Text);
     bool operator==(const EditableLine &e2) const
     {
-        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && valueType == e2.getValueType();
+        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && valueType == e2.valueType;
     }
     std::string getName() const;
     std::string getEditableText() const;
     std::string* getEditedText();
-    float* getEditedFloat();
     unsigned int getLineNumber() const;
     ValueType getValueType() const;
-    float editedFloat;
 private:
     unsigned int lineNumber;
     std::string name;
     std::string editableText;
-    std::string originalLineText;
-    std::string editedLineText;
     std::string editedText;
-    
     ValueType valueType = ValueType::Text;
 };
 
@@ -59,6 +57,6 @@ private:
     std::unordered_map<unsigned int, EditableLine> editableLines;
     std::string getLineFromFile(std::string fileName, unsigned int lineNumber);
     static const inline std::string path = "../bin/";
-    static const inline std::string exampleEngineName = "example_engine.mr";
+    static const inline std::string templateEngineName = "template_engine.mr";
     static inline std::string createdEngineName = "created_engine.mr";
 };

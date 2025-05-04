@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(MinimalImGui)
+project(engine-creator)
 
 set(CMAKE_CXX_STANDARD 17)
 

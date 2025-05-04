@@ -132,11 +132,11 @@ public node audi_i5_2_2L {
     wires wires()
 
     engine engine(
-        name: "Toyota",
+        name: "Toyota 4AF",
         starter_torque: 300 * units.lb_ft,
         redline: 7000 * units.rpm,
         fuel: fuel(
-            max_turbulence_effect: 2.6,
+            max_turbulence_effect: 2.5,
             max_burning_efficiency: 0.75),
         hf_gain: 0.01,
         noise: 1.0,

@@ -45,16 +45,14 @@ static void glfw_error_callback(int error, const char *description)
 
 float fileTextScrollPosition = 1662.0f;
 
-// TODO Editing float values needs fixing
-
 void editTextInLine(EngineCreator &engineCreator, unsigned int lineNumber)
 {
     EditableLine *line = engineCreator.getEditableLine(lineNumber);
+    if (line == nullptr)
+        return;
 
     switch (line->getValueType())
     {
-
-    //case ValueType::Text:
     default:
         if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
         {
@@ -68,51 +66,7 @@ void editTextInLine(EngineCreator &engineCreator, unsigned int lineNumber)
             engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
         }
         break;
-/*
-    case ValueType::Decimal:
-        if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloat(), 10, 100))
-        {
-            fileTextScrollPosition = 1662.0f;
-            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), std::to_string((float)*line->getEditedFloat()));
-        }
-
-        if ((*line->getEditedText()).size() == 0)
-        {
-            *line->getEditedText() = line->getEditableText();
-            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), std::to_string((float)*line->getEditedFloat()));
-        }
-        break;
-
-    case ValueType::Int:
-        if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloat(), 10, 100))
-        {
-            fileTextScrollPosition = 1662.0f;
-            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), std::to_string((float)*line->getEditedFloat()));
-        }
-
-        if ((*line->getEditedText()).size() == 0)
-        {
-            *line->getEditedText() = line->getEditableText();
-            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), std::to_string((float)*line->getEditedFloat()));
-        }
-        break;
-
-    default:
-        if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
-        {
-            fileTextScrollPosition = 1662.0f;
-            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
-        }
-
-        if ((*line->getEditedText()).size() == 0)
-        {
-            *line->getEditedText() = line->getEditableText();
-            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
-        }
-        break;
-        */
     }
-        
 }
 
 // Main code
@@ -227,34 +181,11 @@ int main(int, char **)
         {
             ImGui::Begin("Engine Creator"); // Create a window called "Engine Creator" and append into it.
 
-            // TODO Editing float values needs fixing!!
-            ImGui::Text("TODO Editing float values needs fixing!!");
-
-                                            /*
-                                                        if (ImGui::InputTextWithHint("engine.name", engineCreator.getChangeableTextInLine(134), engineName, IM_ARRAYSIZE(engineName)))
-                                                        {
-                                                            if (strlen(engineName) == 0)
-                                                                strcpy(engineName, engineCreator.getChangeableTextInLine(134));
-                                                            engineCreator.replaceTextInLine(134, engineCreator.getChangeableTextInLine(134), engineName);
-                                                        }
-                                            */
             editTextInLine(engineCreator, 134);
             editTextInLine(engineCreator, 135);
             editTextInLine(engineCreator, 136);
             editTextInLine(engineCreator, 138);
-            /*
-                        static char newText[128] = "200";
-                        if (ImGui::InputText("starter_torque", newText, IM_ARRAYSIZE(newText)))
-                        {
-                            engineCreator.replaceTextInLine(135, "200", newText);
-                        }
 
-                        static char newText2[128] = "6000";
-                        if (ImGui::InputText("redline", newText2, IM_ARRAYSIZE(newText2)))
-                        {
-                            engineCreator.replaceTextInLine(136, "6000", newText2);
-                        }
-            */
             if (ImGui::Button("Save as"))
             {
                 show_save_as_window = true;
@@ -265,17 +196,7 @@ int main(int, char **)
                 engineCreator.writeAllLinesToFile();
             }
 
-            // ImGui::Text("%s", engineCreator.getLine(0).c_str()); // Display some text (you can use a format strings too)
             ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
-            // ImGui::Checkbox("Another Window", &show_another_window);
-
-            // ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            // ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            // if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-            // counter++;
-            // ImGui::SameLine();
-            // ImGui::Text("counter = %d", counter);
 
             // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();
@@ -284,21 +205,11 @@ int main(int, char **)
         {
             ImGui::Begin("Edited engine file");
             ImGui::TextUnformatted(engineCreator.getAllEditedLinesAsString().c_str());
-            // ImGui::SetScrollHereY(0.5f*fileTextScrollPosition+0.5f*ImGui::GetScrollY());
-            /*
-            float f = 0.1f;
-            float scroll = f*ImGui::GetScrollY()+(1.0f-f)*fileTextScrollPosition;
-            if(scroll>0.999f) scroll = 0.999f;
-            printf("\nScroll: %f", ImGui::GetScrollY());
-            ImGui::SetScrollY(ImGui::GetScrollY()+0.1f);
-            */
+
             if (!ImGui::IsWindowFocused())
             {
                 ImGui::SetScrollHereY(0.4f);
             }
-
-            // if (ImGui::GetScrollY() >= 0.5f * ImGui::GetScrollMaxY())
-            //  ImGui::SetScrollHereY(1.0f);
 
             ImGui::End();
         }
@@ -317,7 +228,6 @@ int main(int, char **)
                     engineCreator.setCreatedEngineFileName(newFileName);
                     engineCreator.writeAllLinesToFile();
                     std::string textFileSaved = "Saved file '" + std::string(newFileName) + "'";
-                    // ImGui::Text("%s",textFileSaved.c_str());
                     std::cout << "\n"
                               << textFileSaved << "\n";
                 }

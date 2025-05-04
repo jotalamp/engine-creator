@@ -2,14 +2,13 @@
 
 EngineCreator::EngineCreator()
 {
-    std::ifstream file = std::ifstream(path + exampleEngineName);
-
-    unsigned int i = 0;
+    std::ifstream file = std::ifstream(path + templateEngineName);
 
     // Check if the file is successfully opened
     if (!file.is_open())
     {
-        std::cerr << "Error opening the file!";
+        std::cerr << "\nError opening the file: " + path + templateEngineName +"\n";
+        throw FileNotFoundException();
     }
 
     // String variable to store the read data
@@ -20,11 +19,8 @@ EngineCreator::EngineCreator()
     // completely read
     while (getline(file, s))
     {
-        // std::cout << s << "\n";
         originalLines.push_back(s);
         editedLines.push_back(s);
-        // changeableTexts[i] = "";
-        i++;
     }
 
     // Close the file
@@ -159,8 +155,8 @@ EditableLine* EngineCreator::getEditableLine(unsigned int lineNumber)
     }
     else
     {
-        EditableLine e(lineNumber,"","");
-        return &e;
+        throw EditableLineNotExistException();
+        return nullptr;
     }
 }
 
@@ -186,11 +182,6 @@ std::string EditableLine::getEditableText() const
 std::string* EditableLine::getEditedText()
 {
     return &editedText;
-}
-
-float *EditableLine::getEditedFloat()
-{
-    return &editedFloat;
 }
 
 ValueType EditableLine::getValueType() const
