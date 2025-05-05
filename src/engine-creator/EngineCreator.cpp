@@ -7,8 +7,7 @@ EngineCreator::EngineCreator()
     // Check if the file is successfully opened
     if (!file.is_open())
     {
-        std::cerr << "\nError opening the file: " + path + templateEngineName + "\n";
-        throw FileNotFoundException();
+        throw FileNotFoundException(std::string("\nError opening the file: " + path + templateEngineName + "\n"));
     }
 
     // String variable to store the read data
@@ -26,11 +25,13 @@ EngineCreator::EngineCreator()
     // Close the file
     file.close();
 
-    addEditableLine(EditableLine(134, "engine.name", "Audi 2.3 inline 5"));
-    addEditableIntegerValue(EditableIntegerValue(135, "starter_torque", "200"));
-    addEditableIntegerValue(EditableIntegerValue(136, "redline", "6000"));
-    addEditableFloatValue(EditableFloatValue(138, "fuel.max_turbulence_effect", "2.5"));
-    addEditableIntegerValue(EditableIntegerValue(18, "rev_limit", "7500"));
+    addEditableLine(134, "engine.name", "Audi 2.3 inline 5");
+    addEditableIntegerValue(135, "starter_torque", "200");
+    addEditableIntegerValue(136, "redline", "6000");
+    addEditableFloatValue(138, "fuel.max_turbulence_effect", "2.5");
+    addEditableFloatValue(139, "fuel.max_burning_efficiency", "0.75");
+    addEditableIntegerValue(18, "rev_limit", "7500");
+    addEditableFloatValue(140, "hf_gain", "0.01");
 }
 
 std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber)
@@ -146,20 +147,47 @@ void EngineCreator::addEditableLine(const EditableLine &editableLine)
 {
     if (!textExistsInOriginalLine(editableLine.getLineNumber(), editableLine.getEditableText()))
     {
-        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " 
-            + std::to_string(editableLine.getLineNumber()) + " : " + editableLine.getEditableText());
+        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " + std::to_string(editableLine.getLineNumber()) + " : " + editableLine.getEditableText());
     }
     editableLines.insert(std::make_pair(editableLine.getLineNumber(), editableLine));
+    editableTextValuesByName.insert(std::make_pair(editableLine.getName(), editableLine));
 }
 
 void EngineCreator::addEditableFloatValue(const EditableFloatValue &editableFloatValue)
 {
+    if (!textExistsInOriginalLine(editableFloatValue.getLineNumber(), editableFloatValue.getEditableText()))
+    {
+        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " 
+            + std::to_string(editableFloatValue.getLineNumber()) + " : " + editableFloatValue.getEditableText());
+    }
     editableFloatValues.insert(std::make_pair(editableFloatValue.getLineNumber(), editableFloatValue));
+    editableFloatValuesByName.insert(std::make_pair(editableFloatValue.getName(), editableFloatValue));
 }
 
 void EngineCreator::addEditableIntegerValue(const EditableIntegerValue &editableIntegerValue)
 {
+    if (!textExistsInOriginalLine(editableIntegerValue.getLineNumber(), editableIntegerValue.getEditableText()))
+    {
+        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " 
+            + std::to_string(editableIntegerValue.getLineNumber()) + " : " + editableIntegerValue.getEditableText());
+    }
     editableIntegerValues.insert(std::make_pair(editableIntegerValue.getLineNumber(), editableIntegerValue));
+    editableIntegerValuesByName.insert(std::make_pair(editableIntegerValue.getName(), editableIntegerValue));
+}
+
+void EngineCreator::addEditableLine(unsigned int lineNumber, std::string name, std::string editableText)
+{
+    addEditableLine(EditableLine(lineNumber, name, editableText));
+}
+
+void EngineCreator::addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText)
+{
+    addEditableFloatValue(EditableFloatValue(lineNumber, name, editableText));
+}
+
+void EngineCreator::addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText)
+{
+    addEditableIntegerValue(EditableIntegerValue(lineNumber, name, editableText));
 }
 
 EditableLine *EngineCreator::getEditableLine(unsigned int lineNumber)
@@ -171,7 +199,21 @@ EditableLine *EngineCreator::getEditableLine(unsigned int lineNumber)
     }
     else
     {
-        throw EditableLineNotExistException();
+        throw EditableLineNotExistException(lineNumber);
+        return nullptr;
+    }
+}
+
+EditableLine *EngineCreator::getEditableLine(std::string name)
+{
+    auto it = editableTextValuesByName.find(name);
+    if (it != editableTextValuesByName.end())
+    {
+        return &it->second;
+    }
+    else
+    {
+        throw EditableLineNotExistException(name);
         return nullptr;
     }
 }
@@ -185,23 +227,72 @@ EditableFloatValue *EngineCreator::getEditableFloatValue(unsigned int lineNumber
     }
     else
     {
-        throw EditableLineNotExistException();
+        throw EditableLineNotExistException(lineNumber);
         return nullptr;
+    }
+}
+
+EditableFloatValue *EngineCreator::getEditableFloatValue(std::string name)
+{
+    try
+    {
+        auto it = editableFloatValuesByName.find(name);
+        if (it == editableFloatValuesByName.end())
+            throw EditableLineNotExistException(name);
+        return &it->second;
+    }
+    catch(const EditableLineNotExistException& e)
+    {
+        std::cout << "Caught an exception: " << e.what() << std::endl;
+        exit(1);
     }
 }
 
 EditableIntegerValue *EngineCreator::getEditableIntegerValue(unsigned int lineNumber)
 {
-    auto it = editableIntegerValues.find(lineNumber);
-    if (it != editableIntegerValues.end())
+    try
     {
+        auto it = editableIntegerValues.find(lineNumber);
+        if (it == editableIntegerValues.end())
+            throw EditableLineNotExistException(lineNumber);
         return &it->second;
     }
-    else
+    catch (EditableLineNotExistException &e)
     {
-        throw EditableLineNotExistException();
-        return nullptr;
+        std::cout << "Caught an exception: " << e.what() << std::endl;
+        exit(1);
     }
+}
+
+EditableIntegerValue *EngineCreator::getEditableIntegerValue(std::string name)
+{
+    try
+    {
+        auto it = editableIntegerValuesByName.find(name);
+        if (it == editableIntegerValuesByName.end())
+            throw EditableLineNotExistException(name);
+        return &it->second;
+    }
+    catch (EditableLineNotExistException &e)
+    {
+        std::cout << "Caught an exception: " << e.what() << std::endl;
+        exit(1);
+    }
+}
+
+std::unordered_map<std::string, EditableLine> EngineCreator::getEditableTextValuesByName() const
+{
+    return editableTextValuesByName;
+}
+
+std::unordered_map<std::string, EditableFloatValue> EngineCreator::getEditableFloatValuesByName() const
+{
+    return editableFloatValuesByName;
+}
+
+std::unordered_map<std::string, EditableIntegerValue> EngineCreator::getEditableIntegerValuesByName() const
+{
+    return editableIntegerValuesByName;
 }
 
 EditableLine::EditableLine(unsigned int lineNumber, std::string name, std::string editableText)
@@ -246,10 +337,10 @@ float *EditableFloatValue::getEditedFloatValue()
     return &editedFloatValue;
 }
 
-std::string EditableFloatValue::getEditedValueAsString()
+std::string EditableFloatValue::getEditedValueAsString(unsigned char decimals)
 {
     std::stringstream stream;
-    stream << std::fixed << std::setprecision(1) << editedFloatValue;
+    stream << std::fixed << std::setprecision(decimals) << editedFloatValue;
     return stream.str();
 }
 

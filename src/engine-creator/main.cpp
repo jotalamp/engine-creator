@@ -45,50 +45,66 @@ static void glfw_error_callback(int error, const char *description)
 
 float fileTextScrollPosition = 1662.0f;
 
-bool editTextInLine(EngineCreator &engineCreator, unsigned int lineNumber)
+bool editText(EngineCreator &engineCreator, std::string name)
 {
-    EditableLine *line = engineCreator.getEditableLine(lineNumber);
+    EditableLine *line = engineCreator.getEditableLine(name);
     if (line == nullptr)
         return false;
 
     if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
     {
         fileTextScrollPosition = 1662.0f;
-        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
+        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), *line->getEditedText());
     }
 
     if ((*line->getEditedText()).size() == 0)
     {
         *line->getEditedText() = line->getEditableText();
-        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
+        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), *line->getEditedText());
     }
     return true;
 }
 
-bool editFloatInLine(EngineCreator &engineCreator, unsigned int lineNumber)
+void editFloat(EngineCreator &engineCreator, std::string name, unsigned char decimals=2)
 {
-    EditableFloatValue *line = engineCreator.getEditableFloatValue(lineNumber);
-    if (line == nullptr)
-        return false;
+    EditableFloatValue *line = nullptr;
+    try
+    {
+        line = engineCreator.getEditableFloatValue(name);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+        exit(0);
+    }
 
-    if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloatValue(), 0.1f, 1.0f, "%.1f", ImGuiInputTextFlags_CharsDecimal))
+    if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloatValue(), 0.1f, 1.0f, "%.2f", ImGuiInputTextFlags_CharsDecimal))
     {
         fileTextScrollPosition = 166.0f;
-        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), line->getEditedValueAsString());
+        if (*line->getEditedFloatValue() < 0)
+            *line->getEditedFloatValue() = 0;
+        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString(2));
     }
-
-    return true;
 }
 
-bool editIntInLine(EngineCreator &engineCreator, unsigned int lineNumber)
+bool editInt(EngineCreator &engineCreator, std::string name)
 {
-    EditableIntegerValue *line = engineCreator.getEditableIntegerValue(lineNumber);
-    if (line == nullptr)
+    EditableIntegerValue *line = nullptr;
+    try
+    {
+        line = engineCreator.getEditableIntegerValue(name);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
         return false;
+    }
 
     if (ImGui::InputInt(line->getName().c_str(), line->getEditedIntegerValue(), 10.0f, 100.0f, ImGuiInputTextFlags_CharsDecimal))
     {
-        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), line->getEditedValueAsString());
+        if (*line->getEditedIntegerValue() < 0)
+            *line->getEditedIntegerValue() = 0;
+        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString());
     }
 
     return true;
@@ -204,13 +220,31 @@ int main(int, char **)
             ImGui::ShowDemoWindow(&show_demo_window);
 
         {
+            ImGui::SetNextWindowPos(ImVec2(0, 0));
+            ImGui::SetNextWindowSize(ImVec2(1920 / 2, 1080));
             ImGui::Begin("Engine Creator"); // Create a window called "Engine Creator" and append into it.
 
-            editTextInLine(engineCreator, 134);
-            editIntInLine(engineCreator, 135);
-            editIntInLine(engineCreator, 136);
-            editFloatInLine(engineCreator, 138);
-            editIntInLine(engineCreator, 18);
+            for (auto line : engineCreator.getEditableTextValuesByName())
+            {
+                editText(engineCreator, line.first);
+            }
+
+            for (auto line : engineCreator.getEditableIntegerValuesByName())
+            {
+                editInt(engineCreator, line.first);
+            }
+
+            for (auto line : engineCreator.getEditableFloatValuesByName())
+            {
+                editFloat(engineCreator, line.first);
+            }
+            /*
+                        editText(engineCreator, "engine.name");
+                        editInt(engineCreator, "starter_torque");
+                        editInt(engineCreator, "redline");
+                        //editFloat(engineCreator, "fuel.max_turbulence_effect");
+                        //editFloat(engineCreator, "fuel.max_burning_efficiency");
+                        editInt(engineCreator, "rev_limit");*/
 
             if (ImGui::Button("Save as"))
             {
@@ -229,12 +263,14 @@ int main(int, char **)
         }
 
         {
+            ImGui::SetNextWindowPos(ImVec2(1920 / 2, 0));
+            ImGui::SetNextWindowSize(ImVec2(1920 / 2, 1080));
             ImGui::Begin("Edited engine file");
             ImGui::TextUnformatted(engineCreator.getAllEditedLinesAsString().c_str());
 
             if (!ImGui::IsWindowFocused())
             {
-                //ImGui::SetScrollHereY(0.4f);
+                // ImGui::SetScrollHereY(0.4f);
             }
 
             ImGui::End();

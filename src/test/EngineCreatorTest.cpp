@@ -70,18 +70,7 @@ TEST_F(EngineCreatorTest, ThrowsWhenEditableTextNotFoundInOriginalLine)
     unsigned int lineNumber = 134;
     std::string name = "engine.name";
     std::string textThatNotFoundInOriginalLine = "?";
-    EditableLine editableLine(lineNumber, name, textThatNotFoundInOriginalLine);
-    ASSERT_THROW(engineCreator.addEditableLine(editableLine), TextNotFoundFromTemplateFileException);
-}
-
-TEST_F(EngineCreatorTest, CanAddEditableLine)
-{
-    unsigned int lineNumber = 134;
-    std::string name = "engine.name";
-    std::string editableText = "Audi 2.3 inline 5";
-    EditableLine editableLine(lineNumber, name, editableText);
-    engineCreator.addEditableLine(editableLine);
-    ASSERT_THAT(*engineCreator.getEditableLine(lineNumber), Eq(editableLine));
+    ASSERT_THROW(engineCreator.addEditableLine(lineNumber, name, textThatNotFoundInOriginalLine), TextNotFoundFromTemplateFileException);
 }
 
 TEST_F(EngineCreatorTest, ThrowsWhenEditableLineNotExist)
@@ -90,24 +79,22 @@ TEST_F(EngineCreatorTest, ThrowsWhenEditableLineNotExist)
     ASSERT_THROW(engineCreator.getEditableLine(lineNumberOfLineThatNotExist), EditableLineNotExistException);
 }
 
-TEST_F(EngineCreatorTest, GetsCorrectEditableFloatValue)
+TEST_F(EngineCreatorTest, GetsCorrectFloatValue)
 {
     unsigned int lineNumber = 23;
     std::string name = "limiter_duration";
-    float defaultFloatValue = 0.2f;
-    EditableFloatValue editableFloatValue(lineNumber, name, "0.1", defaultFloatValue);
-    engineCreator.addEditableFloatValue(editableFloatValue);
-    ASSERT_THAT(*engineCreator.getEditableFloatValue(lineNumber),Eq(editableFloatValue));
+    float defaultFloatValue = 0.1f;
+    engineCreator.addEditableFloatValue(lineNumber, name, "0.1");
+    ASSERT_THAT(*engineCreator.getEditableFloatValue(lineNumber)->getEditedFloatValue(),Eq(defaultFloatValue));
 }
 
 TEST_F(EngineCreatorTest, GetsCorrectEditableIntegerValue)
 {
     unsigned int lineNumber = 18;
     std::string name = "rev_limit";
-    int defaultIntegerValue = 100;
-    EditableIntegerValue editableIntegerValue(lineNumber, name, "7500", defaultIntegerValue);
-    engineCreator.addEditableIntegerValue(editableIntegerValue);
-    ASSERT_THAT(*engineCreator.getEditableIntegerValue(lineNumber),Eq(editableIntegerValue));
+    std::string editableText = "7500";
+    engineCreator.addEditableIntegerValue(lineNumber, name, editableText);
+    ASSERT_THAT(engineCreator.getEditableIntegerValue(lineNumber)->getEditableText(),Eq(editableText));
 }
 
 TEST_F(EngineCreatorTest, ThrowsWhenTextCanNotBeConvertedToNumber)
