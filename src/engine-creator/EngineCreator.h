@@ -32,12 +32,11 @@ public:
 class EditableLineNotExistException : EngineCreatorException
 {
 public:
-    EditableLineNotExistException(unsigned int lineNumber) : EngineCreatorException("Editable line not exist at line: " 
-        + std::to_string(lineNumber)) 
+    EditableLineNotExistException(unsigned int lineNumber) : EngineCreatorException("Editable line not exist at line: " + std::to_string(lineNumber))
     {
     }
 
-    EditableLineNotExistException(std::string name) : EngineCreatorException("Editable line not exist: " + name) 
+    EditableLineNotExistException(std::string name) : EngineCreatorException("Editable line not exist: " + name)
     {
     }
 
@@ -123,11 +122,9 @@ public:
     void addEditableLine(unsigned int lineNumber, std::string name, std::string editableText);
     void addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText);
     void addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText);
-    EditableLine *getEditableLine(unsigned int lineNumber);
+
     EditableLine *getEditableLine(std::string name);
-    EditableFloatValue *getEditableFloatValue(unsigned int lineNumber);
     EditableFloatValue *getEditableFloatValue(std::string name);
-    EditableIntegerValue *getEditableIntegerValue(unsigned int lineNumber);
     EditableIntegerValue *getEditableIntegerValue(std::string name);
 
     std::unordered_map<std::string, EditableLine> getEditableTextValuesByName() const;
@@ -135,14 +132,12 @@ public:
     std::unordered_map<std::string, EditableIntegerValue> getEditableIntegerValuesByName() const;
 
 private:
+    EditableLine *getEditableLine(unsigned int lineNumber);
     void addEditableLine(const EditableLine &editableLine);
     void addEditableFloatValue(const EditableFloatValue &editableFloatValue);
     void addEditableIntegerValue(const EditableIntegerValue &editableIntegerValue);
     std::vector<std::string> originalLines;
     std::vector<std::string> editedLines;
-    std::unordered_map<unsigned int, EditableLine> editableLines;
-    std::unordered_map<unsigned int, EditableFloatValue> editableFloatValues;
-    std::unordered_map<unsigned int, EditableIntegerValue> editableIntegerValues;
     std::unordered_map<std::string, EditableLine> editableTextValuesByName;
     std::unordered_map<std::string, EditableFloatValue> editableFloatValuesByName;
     std::unordered_map<std::string, EditableIntegerValue> editableIntegerValuesByName;

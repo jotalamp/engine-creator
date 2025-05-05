@@ -149,7 +149,7 @@ void EngineCreator::addEditableLine(const EditableLine &editableLine)
     {
         throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " + std::to_string(editableLine.getLineNumber()) + " : " + editableLine.getEditableText());
     }
-    editableLines.insert(std::make_pair(editableLine.getLineNumber(), editableLine));
+    //editableLines.insert(std::make_pair(editableLine.getLineNumber(), editableLine));
     editableTextValuesByName.insert(std::make_pair(editableLine.getName(), editableLine));
 }
 
@@ -160,7 +160,7 @@ void EngineCreator::addEditableFloatValue(const EditableFloatValue &editableFloa
         throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " 
             + std::to_string(editableFloatValue.getLineNumber()) + " : " + editableFloatValue.getEditableText());
     }
-    editableFloatValues.insert(std::make_pair(editableFloatValue.getLineNumber(), editableFloatValue));
+    //editableFloatValues.insert(std::make_pair(editableFloatValue.getLineNumber(), editableFloatValue));
     editableFloatValuesByName.insert(std::make_pair(editableFloatValue.getName(), editableFloatValue));
 }
 
@@ -171,7 +171,7 @@ void EngineCreator::addEditableIntegerValue(const EditableIntegerValue &editable
         throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " 
             + std::to_string(editableIntegerValue.getLineNumber()) + " : " + editableIntegerValue.getEditableText());
     }
-    editableIntegerValues.insert(std::make_pair(editableIntegerValue.getLineNumber(), editableIntegerValue));
+    //editableIntegerValues.insert(std::make_pair(editableIntegerValue.getLineNumber(), editableIntegerValue));
     editableIntegerValuesByName.insert(std::make_pair(editableIntegerValue.getName(), editableIntegerValue));
 }
 
@@ -189,7 +189,7 @@ void EngineCreator::addEditableIntegerValue(unsigned int lineNumber, std::string
 {
     addEditableIntegerValue(EditableIntegerValue(lineNumber, name, editableText));
 }
-
+/*
 EditableLine *EngineCreator::getEditableLine(unsigned int lineNumber)
 {
     auto it = editableLines.find(lineNumber);
@@ -203,7 +203,7 @@ EditableLine *EngineCreator::getEditableLine(unsigned int lineNumber)
         return nullptr;
     }
 }
-
+*/
 EditableLine *EngineCreator::getEditableLine(std::string name)
 {
     auto it = editableTextValuesByName.find(name);
@@ -217,7 +217,7 @@ EditableLine *EngineCreator::getEditableLine(std::string name)
         return nullptr;
     }
 }
-
+/*
 EditableFloatValue *EngineCreator::getEditableFloatValue(unsigned int lineNumber)
 {
     auto it = editableFloatValues.find(lineNumber);
@@ -231,7 +231,7 @@ EditableFloatValue *EngineCreator::getEditableFloatValue(unsigned int lineNumber
         return nullptr;
     }
 }
-
+*/
 EditableFloatValue *EngineCreator::getEditableFloatValue(std::string name)
 {
     try
@@ -247,7 +247,7 @@ EditableFloatValue *EngineCreator::getEditableFloatValue(std::string name)
         exit(1);
     }
 }
-
+/*
 EditableIntegerValue *EngineCreator::getEditableIntegerValue(unsigned int lineNumber)
 {
     try
@@ -263,7 +263,7 @@ EditableIntegerValue *EngineCreator::getEditableIntegerValue(unsigned int lineNu
         exit(1);
     }
 }
-
+*/
 EditableIntegerValue *EngineCreator::getEditableIntegerValue(std::string name)
 {
     try

@@ -83,7 +83,7 @@ void editFloat(EngineCreator &engineCreator, std::string name, unsigned char dec
         fileTextScrollPosition = 166.0f;
         if (*line->getEditedFloatValue() < 0)
             *line->getEditedFloatValue() = 0;
-        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString(2));
+        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString(decimals));
     }
 }
 

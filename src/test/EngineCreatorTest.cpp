@@ -75,8 +75,8 @@ TEST_F(EngineCreatorTest, ThrowsWhenEditableTextNotFoundInOriginalLine)
 
 TEST_F(EngineCreatorTest, ThrowsWhenEditableLineNotExist)
 {
-    unsigned int lineNumberOfLineThatNotExist = -1;
-    ASSERT_THROW(engineCreator.getEditableLine(lineNumberOfLineThatNotExist), EditableLineNotExistException);
+    std::string textThatNotExist = "????";
+    ASSERT_THROW(engineCreator.getEditableLine(textThatNotExist), EditableLineNotExistException);
 }
 
 TEST_F(EngineCreatorTest, GetsCorrectFloatValue)
@@ -85,7 +85,7 @@ TEST_F(EngineCreatorTest, GetsCorrectFloatValue)
     std::string name = "limiter_duration";
     float defaultFloatValue = 0.1f;
     engineCreator.addEditableFloatValue(lineNumber, name, "0.1");
-    ASSERT_THAT(*engineCreator.getEditableFloatValue(lineNumber)->getEditedFloatValue(),Eq(defaultFloatValue));
+    ASSERT_THAT(*engineCreator.getEditableFloatValue(name)->getEditedFloatValue(),Eq(defaultFloatValue));
 }
 
 TEST_F(EngineCreatorTest, GetsCorrectEditableIntegerValue)
@@ -94,7 +94,7 @@ TEST_F(EngineCreatorTest, GetsCorrectEditableIntegerValue)
     std::string name = "rev_limit";
     std::string editableText = "7500";
     engineCreator.addEditableIntegerValue(lineNumber, name, editableText);
-    ASSERT_THAT(engineCreator.getEditableIntegerValue(lineNumber)->getEditableText(),Eq(editableText));
+    ASSERT_THAT(engineCreator.getEditableIntegerValue(name)->getEditableText(),Eq(editableText));
 }
 
 TEST_F(EngineCreatorTest, ThrowsWhenTextCanNotBeConvertedToNumber)
