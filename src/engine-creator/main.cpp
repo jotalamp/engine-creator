@@ -45,28 +45,38 @@ static void glfw_error_callback(int error, const char *description)
 
 float fileTextScrollPosition = 1662.0f;
 
-void editTextInLine(EngineCreator &engineCreator, unsigned int lineNumber)
+bool editTextInLine(EngineCreator &engineCreator, unsigned int lineNumber)
 {
     EditableLine *line = engineCreator.getEditableLine(lineNumber);
     if (line == nullptr)
-        return;
+        return false;
 
-    switch (line->getValueType())
+    if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
     {
-    default:
-        if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
-        {
-            fileTextScrollPosition = 1662.0f;
-            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
-        }
-
-        if ((*line->getEditedText()).size() == 0)
-        {
-            *line->getEditedText() = line->getEditableText();
-            engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
-        }
-        break;
+        fileTextScrollPosition = 1662.0f;
+        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
     }
+
+    if ((*line->getEditedText()).size() == 0)
+    {
+        *line->getEditedText() = line->getEditableText();
+        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), *line->getEditedText());
+    }
+    return true;
+}
+
+bool editFloatInLine(EngineCreator &engineCreator, unsigned int lineNumber)
+{
+    EditableFloatValue *line = engineCreator.getEditableFloatValue(lineNumber);
+    if (line == nullptr)
+        return false;
+
+    if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloatValue(), 10.0f, 100.0f, "%.1f", ImGuiInputTextFlags_CharsDecimal))
+    {
+        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), line->getEditedValueAsString());
+    }
+
+    return true;
 }
 
 // Main code
@@ -182,7 +192,7 @@ int main(int, char **)
             ImGui::Begin("Engine Creator"); // Create a window called "Engine Creator" and append into it.
 
             editTextInLine(engineCreator, 134);
-            editTextInLine(engineCreator, 135);
+            editFloatInLine(engineCreator, 135);
             editTextInLine(engineCreator, 136);
             editTextInLine(engineCreator, 138);
 

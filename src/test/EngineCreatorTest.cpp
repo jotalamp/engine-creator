@@ -75,19 +75,36 @@ TEST_F(EngineCreatorTest, CanAddEditableLine)
     ASSERT_THAT(*engineCreator.getEditableLine(lineNumber), Eq(editableLine));
 }
 
-TEST_F(EngineCreatorTest, CanGetTypeOfValueInEditableLine)
-{
-    ValueType valueType1 = ValueType::Text;
-    EditableLine line1(1, "", "", valueType1);
-    ASSERT_THAT(line1.getValueType(), Eq(valueType1));
-
-    ValueType valueType2 = ValueType::Decimal;
-    EditableLine line2(2, "", "", valueType2);
-    ASSERT_THAT(line2.getValueType(), Eq(valueType2));
-}
-
 TEST_F(EngineCreatorTest, ThrowsWhenEditableLineNotExist)
 {
     unsigned int lineNumberOfLineThatNotExist = -1;
     ASSERT_THROW(engineCreator.getEditableLine(lineNumberOfLineThatNotExist), EditableLineNotExistException);
+}
+
+TEST_F(EngineCreatorTest, CanCreateEditableLineDecimal)
+{
+    unsigned int lineNumber = 23;
+    std::string name = "limiter_duration";
+    float defaultFloatValue = 0.11f;
+    EditableFloatValue editableFloatValue(lineNumber, name, "0.1", defaultFloatValue);
+    ASSERT_THAT(*editableFloatValue.getEditedFloatValue(),Eq(defaultFloatValue));
+}
+
+TEST_F(EngineCreatorTest, GetsCorrectDefaultFloatValue)
+{
+    unsigned int lineNumber = 23;
+    std::string name = "limiter_duration";
+    float defaultFloatValue = 0.2f;
+    EditableFloatValue editableFloatValue(lineNumber, name, "0.1", defaultFloatValue);
+    ASSERT_THAT(*editableFloatValue.getEditedFloatValue(),Eq(defaultFloatValue));
+}
+
+TEST_F(EngineCreatorTest, GetsCorrectEditableFloatValue)
+{
+    unsigned int lineNumber = 23;
+    std::string name = "limiter_duration";
+    float defaultFloatValue = 0.2f;
+    EditableFloatValue editableFloatValue(lineNumber, name, "0.1", defaultFloatValue);
+    engineCreator.addEditableFloatValue(editableFloatValue);
+    ASSERT_THAT(*engineCreator.getEditableFloatValue(lineNumber),Eq(editableFloatValue));
 }

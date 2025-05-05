@@ -2,36 +2,48 @@
 
 #include <iostream>
 #include <bits/stdc++.h>
+#include <iomanip>
+#include <sstream>
 
-enum class ValueType
+class EditableLineNotExistException : std::exception
 {
-    Text, 
-    Int,
-    Decimal
 };
-
-class EditableLineNotExistException : std::exception{};
-class FileNotFoundException : std::exception{};
+class FileNotFoundException : std::exception
+{
+};
 
 class EditableLine
 {
 public:
-    EditableLine(unsigned int lineNumber, std::string name, std::string editableText, ValueType valueType=ValueType::Text);
+    EditableLine(unsigned int lineNumber, std::string name, std::string editableText);
     bool operator==(const EditableLine &e2) const
     {
-        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && valueType == e2.valueType;
+        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
     }
     std::string getName() const;
     std::string getEditableText() const;
-    std::string* getEditedText();
+    std::string *getEditedText();
     unsigned int getLineNumber() const;
-    ValueType getValueType() const;
-private:
+
+protected:
     unsigned int lineNumber;
     std::string name;
     std::string editableText;
     std::string editedText;
-    ValueType valueType = ValueType::Text;
+};
+
+class EditableFloatValue : public EditableLine
+{
+public:
+    EditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText, float defaultValue);
+    bool operator==(const EditableFloatValue &e2) const
+    {
+        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
+    }
+    float* getEditedFloatValue();
+    std::string getEditedValueAsString();
+private:
+    float editedFloatValue;
 };
 
 class EngineCreator
@@ -49,12 +61,16 @@ public:
     bool textExistsInOriginalLine(unsigned int lineNumber, std::string textToFind);
     bool textExistsInEditedLine(unsigned int lineNumber, std::string textToFind);
     void replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText);
-    void addEditableLine(const EditableLine& editableLine);
-    EditableLine* getEditableLine(unsigned int lineNumber);
+    void addEditableLine(const EditableLine &editableLine);
+    void addEditableFloatValue(const EditableFloatValue &editableFloatValue);
+    EditableLine *getEditableLine(unsigned int lineNumber);
+    EditableFloatValue*getEditableFloatValue(unsigned int lineNumber);
+
 private:
     std::vector<std::string> originalLines;
     std::vector<std::string> editedLines;
     std::unordered_map<unsigned int, EditableLine> editableLines;
+    std::unordered_map<unsigned int, EditableFloatValue> editableFloatValues;
     std::string getLineFromFile(std::string fileName, unsigned int lineNumber);
     static const inline std::string path = "../bin/";
     static const inline std::string templateEngineName = "template_engine.mr";
