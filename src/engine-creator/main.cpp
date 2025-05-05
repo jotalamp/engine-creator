@@ -73,6 +73,21 @@ bool editFloatInLine(EngineCreator &engineCreator, unsigned int lineNumber)
 
     if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloatValue(), 10.0f, 100.0f, "%.1f", ImGuiInputTextFlags_CharsDecimal))
     {
+        fileTextScrollPosition = 166.0f;
+        engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), line->getEditedValueAsString());
+    }
+
+    return true;
+}
+
+bool editIntInLine(EngineCreator &engineCreator, unsigned int lineNumber)
+{
+    EditableIntegerValue *line = engineCreator.getEditableIntegerValue(lineNumber);
+    if (line == nullptr)
+        return false;
+
+    if (ImGui::InputInt(line->getName().c_str(), line->getEditedIntegerValue(), 10.0f, 100.0f, ImGuiInputTextFlags_CharsDecimal))
+    {
         engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), line->getEditedValueAsString());
     }
 
@@ -195,6 +210,7 @@ int main(int, char **)
             editFloatInLine(engineCreator, 135);
             editTextInLine(engineCreator, 136);
             editTextInLine(engineCreator, 138);
+            editIntInLine(engineCreator, 18);
 
             if (ImGui::Button("Save as"))
             {
@@ -218,7 +234,7 @@ int main(int, char **)
 
             if (!ImGui::IsWindowFocused())
             {
-                ImGui::SetScrollHereY(0.4f);
+                //ImGui::SetScrollHereY(0.4f);
             }
 
             ImGui::End();

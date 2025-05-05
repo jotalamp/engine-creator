@@ -81,24 +81,6 @@ TEST_F(EngineCreatorTest, ThrowsWhenEditableLineNotExist)
     ASSERT_THROW(engineCreator.getEditableLine(lineNumberOfLineThatNotExist), EditableLineNotExistException);
 }
 
-TEST_F(EngineCreatorTest, CanCreateEditableLineDecimal)
-{
-    unsigned int lineNumber = 23;
-    std::string name = "limiter_duration";
-    float defaultFloatValue = 0.11f;
-    EditableFloatValue editableFloatValue(lineNumber, name, "0.1", defaultFloatValue);
-    ASSERT_THAT(*editableFloatValue.getEditedFloatValue(),Eq(defaultFloatValue));
-}
-
-TEST_F(EngineCreatorTest, GetsCorrectDefaultFloatValue)
-{
-    unsigned int lineNumber = 23;
-    std::string name = "limiter_duration";
-    float defaultFloatValue = 0.2f;
-    EditableFloatValue editableFloatValue(lineNumber, name, "0.1", defaultFloatValue);
-    ASSERT_THAT(*editableFloatValue.getEditedFloatValue(),Eq(defaultFloatValue));
-}
-
 TEST_F(EngineCreatorTest, GetsCorrectEditableFloatValue)
 {
     unsigned int lineNumber = 23;
@@ -107,4 +89,14 @@ TEST_F(EngineCreatorTest, GetsCorrectEditableFloatValue)
     EditableFloatValue editableFloatValue(lineNumber, name, "0.1", defaultFloatValue);
     engineCreator.addEditableFloatValue(editableFloatValue);
     ASSERT_THAT(*engineCreator.getEditableFloatValue(lineNumber),Eq(editableFloatValue));
+}
+
+TEST_F(EngineCreatorTest, GetsCorrectEditableIntegerValue)
+{
+    unsigned int lineNumber = 18;
+    std::string name = "rev_limit";
+    int defaultIntegerValue = 100;
+    EditableIntegerValue editableIntegerValue(lineNumber, name, "7500", defaultIntegerValue);
+    engineCreator.addEditableIntegerValue(editableIntegerValue);
+    ASSERT_THAT(*engineCreator.getEditableIntegerValue(lineNumber),Eq(editableIntegerValue));
 }

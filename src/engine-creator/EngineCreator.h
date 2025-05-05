@@ -46,6 +46,20 @@ private:
     float editedFloatValue;
 };
 
+class EditableIntegerValue : public EditableLine
+{
+public:
+    EditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText, int defaultValue);
+    bool operator==(const EditableIntegerValue &e2) const
+    {
+        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
+    }
+    int* getEditedIntegerValue();
+    std::string getEditedValueAsString();
+private:
+    int editedIntValue;
+};
+
 class EngineCreator
 {
 public:
@@ -63,14 +77,17 @@ public:
     void replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText);
     void addEditableLine(const EditableLine &editableLine);
     void addEditableFloatValue(const EditableFloatValue &editableFloatValue);
+    void addEditableIntegerValue(const EditableIntegerValue &editableIntegerValue);
     EditableLine *getEditableLine(unsigned int lineNumber);
     EditableFloatValue*getEditableFloatValue(unsigned int lineNumber);
+    EditableIntegerValue*getEditableIntegerValue(unsigned int lineNumber);
 
 private:
     std::vector<std::string> originalLines;
     std::vector<std::string> editedLines;
     std::unordered_map<unsigned int, EditableLine> editableLines;
     std::unordered_map<unsigned int, EditableFloatValue> editableFloatValues;
+    std::unordered_map<unsigned int, EditableIntegerValue> editableIntegerValues;
     std::string getLineFromFile(std::string fileName, unsigned int lineNumber);
     static const inline std::string path = "../bin/";
     static const inline std::string templateEngineName = "template_engine.mr";
