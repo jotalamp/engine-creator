@@ -25,13 +25,27 @@ EngineCreator::EngineCreator()
     // Close the file
     file.close();
 
+    addEditableIntegerValue(18, "wb_ignition.rev_limit", "7500");
+    addEditableFloatValue(23, "wb_ignition.limiter_duration", "0.1");
+
     addEditableLine(134, "engine.name", "Audi 2.3 inline 5");
-    addEditableIntegerValue(135, "starter_torque", "200");
-    addEditableIntegerValue(136, "redline", "6000");
+    addEditableIntegerValue(135, "engine.starter_torque", "200");
+    addEditableIntegerValue(136, "engine.redline", "6000");
     addEditableFloatValue(138, "fuel.max_turbulence_effect", "2.5");
     addEditableFloatValue(139, "fuel.max_burning_efficiency", "0.75");
-    addEditableIntegerValue(18, "rev_limit", "7500");
-    addEditableFloatValue(140, "hf_gain", "0.01");
+    addEditableFloatValue(140, "engine.hf_gain", "0.01");
+    addEditableFloatValue(141, "engine.noise", "1.0");
+    addEditableFloatValue(142, "engine.jitter", "0.299");
+    addEditableIntegerValue(143, "engine.simulation_frequency", "10000");
+
+    addEditableFloatValue(146, "stroke", "79.5");
+    addEditableFloatValue(147, "bore", "86.4");
+    addEditableFloatValue(148, "rod_length", "5.142");
+    addEditableFloatValue(149, "rod_mass", "535");
+    addEditableFloatValue(150, "compression_height", "32.8");
+    addEditableFloatValue(151, "crank_mass", "9.39");
+    addEditableFloatValue(152, "flywheel_mass", "6.8");
+    addEditableFloatValue(153, "flywheel_radius", "6");
 }
 
 std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber)
