@@ -5,11 +5,48 @@
 #include <iomanip>
 #include <sstream>
 
+class TextNotFoundFromTemplateFileException : public std::exception
+{
+private:
+    std::string message;
+
+public:
+    TextNotFoundFromTemplateFileException(std::string msg)
+        : message(msg)
+    {
+    }
+
+    const char *what() const throw()
+    {
+        return message.c_str();
+    }
+};
+
 class EditableLineNotExistException : std::exception
 {
 };
 class FileNotFoundException : std::exception
 {
+};
+
+class TextCanNotBeConvertedToNumberException : public std::exception
+{
+private:
+    std::string message;
+
+public:
+    // Constructor accepts a const char* that is used to set
+    // the exception message
+    TextCanNotBeConvertedToNumberException(const char *msg)
+        : message(msg)
+    {
+    }
+
+    // Override the what() method to return our message
+    const char *what() const throw()
+    {
+        return message.c_str();
+    }
 };
 
 class EditableLine
@@ -36,12 +73,14 @@ class EditableFloatValue : public EditableLine
 {
 public:
     EditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText, float defaultValue);
+    EditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText);
     bool operator==(const EditableFloatValue &e2) const
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
     }
-    float* getEditedFloatValue();
+    float *getEditedFloatValue();
     std::string getEditedValueAsString();
+
 private:
     float editedFloatValue;
 };
@@ -50,12 +89,14 @@ class EditableIntegerValue : public EditableLine
 {
 public:
     EditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText, int defaultValue);
+    EditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText);
     bool operator==(const EditableIntegerValue &e2) const
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
     }
-    int* getEditedIntegerValue();
+    int *getEditedIntegerValue();
     std::string getEditedValueAsString();
+
 private:
     int editedIntValue;
 };
@@ -79,8 +120,8 @@ public:
     void addEditableFloatValue(const EditableFloatValue &editableFloatValue);
     void addEditableIntegerValue(const EditableIntegerValue &editableIntegerValue);
     EditableLine *getEditableLine(unsigned int lineNumber);
-    EditableFloatValue*getEditableFloatValue(unsigned int lineNumber);
-    EditableIntegerValue*getEditableIntegerValue(unsigned int lineNumber);
+    EditableFloatValue *getEditableFloatValue(unsigned int lineNumber);
+    EditableIntegerValue *getEditableIntegerValue(unsigned int lineNumber);
 
 private:
     std::vector<std::string> originalLines;

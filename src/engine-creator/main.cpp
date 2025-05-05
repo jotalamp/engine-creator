@@ -71,7 +71,7 @@ bool editFloatInLine(EngineCreator &engineCreator, unsigned int lineNumber)
     if (line == nullptr)
         return false;
 
-    if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloatValue(), 10.0f, 100.0f, "%.1f", ImGuiInputTextFlags_CharsDecimal))
+    if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloatValue(), 0.1f, 1.0f, "%.1f", ImGuiInputTextFlags_CharsDecimal))
     {
         fileTextScrollPosition = 166.0f;
         engineCreator.replaceTextInLine(lineNumber, line->getEditableText(), line->getEditedValueAsString());
@@ -207,9 +207,9 @@ int main(int, char **)
             ImGui::Begin("Engine Creator"); // Create a window called "Engine Creator" and append into it.
 
             editTextInLine(engineCreator, 134);
-            editFloatInLine(engineCreator, 135);
-            editTextInLine(engineCreator, 136);
-            editTextInLine(engineCreator, 138);
+            editIntInLine(engineCreator, 135);
+            editIntInLine(engineCreator, 136);
+            editFloatInLine(engineCreator, 138);
             editIntInLine(engineCreator, 18);
 
             if (ImGui::Button("Save as"))

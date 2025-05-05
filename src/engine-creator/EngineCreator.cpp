@@ -27,10 +27,10 @@ EngineCreator::EngineCreator()
     file.close();
 
     addEditableLine(EditableLine(134, "engine.name", "Audi 2.3 inline 5"));
-    addEditableFloatValue(EditableFloatValue(135, "starter_torque", "200", 200.0f));
-    addEditableLine(EditableLine(136, "redline", "6000"));
-    addEditableLine(EditableLine(138, "fuel.max_turbulence_effect", "2.5"));
-    addEditableIntegerValue(EditableIntegerValue(18, "rev_limit", "7500", 7500));
+    addEditableIntegerValue(EditableIntegerValue(135, "starter_torque", "200"));
+    addEditableIntegerValue(EditableIntegerValue(136, "redline", "6000"));
+    addEditableFloatValue(EditableFloatValue(138, "fuel.max_turbulence_effect", "2.5"));
+    addEditableIntegerValue(EditableIntegerValue(18, "rev_limit", "7500"));
 }
 
 std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber)
@@ -144,6 +144,11 @@ void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textT
 
 void EngineCreator::addEditableLine(const EditableLine &editableLine)
 {
+    if (!textExistsInOriginalLine(editableLine.getLineNumber(), editableLine.getEditableText()))
+    {
+        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " 
+            + std::to_string(editableLine.getLineNumber()) + " : " + editableLine.getEditableText());
+    }
     editableLines.insert(std::make_pair(editableLine.getLineNumber(), editableLine));
 }
 
@@ -232,6 +237,10 @@ EditableFloatValue::EditableFloatValue(unsigned int lineNumber, std::string name
     editedFloatValue = defaultValue;
 }
 
+EditableFloatValue::EditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText) : EditableFloatValue(lineNumber, name, editableText, std::stof(editableText))
+{
+}
+
 float *EditableFloatValue::getEditedFloatValue()
 {
     return &editedFloatValue;
@@ -244,9 +253,13 @@ std::string EditableFloatValue::getEditedValueAsString()
     return stream.str();
 }
 
-EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText, int defaultValue): EditableLine(lineNumber, name, editableText)
+EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText, int defaultValue) : EditableLine(lineNumber, name, editableText)
 {
     editedIntValue = defaultValue;
+}
+
+EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText) : EditableIntegerValue(lineNumber, name, editableText, std::stof(editableText))
+{
 }
 
 int *EditableIntegerValue::getEditedIntegerValue()

@@ -65,9 +65,18 @@ TEST_F(EngineCreatorTest, TextIsCorrectAfterReplacingPartOfLine)
     ASSERT_THAT(lineLengthAfterReplace, Eq(lineLengthBeforeReplace));
 }
 
+TEST_F(EngineCreatorTest, ThrowsWhenEditableTextNotFoundInOriginalLine)
+{
+    unsigned int lineNumber = 134;
+    std::string name = "engine.name";
+    std::string textThatNotFoundInOriginalLine = "?";
+    EditableLine editableLine(lineNumber, name, textThatNotFoundInOriginalLine);
+    ASSERT_THROW(engineCreator.addEditableLine(editableLine), TextNotFoundFromTemplateFileException);
+}
+
 TEST_F(EngineCreatorTest, CanAddEditableLine)
 {
-    unsigned int lineNumber = 3;
+    unsigned int lineNumber = 134;
     std::string name = "engine.name";
     std::string editableText = "Audi 2.3 inline 5";
     EditableLine editableLine(lineNumber, name, editableText);
@@ -100,3 +109,12 @@ TEST_F(EngineCreatorTest, GetsCorrectEditableIntegerValue)
     engineCreator.addEditableIntegerValue(editableIntegerValue);
     ASSERT_THAT(*engineCreator.getEditableIntegerValue(lineNumber),Eq(editableIntegerValue));
 }
+
+TEST_F(EngineCreatorTest, ThrowsWhenTextCanNotBeConvertedToNumber)
+{
+    unsigned int lineNumber = 18;
+    std::string name = "rev_limit";
+    std::string textThatNotCanBeConvertedToNumber = "?";
+    ASSERT_ANY_THROW(EditableIntegerValue(lineNumber, name, textThatNotCanBeConvertedToNumber));
+}
+
