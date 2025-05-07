@@ -105,3 +105,11 @@ TEST_F(EngineCreatorTest, ThrowsWhenTextCanNotBeConvertedToNumber)
     ASSERT_ANY_THROW(EditableIntegerValue(lineNumber, name, textThatNotCanBeConvertedToNumber));
 }
 
+TEST_F(EngineCreatorTest, GetsCorrectShortestStringRepresentationOfFloat)
+{
+    ASSERT_THAT(engineCreator.shortestStringRepresentation(0.001), Eq("0.001"));
+    ASSERT_THAT(engineCreator.shortestStringRepresentation(-0.001), Eq("-0.001"));
+    ASSERT_THAT(engineCreator.shortestStringRepresentation(-1), Eq("-1"));
+    ASSERT_THAT(engineCreator.shortestStringRepresentation(1.0), Eq("1.0"));
+}
+

@@ -120,6 +120,24 @@ public:
             engineCreator->replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString());
         }
     }
+
+    template <typename T>
+    void edit(T *line)
+    {
+        if (std::is_same<decltype(line), EditableLine *>::value)
+        {
+            editText(line->getName());
+        }
+        if (std::is_same<decltype(line), EditableFloatValue *>::value)
+        {
+            editFloat(line->getName());
+        }
+        if (std::is_same<decltype(line), EditableIntegerValue *>::value)
+        {
+            editInt(line->getName());
+        }
+    }
+
     EngineCreator *engineCreator;
 };
 // Main code
@@ -233,7 +251,7 @@ int main(int, char **)
 
         {
             ImGui::SetNextWindowPos(ImVec2(0, 0));
-            ImGui::SetNextWindowSize(ImVec2(1920 / 2, 1080));
+            ImGui::SetNextWindowSize(ImVec2(0.4 * ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y));
             ImGui::Begin("Engine Creator"); // Create a window called "Engine Creator" and append into it.
             /*
             for (auto line : engineCreator.getEditableTextValuesByName())
@@ -253,10 +271,12 @@ int main(int, char **)
             */
 
             ImGui_EngineCreator e(&engineCreator);
+            ImGui::PushItemWidth(150);
             e.editText("engine.name");
             e.editInt("engine.starter_torque");
             e.editInt("engine.redline");
             e.editFloat("fuel.max_turbulence_effect");
+            // e.edit("fuel.max_turbulence_effect");
             e.editFloat("fuel.max_burning_efficiency");
             e.editFloat("engine.hf_gain");
             e.editFloat("engine.noise");
@@ -265,14 +285,14 @@ int main(int, char **)
 
             ImGui::Separator();
 
-            e.editFloat("stroke",1);
-            e.editFloat("bore",1);
-            e.editFloat("rod_length",3);
-            e.editFloat("rod_mass",1);
-            e.editFloat("compression_height",1);
-            e.editFloat("crank_mass",2);
-            e.editFloat("flywheel_mass",1);
-            e.editFloat("flywheel_radius",1);
+            e.editFloat("stroke", 1);
+            e.editFloat("bore", 1);
+            e.editFloat("rod_length", 3);
+            e.editInt("rod_mass");
+            e.editFloat("compression_height", 1);
+            e.editFloat("crank_mass", 2);
+            e.editFloat("flywheel_mass", 1);
+            e.editInt("flywheel_radius");
 
             ImGui::Separator();
 
@@ -280,6 +300,7 @@ int main(int, char **)
             e.editFloat("wb_ignition.limiter_duration");
 
             ImGui::Separator();
+            ImGui::PopItemWidth();
 
             if (ImGui::Button("Save as"))
             {
@@ -298,8 +319,9 @@ int main(int, char **)
         }
 
         {
-            ImGui::SetNextWindowPos(ImVec2(1920 / 2, 0));
-            ImGui::SetNextWindowSize(ImVec2(1920 / 2, 1080));
+            ImGui::SetNextWindowPos(ImVec2(0.4 * ImGui::GetIO().DisplaySize.x, 0));
+            // ImGui::SetNextWindowSize(ImVec2(1920 / 2, 1080));
+            ImGui::SetNextWindowSize(ImVec2(0.6 * ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y));
             ImGui::Begin("Edited engine file");
             ImGui::TextUnformatted(engineCreator.getAllEditedLinesAsString().c_str());
 

@@ -108,6 +108,7 @@ class EngineCreator
 {
 public:
     EngineCreator();
+    std::string shortestStringRepresentation(float n);
     std::string getOriginalLine(unsigned int lineNumber);
     std::string getEditedLine(unsigned int lineNumber);
     std::string getLineFromCreatedFile(unsigned int lineNumber);
@@ -122,6 +123,10 @@ public:
     void addEditableLine(unsigned int lineNumber, std::string name, std::string editableText);
     void addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText);
     void addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText);
+
+    void addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue);
+    void addEditableValue(unsigned int lineNumber, std::string name, double editableValue);
+    void addEditableValue(unsigned int lineNumber, std::string name, int editableValue);
 
     EditableLine *getEditableLine(std::string name);
     EditableFloatValue *getEditableFloatValue(std::string name);
@@ -138,6 +143,7 @@ private:
     void addEditableIntegerValue(const EditableIntegerValue &editableIntegerValue);
     std::vector<std::string> originalLines;
     std::vector<std::string> editedLines;
+    std::unordered_map<std::string, EditableLine> editableValuesByName;
     std::unordered_map<std::string, EditableLine> editableTextValuesByName;
     std::unordered_map<std::string, EditableFloatValue> editableFloatValuesByName;
     std::unordered_map<std::string, EditableIntegerValue> editableIntegerValuesByName;
@@ -146,3 +152,5 @@ private:
     static const inline std::string templateEngineName = "template_engine.mr";
     static inline std::string createdEngineName = "created_engine.mr";
 };
+
+

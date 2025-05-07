@@ -1,4 +1,5 @@
 #include "EngineCreator.h"
+#include <charconv>
 
 EngineCreator::EngineCreator()
 {
@@ -25,27 +26,33 @@ EngineCreator::EngineCreator()
     // Close the file
     file.close();
 
-    addEditableIntegerValue(18, "wb_ignition.rev_limit", "7500");
-    addEditableFloatValue(23, "wb_ignition.limiter_duration", "0.1");
+    addEditableValue(18, "wb_ignition.rev_limit", 7500);
+    addEditableValue(23, "wb_ignition.limiter_duration", 0.1);
+    addEditableValue(134, "engine.name", "Audi 2.3 inline 5");
+    addEditableValue(135, "engine.starter_torque", 200);
+    addEditableValue(136, "engine.redline", 6000);
+    addEditableValue(138, "fuel.max_turbulence_effect", 2.5);
+    addEditableValue(139, "fuel.max_burning_efficiency", 0.75);
+    addEditableValue(140, "engine.hf_gain", 0.01);
+    addEditableValue(141, "engine.noise", 1.0);
+    addEditableValue(142, "engine.jitter", 0.299);
+    addEditableValue(143, "engine.simulation_frequency", 10000);
 
-    addEditableLine(134, "engine.name", "Audi 2.3 inline 5");
-    addEditableIntegerValue(135, "engine.starter_torque", "200");
-    addEditableIntegerValue(136, "engine.redline", "6000");
-    addEditableFloatValue(138, "fuel.max_turbulence_effect", "2.5");
-    addEditableFloatValue(139, "fuel.max_burning_efficiency", "0.75");
-    addEditableFloatValue(140, "engine.hf_gain", "0.01");
-    addEditableFloatValue(141, "engine.noise", "1.0");
-    addEditableFloatValue(142, "engine.jitter", "0.299");
-    addEditableIntegerValue(143, "engine.simulation_frequency", "10000");
+    addEditableValue(146, "stroke", 79.5);
+    addEditableValue(147, "bore", 86.4);
+    addEditableValue(148, "rod_length", 5.142);
+    addEditableValue(149, "rod_mass", 535);
+    addEditableValue(150, "compression_height", 32.8);
+    addEditableValue(151, "crank_mass", 9.39);
+    addEditableValue(152, "flywheel_mass", 6.8);
+    addEditableValue(153, "flywheel_radius", 6);
+}
 
-    addEditableFloatValue(146, "stroke", "79.5");
-    addEditableFloatValue(147, "bore", "86.4");
-    addEditableFloatValue(148, "rod_length", "5.142");
-    addEditableFloatValue(149, "rod_mass", "535");
-    addEditableFloatValue(150, "compression_height", "32.8");
-    addEditableFloatValue(151, "crank_mass", "9.39");
-    addEditableFloatValue(152, "flywheel_mass", "6.8");
-    addEditableFloatValue(153, "flywheel_radius", "6");
+std::string EngineCreator::shortestStringRepresentation(float n) {
+    if(n==1.0f) return "1.0";
+    std::array<char, 64> buf;
+    auto result = std::to_chars(buf.data(), buf.data() + buf.size(), n);
+    return std::string(buf.data(), result.ptr - buf.data());
 }
 
 std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber)
@@ -203,21 +210,22 @@ void EngineCreator::addEditableIntegerValue(unsigned int lineNumber, std::string
 {
     addEditableIntegerValue(EditableIntegerValue(lineNumber, name, editableText));
 }
-/*
-EditableLine *EngineCreator::getEditableLine(unsigned int lineNumber)
+
+void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue)
 {
-    auto it = editableLines.find(lineNumber);
-    if (it != editableLines.end())
-    {
-        return &it->second;
-    }
-    else
-    {
-        throw EditableLineNotExistException(lineNumber);
-        return nullptr;
-    }
+    addEditableLine(lineNumber, name, editableValue);
 }
-*/
+
+void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, double editableValue)
+{
+    addEditableFloatValue(lineNumber, name, shortestStringRepresentation(editableValue));
+}
+
+void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, int editableValue)
+{
+    addEditableIntegerValue(lineNumber, name, shortestStringRepresentation(editableValue));
+}
+
 EditableLine *EngineCreator::getEditableLine(std::string name)
 {
     auto it = editableTextValuesByName.find(name);
@@ -231,21 +239,7 @@ EditableLine *EngineCreator::getEditableLine(std::string name)
         return nullptr;
     }
 }
-/*
-EditableFloatValue *EngineCreator::getEditableFloatValue(unsigned int lineNumber)
-{
-    auto it = editableFloatValues.find(lineNumber);
-    if (it != editableFloatValues.end())
-    {
-        return &it->second;
-    }
-    else
-    {
-        throw EditableLineNotExistException(lineNumber);
-        return nullptr;
-    }
-}
-*/
+
 EditableFloatValue *EngineCreator::getEditableFloatValue(std::string name)
 {
     try
@@ -261,23 +255,7 @@ EditableFloatValue *EngineCreator::getEditableFloatValue(std::string name)
         exit(1);
     }
 }
-/*
-EditableIntegerValue *EngineCreator::getEditableIntegerValue(unsigned int lineNumber)
-{
-    try
-    {
-        auto it = editableIntegerValues.find(lineNumber);
-        if (it == editableIntegerValues.end())
-            throw EditableLineNotExistException(lineNumber);
-        return &it->second;
-    }
-    catch (EditableLineNotExistException &e)
-    {
-        std::cout << "Caught an exception: " << e.what() << std::endl;
-        exit(1);
-    }
-}
-*/
+
 EditableIntegerValue *EngineCreator::getEditableIntegerValue(std::string name)
 {
     try
