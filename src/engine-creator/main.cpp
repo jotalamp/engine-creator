@@ -312,7 +312,7 @@ int main(int, char **)
                 engineCreator.writeAllLinesToFile();
             }
 
-            ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
+            //ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
 
             // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();

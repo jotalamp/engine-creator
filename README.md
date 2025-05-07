@@ -7,4 +7,4 @@ cd build
 cmake .. && make && make install && ../bin/test && ../bin/engine-creator
 ```
 
-![Screenshot of EngineCreator app running](images/engine-creator-02.png)
+![Screenshot of EngineCreator app running](images/engine-creator-01.png)
