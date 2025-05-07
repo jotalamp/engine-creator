@@ -7,3 +7,5 @@ Creates .mr -file from example file and changes engine's name
 cmake .. && make && make install && ../bin/test
 
 ../bin/engine-creator
+
+![Screenshot of EngineCreator app running](images/engine-creator-01.png)
