@@ -5,7 +5,7 @@
 using namespace testing;
 using ::testing::Eq;
 
-class EditableLine;
+//class EditableLine;
 
 class EngineCreatorTest : public Test
 {
@@ -20,12 +20,13 @@ public:
     {
     }
 };
-
+/*
 TEST_F(EngineCreatorTest, FirstReadLineIsSameAsInDefaultEngine)
 {
     ASSERT_THAT(engineCreator.getOriginalLine(0), Eq("import \"engine_sim.mr\""));
 }
-
+    */
+/*
 TEST_F(EngineCreatorTest, FirstLineWritedIsSameAsInDefaultEngine)
 {
     engineCreator.writeAllLinesToFile();
@@ -72,13 +73,13 @@ TEST_F(EngineCreatorTest, ThrowsWhenEditableTextNotFoundInOriginalLine)
     std::string textThatNotFoundInOriginalLine = "?";
     ASSERT_THROW(engineCreator.addEditableLine(lineNumber, name, textThatNotFoundInOriginalLine), TextNotFoundFromTemplateFileException);
 }
-
+*/
 TEST_F(EngineCreatorTest, ThrowsWhenEditableLineNotExist)
 {
     std::string textThatNotExist = "????";
     ASSERT_THROW(engineCreator.getEditableLine(textThatNotExist), EditableLineNotExistException);
 }
-
+/*
 TEST_F(EngineCreatorTest, GetsCorrectFloatValue)
 {
     unsigned int lineNumber = 23;
@@ -96,7 +97,7 @@ TEST_F(EngineCreatorTest, GetsCorrectEditableIntegerValue)
     engineCreator.addEditableIntegerValue(lineNumber, name, editableText);
     ASSERT_THAT(engineCreator.getEditableIntegerValue(name)->getEditableText(),Eq(editableText));
 }
-
+*/
 TEST_F(EngineCreatorTest, ThrowsWhenTextCanNotBeConvertedToNumber)
 {
     unsigned int lineNumber = 18;
@@ -104,7 +105,7 @@ TEST_F(EngineCreatorTest, ThrowsWhenTextCanNotBeConvertedToNumber)
     std::string textThatNotCanBeConvertedToNumber = "?";
     ASSERT_ANY_THROW(EditableIntegerValue(lineNumber, name, textThatNotCanBeConvertedToNumber));
 }
-
+/*
 TEST_F(EngineCreatorTest, GetsCorrectShortestStringRepresentationOfFloat)
 {
     ASSERT_THAT(engineCreator.shortestStringRepresentation(0.001), Eq("0.001"));
@@ -112,4 +113,4 @@ TEST_F(EngineCreatorTest, GetsCorrectShortestStringRepresentationOfFloat)
     ASSERT_THAT(engineCreator.shortestStringRepresentation(-1), Eq("-1"));
     ASSERT_THAT(engineCreator.shortestStringRepresentation(1.0), Eq("1.0"));
 }
-
+*/

@@ -22,9 +22,7 @@
 #include <string.h>
 #include <bits/stdc++.h>
 
-#include <misc/cpp/imgui_stdlib.h>
-
-#include "EngineCreator.h"
+#include "ImGui_EngineCreator.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -43,108 +41,11 @@ static void glfw_error_callback(int error, const char *description)
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
-class ImGui_EngineCreator
-{
-public:
-    ImGui_EngineCreator(EngineCreator *engineCreator)
-    {
-        this->engineCreator = engineCreator;
-    };
-
-    void editText(std::string name)
-    {
-        EditableLine *line = nullptr;
-        try
-        {
-            line = engineCreator->getEditableLine(name);
-        }
-        catch (const std::exception &e)
-        {
-            std::cerr << e.what() << '\n';
-            exit(0);
-        }
-
-        if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
-        {
-            engineCreator->replaceTextInLine(line->getLineNumber(), line->getEditableText(), *line->getEditedText());
-        }
-
-        if ((*line->getEditedText()).size() == 0)
-        {
-            *line->getEditedText() = line->getEditableText();
-            engineCreator->replaceTextInLine(line->getLineNumber(), line->getEditableText(), *line->getEditedText());
-        }
-    }
-
-    void editFloat(std::string name, unsigned char decimals = 2)
-    {
-        EditableFloatValue *line = nullptr;
-        try
-        {
-            line = engineCreator->getEditableFloatValue(name);
-        }
-        catch (const std::exception &e)
-        {
-            std::cerr << e.what() << '\n';
-            exit(0);
-        }
-
-        char format[5] = "%.2f";
-        format[2] = std::to_string(decimals)[0];
-
-        if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloatValue(), 0.1f, 1.0f, format, ImGuiInputTextFlags_CharsDecimal))
-        {
-            if (*line->getEditedFloatValue() < 0)
-                *line->getEditedFloatValue() = 0;
-            engineCreator->replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString(decimals));
-        }
-    }
-
-    void editInt(std::string name)
-    {
-        EditableIntegerValue *line = nullptr;
-        try
-        {
-            line = engineCreator->getEditableIntegerValue(name);
-        }
-        catch (const std::exception &e)
-        {
-            std::cerr << e.what() << '\n';
-            exit(0);
-        }
-
-        if (ImGui::InputInt(line->getName().c_str(), line->getEditedIntegerValue(), 10.0f, 100.0f, ImGuiInputTextFlags_CharsDecimal))
-        {
-            if (*line->getEditedIntegerValue() < 0)
-                *line->getEditedIntegerValue() = 0;
-            engineCreator->replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString());
-        }
-    }
-
-    template <typename T>
-    void edit(T *line)
-    {
-        if (std::is_same<decltype(line), EditableLine *>::value)
-        {
-            editText(line->getName());
-        }
-        if (std::is_same<decltype(line), EditableFloatValue *>::value)
-        {
-            editFloat(line->getName());
-        }
-        if (std::is_same<decltype(line), EditableIntegerValue *>::value)
-        {
-            editInt(line->getName());
-        }
-    }
-
-    EngineCreator *engineCreator;
-};
 // Main code
 int main(int, char **)
 {
     std::cout << "\n\nEngine Creator v0.01\n";
-    EngineCreator engineCreator;
+    
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -220,6 +121,7 @@ int main(int, char **)
     bool show_demo_window = false;
     bool show_save_as_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImGui_EngineCreator e;
 
     // Main loop
 #ifdef __EMSCRIPTEN__
@@ -249,109 +151,12 @@ int main(int, char **)
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
-        {
-            ImGui::SetNextWindowPos(ImVec2(0, 0));
-            ImGui::SetNextWindowSize(ImVec2(0.4 * ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y));
-            ImGui::Begin("Engine Creator"); // Create a window called "Engine Creator" and append into it.
-            /*
-            for (auto line : engineCreator.getEditableTextValuesByName())
-            {
-                editText(engineCreator, line.first);
-            }
-
-            for (auto line : engineCreator.getEditableIntegerValuesByName())
-            {
-                editInt(engineCreator, line.first);
-            }
-
-            for (auto line : engineCreator.getEditableFloatValuesByName())
-            {
-                editFloat(engineCreator, line.first);
-            }
-            */
-
-            ImGui_EngineCreator e(&engineCreator);
-            ImGui::PushItemWidth(150);
-            e.editText("engine.name");
-            e.editInt("engine.starter_torque");
-            e.editInt("engine.redline");
-            e.editFloat("fuel.max_turbulence_effect");
-            // e.edit("fuel.max_turbulence_effect");
-            e.editFloat("fuel.max_burning_efficiency");
-            e.editFloat("engine.hf_gain");
-            e.editFloat("engine.noise");
-            e.editFloat("engine.jitter", 3);
-            e.editInt("engine.simulation_frequency");
-
-            ImGui::Separator();
-
-            e.editFloat("stroke", 1);
-            e.editFloat("bore", 1);
-            e.editFloat("rod_length", 3);
-            e.editInt("rod_mass");
-            e.editFloat("compression_height", 1);
-            e.editFloat("crank_mass", 2);
-            e.editFloat("flywheel_mass", 1);
-            e.editInt("flywheel_radius");
-
-            ImGui::Separator();
-
-            e.editInt("wb_ignition.rev_limit");
-            e.editFloat("wb_ignition.limiter_duration");
-
-            ImGui::Separator();
-            ImGui::PopItemWidth();
-
-            if (ImGui::Button("Save as"))
-            {
-                show_save_as_window = true;
-            }
-
-            if (ImGui::Button("Save"))
-            {
-                engineCreator.writeAllLinesToFile();
-            }
-
-            //ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
-
-            // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-            ImGui::End();
-        }
-
-        {
-            ImGui::SetNextWindowPos(ImVec2(0.4 * ImGui::GetIO().DisplaySize.x, 0));
-            // ImGui::SetNextWindowSize(ImVec2(1920 / 2, 1080));
-            ImGui::SetNextWindowSize(ImVec2(0.6 * ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y));
-            ImGui::Begin("Edited engine file");
-            ImGui::TextUnformatted(engineCreator.getAllEditedLinesAsString().c_str());
-
-            ImGui::End();
-        }
+        e.showInputValues();
+        e.showEditedEngineFile();
 
         if (show_save_as_window)
         {
-            ImGui::Begin("Save as", &show_save_as_window);
-
-            static char newFileName[128] = "NewFileName";
-            ImGui::InputText("File name", newFileName, IM_ARRAYSIZE(newFileName));
-
-            if (engineCreator.fileNameIsCorrect(newFileName))
-            {
-                if (ImGui::Button("Save"))
-                {
-                    engineCreator.setCreatedEngineFileName(newFileName);
-                    engineCreator.writeAllLinesToFile();
-                    std::string textFileSaved = "Saved file '" + std::string(newFileName) + "'";
-                    std::cout << "\n"
-                              << textFileSaved << "\n";
-                }
-            }
-            else
-            {
-                ImGui::Text("Not valid name!");
-            }
-
-            ImGui::End();
+            e.showSaveAsWindow();
         }
 
         // Rendering

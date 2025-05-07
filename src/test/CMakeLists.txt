@@ -1,7 +1,9 @@
 set(SOURCES 
     ../engine-creator/EngineCreator.cpp
-    mainTest.cpp
-    EngineCreatorTest.cpp)
+    ../engine-creator/EditableLine.cpp
+    EngineCreatorTest.cpp
+    EditableLineTest.cpp
+    mainTest.cpp)
 
 make_executable()
 
