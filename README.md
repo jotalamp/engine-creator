@@ -1,6 +1,6 @@
 # engine-creator
 
-## Can changes values of template_engine.mr and save to file
+## Can change values of template_engine.mr and save to file
 
 ```
 cd build
