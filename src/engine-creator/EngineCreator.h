@@ -57,18 +57,18 @@ public:
     EditableIntegerValue *getEditableIntegerValue(std::string name);
     void replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText);
     void writeAllLinesToFile();
-    std::string getAllEditedLinesAsString();
+    std::string getAllEditedLinesAsString() const;
     bool fileNameIsCorrect(std::string newFileName);
     bool setCreatedEngineFileName(std::string newFileName);
     void addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue);
     void addEditableValue(unsigned int lineNumber, std::string name, double editableValue);
     void addEditableValue(unsigned int lineNumber, std::string name, int editableValue);
     unsigned int getLineCount() const;
+    std::string getEditedLine(unsigned int lineNumber) const;
 
 private:
     std::string shortestStringRepresentation(float n);
     std::string getOriginalLine(unsigned int lineNumber);
-    std::string getEditedLine(unsigned int lineNumber);
     std::string getLineFromCreatedFile(unsigned int lineNumber);
     void changeLineTo(unsigned int lineNumber, std::string newLineText);
     bool textExistsInOriginalLine(unsigned int lineNumber, std::string textToFind);

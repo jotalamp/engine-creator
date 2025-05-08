@@ -16,10 +16,10 @@ public:
     {
         return !(*this==e2);
     }
+    unsigned int getLineNumber() const;
     std::string getName() const;
     std::string getEditableText() const;
     std::string *getEditedText();
-    unsigned int getLineNumber() const;
 
 protected:
     unsigned int lineNumber;
@@ -35,7 +35,11 @@ public:
     EditableFloatValue(unsigned int lineNumber, const std::string& name, const std::string& editableText);
     bool operator==(const EditableFloatValue &e2) const
     {
-        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
+        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && editedFloatValue == e2.editedFloatValue;
+    }
+    bool operator!=(const EditableFloatValue &e2) const
+    {
+        return !(*this==e2);
     }
     float *getEditedFloatValue();
     std::string getEditedValueAsString(unsigned char decimals);
@@ -51,7 +55,11 @@ public:
     EditableIntegerValue(unsigned int lineNumber, const std::string& name, const std::string& editableText);
     bool operator==(const EditableIntegerValue &e2) const
     {
-        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
+        return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && editedIntValue == e2.editedIntValue;
+    }
+    bool operator!=(const EditableIntegerValue &e2) const
+    {
+        return !(*this==e2);
     }
     int *getEditedIntegerValue();
     std::string getEditedValueAsString();

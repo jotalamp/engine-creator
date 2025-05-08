@@ -70,7 +70,7 @@ std::string EngineCreator::getOriginalLine(unsigned int lineNumber)
     return originalLines[lineNumber];
 }
 
-std::string EngineCreator::getEditedLine(unsigned int lineNumber)
+std::string EngineCreator::getEditedLine(unsigned int lineNumber) const
 {
     return editedLines[lineNumber];
 }
@@ -107,7 +107,7 @@ bool EngineCreator::setCreatedEngineFileName(std::string newFileName)
     return false;
 }
 
-std::string EngineCreator::getAllEditedLinesAsString()
+std::string EngineCreator::getAllEditedLinesAsString() const
 {
     std::string allLines;
     for (auto line : editedLines)

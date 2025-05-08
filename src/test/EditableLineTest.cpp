@@ -5,55 +5,98 @@
 using namespace testing;
 using ::testing::Eq;
 
-class EditableLineTest : public Test
+class BaseEditableTest : public Test
 {
-public:
-
-    void SetUp() override
-    {
-    }
-    void TearDown() override
-    {
-    }
+protected:
+    const unsigned int lineNumber = 123;
+    const std::string name = "TestName";
+    const std::string editableText = "EditableText";
 };
 
-TEST_F(EditableLineTest, GetCorrectLineNumber)
+class AnEditableLine : public BaseEditableTest
 {
-    unsigned int arbitaryLineNumber = 99;
-    EditableLine editableLine(arbitaryLineNumber, "", "");
-    ASSERT_THAT(editableLine.getLineNumber(), Eq(arbitaryLineNumber));
+protected:
+    EditableLine editableLine{lineNumber, name, editableText};
+};
+
+TEST_F(AnEditableLine, GetsCorrectLineNumber)
+{
+    ASSERT_THAT(editableLine.getLineNumber(), Eq(lineNumber));
 }
 
-TEST_F(EditableLineTest, GetCorrectName)
+TEST_F(AnEditableLine, GetsCorrectName)
 {
-    const std::string arbitaryName = "Name123";
-    EditableLine editableLine(0, arbitaryName, "");
-    ASSERT_THAT(editableLine.getName(), Eq(arbitaryName));
+    ASSERT_THAT(editableLine.getName(), Eq(name));
 }
 
-TEST_F(EditableLineTest, GetCorrectEditableText)
+TEST_F(AnEditableLine, GetsCorrectEditableText)
 {
-    const std::string editableText = "Audi 2.3 inline 5";
-    EditableLine editableLine(0, "", editableText);
     ASSERT_THAT(editableLine.getEditableText(), Eq(editableText));
 }
 
-TEST_F(EditableLineTest, GetCorrectEditedText)
+TEST_F(AnEditableLine, GetsEditableTextAsEditedTextWhenCreated)
 {
-    const std::string editableText = "Audi 2.3 inline 5";
-    EditableLine editableLine(0, "", editableText);
     ASSERT_THAT(*editableLine.getEditedText(), Eq(editableText));
 }
 
-TEST_F(EditableLineTest, SameLinesAreEqual)
+TEST_F(AnEditableLine, IsEqualWithSimilarEditableLine)
 {
-    EditableLine editableLine(123, "engine.name", "Test Engine");
+    EditableLine editableLine1(lineNumber, name, editableText);
+    EditableLine editableLine2(lineNumber, name, editableText);
+
     ASSERT_THAT(editableLine, Eq(editableLine));
 }
 
-TEST_F(EditableLineTest, DifferentLinesAreNotEqual)
+TEST_F(AnEditableLine, IsNotEqualWithDifferentEditableLine)
 {
-    EditableLine editableLine1(123, "engine.name", "Test Engine 1");
-    EditableLine editableLine2(123, "engine.name", "Test Engine 2");
+    EditableLine editableLine1(lineNumber, name, editableText);
+    EditableLine editableLine2(lineNumber, name, "SomeOtherEditableText");
+
     ASSERT_THAT(editableLine1, Ne(editableLine2));
+}
+
+class AnEditableFloatValue : public BaseEditableTest
+{
+protected:
+    const std::string editableTextSimilarToFloat = "0.02";
+    const float floatSimilarToEditableText = 0.02;
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat};
+};
+
+TEST_F(AnEditableFloatValue, ConvertsGivenStringToCorrespondingFloatValue)
+{
+    ASSERT_THAT(*editableFloatValue.getEditedFloatValue(), Eq(floatSimilarToEditableText));
+}
+
+TEST_F(AnEditableFloatValue, IsNotEqualWithDifferentEditableFloatValue)
+{
+    float float1 = 1;
+    float float2 = 2;
+    EditableFloatValue editableFloatValue1(lineNumber, name, editableText, float1);
+    EditableFloatValue editableFloatValue2(lineNumber, name, editableText, float2);
+
+    ASSERT_THAT(editableFloatValue1, Ne(editableFloatValue2));
+}
+
+class AnEditableIntegerValue : public BaseEditableTest
+{
+protected:
+    const std::string editableTextSimilarToInt = "123";
+    const int integerSimilarToEditableText = 123;
+    EditableIntegerValue editableIntegerValue{lineNumber, name, editableTextSimilarToInt};
+};
+
+TEST_F(AnEditableIntegerValue, ConvertsGivenStringToCorrespondingFloatValue)
+{
+    ASSERT_THAT(*editableIntegerValue.getEditedIntegerValue(), Eq(integerSimilarToEditableText));
+}
+
+TEST_F(AnEditableIntegerValue, IsNotEqualWithDifferentEditableIntegerValue)
+{
+    int int1 = 1;
+    int int2 = 2;
+    EditableIntegerValue editableIntegerValue1(lineNumber, name, editableText, int1);
+    EditableIntegerValue editableIntegerValue2(lineNumber, name, editableText, int2);
+
+    ASSERT_THAT(editableIntegerValue1, Ne(editableIntegerValue2));
 }
