@@ -28,12 +28,12 @@ unsigned int EditableLine::getLineNumber() const
     return lineNumber;
 }
 
-EditableFloatValue::EditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText, float defaultValue) : EditableLine(lineNumber, name, editableText)
+EditableFloatValue::EditableFloatValue(unsigned int lineNumber, const std::string& name, const std::string& editableText, float defaultValue) : EditableLine(lineNumber, name, editableText)
 {
     editedFloatValue = defaultValue;
 }
 
-EditableFloatValue::EditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText) : EditableFloatValue(lineNumber, name, editableText, std::stof(editableText))
+EditableFloatValue::EditableFloatValue(unsigned int lineNumber, const std::string& name, const std::string& editableText) : EditableFloatValue(lineNumber, name, editableText, std::stof(editableText))
 {
 }
 
@@ -49,12 +49,12 @@ std::string EditableFloatValue::getEditedValueAsString(unsigned char decimals)
     return stream.str();
 }
 
-EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText, int defaultValue) : EditableLine(lineNumber, name, editableText)
+EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, const std::string& name, const std::string& editableText, int defaultValue) : EditableLine(lineNumber, name, editableText)
 {
     editedIntValue = defaultValue;
 }
 
-EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText) : EditableIntegerValue(lineNumber, name, editableText, std::stof(editableText))
+EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, const std::string& name, const std::string& editableText) : EditableIntegerValue(lineNumber, name, editableText, std::stof(editableText))
 {
 }
 
