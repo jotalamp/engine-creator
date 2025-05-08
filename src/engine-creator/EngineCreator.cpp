@@ -27,14 +27,17 @@ EngineCreator::EngineCreator()
 
     // Close the file
     file.close();
-
-   
 }
 
-std::string EngineCreator::shortestStringRepresentation(float n) {
-    if(n==1.0f) return "1.0";
+std::string EngineCreator::shortestStringRepresentation(float n) const
+{
+    if (n == 1.0f)
+        return "1.0"; //special case to get smaller increment steps 
+
+    // https://www.reddit.com/user/isfooTM/
+    // https://www.reddit.com/r/AskProgramming/comments/swmb96/converting_a_float_to_the_shortest_uniquely/
     std::array<char, 64> buf;
-    auto result = std::to_chars(buf.data(), buf.data() + buf.size(), n);
+    auto result = std::to_chars(buf.data(), buf.data() + buf.size(), n, std::chars_format::fixed);
     return std::string(buf.data(), result.ptr - buf.data());
 }
 
@@ -160,8 +163,7 @@ void EngineCreator::addEditableFloatValue(const EditableFloatValue &editableFloa
 {
     if (!textExistsInOriginalLine(editableFloatValue.getLineNumber(), editableFloatValue.getEditableText()))
     {
-        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " 
-            + std::to_string(editableFloatValue.getLineNumber()) + " : " + editableFloatValue.getEditableText());
+        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " + std::to_string(editableFloatValue.getLineNumber()) + " : " + editableFloatValue.getEditableText());
     }
     editableFloatValuesByName.insert(std::make_pair(editableFloatValue.getName(), editableFloatValue));
 }
@@ -170,8 +172,7 @@ void EngineCreator::addEditableIntegerValue(const EditableIntegerValue &editable
 {
     if (!textExistsInOriginalLine(editableIntegerValue.getLineNumber(), editableIntegerValue.getEditableText()))
     {
-        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " 
-            + std::to_string(editableIntegerValue.getLineNumber()) + " : " + editableIntegerValue.getEditableText());
+        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " + std::to_string(editableIntegerValue.getLineNumber()) + " : " + editableIntegerValue.getEditableText());
     }
     editableIntegerValuesByName.insert(std::make_pair(editableIntegerValue.getName(), editableIntegerValue));
 }
@@ -238,7 +239,6 @@ EditableLine *EngineCreator::getEditableLine(std::string name)
         throw EditableLineNotExistException(name);
         return nullptr;
     }
-        
 }
 
 EditableFloatValue *EngineCreator::getEditableFloatValue(std::string name)
@@ -250,7 +250,7 @@ EditableFloatValue *EngineCreator::getEditableFloatValue(std::string name)
             throw EditableLineNotExistException(name);
         return &it->second;
     }
-    catch(const EditableLineNotExistException& e)
+    catch (const EditableLineNotExistException &e)
     {
         std::cout << "Caught an exception: " << e.what() << std::endl;
         exit(1);

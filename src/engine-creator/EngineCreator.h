@@ -65,9 +65,9 @@ public:
     void addEditableValue(unsigned int lineNumber, std::string name, int editableValue);
     unsigned int getLineCount() const;
     std::string getEditedLine(unsigned int lineNumber) const;
+    std::string shortestStringRepresentation(float n) const;
 
 private:
-    std::string shortestStringRepresentation(float n);
     std::string getOriginalLine(unsigned int lineNumber);
     std::string getLineFromCreatedFile(unsigned int lineNumber);
     void changeLineTo(unsigned int lineNumber, std::string newLineText);
