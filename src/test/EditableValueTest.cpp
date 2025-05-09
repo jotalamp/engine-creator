@@ -5,7 +5,6 @@
 using namespace testing;
 using ::testing::Eq;
 
-
 class AnEditableValue : public Test
 {
 protected:
@@ -49,7 +48,6 @@ TEST_F(AnEditableValue, IsNotEqualWithDifferentEditableValue)
     ASSERT_THAT(editableValue1, Ne(editableValue2));
 }
 
-
 class AnEditableStringValue : public AnEditableValue
 {
 protected:
@@ -76,7 +74,6 @@ TEST_F(AnEditableStringValue, IsNotEqualWithDifferentEditableStringValue)
 
     ASSERT_THAT(editableStringValue1, Ne(editableStringValue2));
 }
-
 
 class AnEditableFloatValue : public AnEditableValue
 {
@@ -117,6 +114,26 @@ TEST_F(AnEditableFloatValue, IsEqualWithSimilarEditableFloatValue)
     ASSERT_THAT(editableFloatValue1, Eq(editableFloatValue2));
 }
 
+TEST_F(AnEditableFloatValue, GivesUnitTypeNoneWhenAnyUnitTypeNotExistInLine)
+{
+    const unsigned int lineNumber = 23;
+    const std::string name = "limiter_duration";
+    const std::string editableText = "0.1";
+    EditableFloatValue editableFloatValue(lineNumber, name, editableText);
+
+    ASSERT_THAT(editableFloatValue.getUnitType(), UnitType::None);
+}
+
+TEST_F(AnEditableFloatValue, GivesCorrectUnitTypeWhenUnitTypeExistInLine)
+{
+    const unsigned int lineNumber = 18;
+    const std::string name = "rev_limit";
+    const int editableIntValue = 7500;
+    const std::string editableText = "7500";
+    EditableFloatValue editableFloatValue(lineNumber, name, editableText);
+    editableFloatValue.setUnitType("    input rev_limit: 7500 * units.rpm;");
+    ASSERT_THAT(editableFloatValue.getUnitType(), UnitType::Rpm);
+}
 
 class AnEditableIntegerValue : public AnEditableValue
 {

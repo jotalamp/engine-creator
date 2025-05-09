@@ -82,8 +82,8 @@ private:
 
     EditableStringValue *getEditableStringValue(unsigned int lineNumber);
     void addEditableStringValue(const EditableStringValue &EditableStringValue);
-    void addEditableFloatValue(const EditableFloatValue &editableFloatValue);
-    void addEditableIntegerValue(const EditableIntegerValue &editableIntegerValue);
+    void addEditableFloatValue(EditableFloatValue &editableFloatValue);
+    void addEditableIntegerValue(EditableIntegerValue &editableIntegerValue);
     std::vector<std::string> originalLines;
     std::vector<std::string> editedLines;
     std::unordered_map<std::string, EditableStringValue> editableTextValuesByName;

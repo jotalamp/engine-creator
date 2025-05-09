@@ -159,7 +159,7 @@ void EngineCreator::addEditableStringValue(const EditableStringValue &EditableSt
     editableTextValuesByName.insert(std::make_pair(EditableStringValue.getName(), EditableStringValue));
 }
 
-void EngineCreator::addEditableFloatValue(const EditableFloatValue &editableFloatValue)
+void EngineCreator::addEditableFloatValue(EditableFloatValue& editableFloatValue)
 {
     if (!textExistsInOriginalLine(editableFloatValue.getLineNumber(), editableFloatValue.getEditableText()))
     {
@@ -168,7 +168,7 @@ void EngineCreator::addEditableFloatValue(const EditableFloatValue &editableFloa
     editableFloatValuesByName.insert(std::make_pair(editableFloatValue.getName(), editableFloatValue));
 }
 
-void EngineCreator::addEditableIntegerValue(const EditableIntegerValue &editableIntegerValue)
+void EngineCreator::addEditableIntegerValue(EditableIntegerValue& editableIntegerValue)
 {
     if (!textExistsInOriginalLine(editableIntegerValue.getLineNumber(), editableIntegerValue.getEditableText()))
     {
@@ -184,12 +184,16 @@ void EngineCreator::addEditableStringValue(unsigned int lineNumber, std::string 
 
 void EngineCreator::addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    addEditableFloatValue(EditableFloatValue(lineNumber, name, editableText));
+    EditableFloatValue e(lineNumber, name, editableText);
+    e.setUnitType(getOriginalLine(e.getLineNumber()));
+    addEditableFloatValue(e);
 }
 
 void EngineCreator::addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    addEditableIntegerValue(EditableIntegerValue(lineNumber, name, editableText));
+    EditableIntegerValue e(lineNumber, name, editableText);
+    e.setUnitType(getOriginalLine(e.getLineNumber()));
+    addEditableIntegerValue(e);
 }
 
 void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue)

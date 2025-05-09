@@ -61,6 +61,30 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
     char format[5] = "%.2f";
     format[2] = std::to_string(decimals)[0];
 
+    //if (line->getUnitType() != UnitType::None)
+    {
+        ImGui::PushItemWidth(100);
+
+        ImGui::PushID(line->getLineNumber());
+
+        const char *current_item = line->getUnitTypeAsString().c_str();
+        if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(line->items); n++)
+            {
+                bool is_selected = (current_item == line->items[n]); // You can store your selection however you want, outside or inside your objects
+                if (ImGui::Selectable(line->items[n], is_selected))
+                    current_item = line->items[n];
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+            }
+            ImGui::EndCombo();
+        }
+        ImGui::PopID();
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+    }
+
     if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloatValue(), 0.1f, 1.0f, format, ImGuiInputTextFlags_CharsDecimal))
     {
         setScroll(line->getLineNumber());
@@ -78,6 +102,28 @@ void ImGui_EngineCreator::editInt(const std::string &name)
     {
         std::cout << "\nEditbleLine: " + name + " not found!";
         exit(0);
+    }
+
+    //if (line->getUnitType() != UnitType::None)
+    {
+        ImGui::PushItemWidth(100);
+        ImGui::PushID(line->getLineNumber());
+        const char *current_item = line->getUnitTypeAsString().c_str();
+        if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(line->items); n++)
+            {
+                bool is_selected = (current_item == line->items[n]); // You can store your selection however you want, outside or inside your objects
+                if (ImGui::Selectable(line->items[n], is_selected))
+                    current_item = line->items[n];
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+            }
+            ImGui::EndCombo();
+        }
+        ImGui::PopID();
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
     }
 
     if (ImGui::InputInt(line->getName().c_str(), line->getEditedIntegerValue(), 10.0f, 100.0f, ImGuiInputTextFlags_CharsDecimal))
@@ -99,17 +145,7 @@ void ImGui_EngineCreator::showInputValues()
     ImGui::PushItemWidth(150);
 
     editText("engine.name");
-    /*
-    ImGui::PushItemWidth(100);
-    static const char *items[]{"units.mm", "units.lb_ft", "units.rpm", "units.inch", "units.g", "units.kg"};
-    static int Selecteditem = 0;
-    bool check = ImGui::Combo("##unit01", &Selecteditem, items, IM_ARRAYSIZE(items));
-    if (check)
-    {
-    }
-    ImGui::PopItemWidth();
-    ImGui::SameLine();
-    */
+
     editInt("engine.starter_torque");
 
     editInt("engine.redline");

@@ -65,7 +65,55 @@ protected:
     std::string editedText;
 };
 
-class EditableFloatValue : public EditableValue
+enum class UnitType
+{
+    None,
+    Rpm,
+    Deg,
+    Cc,
+    Thou,
+    Lb_ft,
+    mm,
+    g,
+    Kg,
+    Inch
+};
+
+class EditableNumericValue : public EditableValue
+{
+public:
+    EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText);
+    void setUnitType(const std::string &originalLine);
+    UnitType getUnitType() const;
+    std::string getUnitTypeAsString() const;
+    const static inline std::unordered_map<UnitType, std::string> &getUnitTypes();
+    static inline std::unordered_map<UnitType, std::string> unitTypes = {
+        {UnitType::None, "units.none"},
+        {UnitType::Deg, "units.deg"},
+        {UnitType::Cc, "units.cc"},
+        {UnitType::Thou, "units.thou"},
+        {UnitType::Lb_ft, "units.lb_ft"},
+        {UnitType::mm, "units.mm"},
+        {UnitType::g, "units.g"},
+        {UnitType::Rpm, "units.rpm"},
+        {UnitType::Inch, "units.inch"},
+        {UnitType::Kg, "units.kg"}};
+    static const inline char *items[]{"units.none",
+                                      "units.deg",
+                                      "units.cc",
+                                      "units.thou",
+                                      "units.lb_ft",
+                                      "units.mm",
+                                      "units.g",
+                                      "units.rpm",
+                                      "units.inch",
+                                      "units.kg"};
+    UnitType unitType = UnitType::None;
+
+protected:
+};
+
+class EditableFloatValue : public EditableNumericValue
 {
 public:
     EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText);
@@ -73,7 +121,7 @@ public:
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && editedFloatValue == e2.editedFloatValue;
     }
-    bool operator!=(const EditableFloatValue &e2) const 
+    bool operator!=(const EditableFloatValue &e2) const
     {
         return !(*this == e2);
     }
@@ -84,7 +132,7 @@ private:
     float editedFloatValue;
 };
 
-class EditableIntegerValue : public EditableValue
+class EditableIntegerValue : public EditableNumericValue
 {
 public:
     EditableIntegerValue(unsigned int lineNumber, const std::string &name, const std::string &editableText);
