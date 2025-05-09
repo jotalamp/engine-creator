@@ -27,7 +27,7 @@ ImGui_EngineCreator::ImGui_EngineCreator()
 
 void ImGui_EngineCreator::editText(const std::string &name)
 {
-    auto line = engineCreator.getEditableLine(name);
+    auto line = engineCreator.getEditableStringValue(name);
 
     if (line == nullptr)
     {
@@ -89,61 +89,6 @@ void ImGui_EngineCreator::editInt(const std::string &name)
     }
 }
 
-void ImGui_EngineCreator::showSaveButton()
-{
-    if (ImGui::Button("Save"))
-    {
-        engineCreator.writeAllLinesToFile();
-        std::cout << "\nFile saved";
-    }
-}
-
-void ImGui_EngineCreator::showEditedEngineFile()
-{
-    ImGui::SetNextWindowPos(ImVec2(0.4 * ImGui::GetIO().DisplaySize.x, 0));
-    ImGui::SetNextWindowSize(ImVec2(0.6 * ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y));
-
-    ImGui::Begin("Edited engine file");
-
-    if (scrollToLine)
-    {
-        ImGui::SetScrollY((float)lineToScroll/(float)engineCreator.getLineCount()*ImGui::GetScrollMaxY());
-        scrollToLine = false;
-    }
-    
-    ImGui::TextUnformatted(engineCreator.getAllEditedLinesAsString().c_str());
-
-    ImGui::End();
-}
-
-void ImGui_EngineCreator::showSaveAsWindow()
-{
-    if (!show_save_as_window)
-        return;
-    ImGui::Begin("Save as", &show_save_as_window);
-
-    ImGui::InputText("File name", newFileName, IM_ARRAYSIZE(newFileName));
-
-    if (engineCreator.fileNameIsCorrect(newFileName))
-    {
-        if (ImGui::Button("Save"))
-        {
-            engineCreator.setCreatedEngineFileName(newFileName);
-            engineCreator.writeAllLinesToFile();
-            std::string textFileSaved = "Saved file '" + std::string(newFileName) + "'";
-            std::cout << "\n"
-                      << textFileSaved << "\n";
-            show_save_as_window = false;
-        }
-    }
-    else
-    {
-        ImGui::Text("Not valid name!");
-    }
-
-    ImGui::End();
-}
-
 void ImGui_EngineCreator::showInputValues()
 {
     ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -154,7 +99,19 @@ void ImGui_EngineCreator::showInputValues()
     ImGui::PushItemWidth(150);
 
     editText("engine.name");
+    /*
+    ImGui::PushItemWidth(100);
+    static const char *items[]{"units.mm", "units.lb_ft", "units.rpm", "units.inch", "units.g", "units.kg"};
+    static int Selecteditem = 0;
+    bool check = ImGui::Combo("##unit01", &Selecteditem, items, IM_ARRAYSIZE(items));
+    if (check)
+    {
+    }
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
+    */
     editInt("engine.starter_torque");
+
     editInt("engine.redline");
     editFloat("fuel.max_turbulence_effect");
     editFloat("fuel.max_burning_efficiency");
@@ -198,8 +155,63 @@ void ImGui_EngineCreator::showInputValues()
     ImGui::End();
 }
 
+void ImGui_EngineCreator::showSaveButton()
+{
+    if (ImGui::Button("Save"))
+    {
+        engineCreator.writeAllLinesToFile();
+        std::cout << "\nFile saved";
+    }
+}
+
 void ImGui_EngineCreator::setScroll(const unsigned int lineNumber)
 {
     lineToScroll = (lineNumber + 1);
     scrollToLine = true;
+}
+
+void ImGui_EngineCreator::showEditedEngineFile()
+{
+    ImGui::SetNextWindowPos(ImVec2(0.4 * ImGui::GetIO().DisplaySize.x, 0));
+    ImGui::SetNextWindowSize(ImVec2(0.6 * ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y));
+
+    ImGui::Begin("Edited engine file");
+
+    if (scrollToLine)
+    {
+        ImGui::SetScrollY((float)lineToScroll / (float)engineCreator.getLineCount() * ImGui::GetScrollMaxY());
+        scrollToLine = false;
+    }
+
+    ImGui::TextUnformatted(engineCreator.getAllEditedLinesAsString().c_str());
+
+    ImGui::End();
+}
+
+void ImGui_EngineCreator::showSaveAsWindow()
+{
+    if (!show_save_as_window)
+        return;
+    ImGui::Begin("Save as", &show_save_as_window);
+
+    ImGui::InputText("File name", newFileName, IM_ARRAYSIZE(newFileName));
+
+    if (engineCreator.fileNameIsCorrect(newFileName))
+    {
+        if (ImGui::Button("Save"))
+        {
+            engineCreator.setCreatedEngineFileName(newFileName);
+            engineCreator.writeAllLinesToFile();
+            std::string textFileSaved = "Saved file '" + std::string(newFileName) + "'";
+            std::cout << "\n"
+                      << textFileSaved << "\n";
+            show_save_as_window = false;
+        }
+    }
+    else
+    {
+        ImGui::Text("Not valid name!");
+    }
+
+    ImGui::End();
 }

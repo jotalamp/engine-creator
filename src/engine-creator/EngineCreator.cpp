@@ -41,7 +41,7 @@ std::string EngineCreator::shortestStringRepresentation(float n) const
     return std::string(buf.data(), result.ptr - buf.data());
 }
 
-std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber)
+std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber) const
 {
     std::vector<std::string> lines;
     std::ifstream file = std::ifstream(path + fileName);
@@ -68,7 +68,7 @@ std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int li
     return lines[lineNumber];
 }
 
-std::string EngineCreator::getOriginalLine(unsigned int lineNumber)
+std::string EngineCreator::getOriginalLine(unsigned int lineNumber) const
 {
     return originalLines[lineNumber];
 }
@@ -78,7 +78,7 @@ std::string EngineCreator::getEditedLine(unsigned int lineNumber) const
     return editedLines[lineNumber];
 }
 
-std::string EngineCreator::getLineFromCreatedFile(unsigned int lineNumber)
+std::string EngineCreator::getLineFromCreatedFile(unsigned int lineNumber) const
 {
     return getLineFromFile(createdEngineName, lineNumber);
 }
@@ -88,7 +88,7 @@ void EngineCreator::changeLineTo(unsigned int lineNumber, std::string newLineTex
     editedLines[lineNumber] = newLineText;
 }
 
-void EngineCreator::writeAllLinesToFile()
+void EngineCreator::writeAllLinesToFile() const
 {
     std::ofstream file(path + createdEngineName);
 
@@ -120,19 +120,19 @@ std::string EngineCreator::getAllEditedLinesAsString() const
     return allLines;
 }
 
-bool EngineCreator::fileNameIsCorrect(std::string newFileName)
+bool EngineCreator::fileNameIsCorrect(std::string newFileName) const
 {
     if (newFileName == "")
         return false;
     return true;
 }
 
-bool EngineCreator::textExistsInOriginalLine(unsigned int lineNumber, std::string textToFind)
+bool EngineCreator::textExistsInOriginalLine(unsigned int lineNumber, std::string textToFind) const
 {
     return (originalLines[lineNumber].find(textToFind) != std::string::npos);
 }
 
-bool EngineCreator::textExistsInEditedLine(unsigned int lineNumber, std::string textToFind)
+bool EngineCreator::textExistsInEditedLine(unsigned int lineNumber, std::string textToFind) const
 {
     return (editedLines[lineNumber].find(textToFind) != std::string::npos);
 }
@@ -150,13 +150,13 @@ void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textT
     editedLines[lineNumber] = line;
 }
 
-void EngineCreator::addEditableLine(const EditableLine &editableLine)
+void EngineCreator::addEditableStringValue(const EditableStringValue &EditableStringValue)
 {
-    if (!textExistsInOriginalLine(editableLine.getLineNumber(), editableLine.getEditableText()))
+    if (!textExistsInOriginalLine(EditableStringValue.getLineNumber(), EditableStringValue.getEditableText()))
     {
-        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " + std::to_string(editableLine.getLineNumber()) + " : " + editableLine.getEditableText());
+        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " + std::to_string(EditableStringValue.getLineNumber()) + " : " + EditableStringValue.getEditableText());
     }
-    editableTextValuesByName.insert(std::make_pair(editableLine.getName(), editableLine));
+    editableTextValuesByName.insert(std::make_pair(EditableStringValue.getName(), EditableStringValue));
 }
 
 void EngineCreator::addEditableFloatValue(const EditableFloatValue &editableFloatValue)
@@ -177,9 +177,9 @@ void EngineCreator::addEditableIntegerValue(const EditableIntegerValue &editable
     editableIntegerValuesByName.insert(std::make_pair(editableIntegerValue.getName(), editableIntegerValue));
 }
 
-void EngineCreator::addEditableLine(unsigned int lineNumber, std::string name, std::string editableText)
+void EngineCreator::addEditableStringValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    addEditableLine(EditableLine(lineNumber, name, editableText));
+    addEditableStringValue(EditableStringValue(lineNumber, name, editableText));
 }
 
 void EngineCreator::addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText)
@@ -194,7 +194,7 @@ void EngineCreator::addEditableIntegerValue(unsigned int lineNumber, std::string
 
 void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue)
 {
-    addEditableLine(lineNumber, name, editableValue);
+    addEditableStringValue(lineNumber, name, editableValue);
 }
 
 void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, double editableValue)
@@ -212,7 +212,7 @@ unsigned int EngineCreator::getLineCount() const
     return linesCount;
 }
 
-std::unordered_map<std::string, EditableLine> EngineCreator::getEditableTextValuesByName() const
+std::unordered_map<std::string, EditableStringValue> EngineCreator::getEditableTextValuesByName() const
 {
     return editableTextValuesByName;
 }
@@ -227,7 +227,7 @@ std::unordered_map<std::string, EditableIntegerValue> EngineCreator::getEditable
     return editableIntegerValuesByName;
 }
 
-EditableLine *EngineCreator::getEditableLine(std::string name)
+EditableStringValue *EngineCreator::getEditableStringValue(std::string name)
 {
     auto it = editableTextValuesByName.find(name);
     if (it != editableTextValuesByName.end())
@@ -236,7 +236,7 @@ EditableLine *EngineCreator::getEditableLine(std::string name)
     }
     else
     {
-        throw EditableLineNotExistException(name);
+        throw EditableStringValueNotExistException(name);
         return nullptr;
     }
 }
@@ -247,10 +247,10 @@ EditableFloatValue *EngineCreator::getEditableFloatValue(std::string name)
     {
         auto it = editableFloatValuesByName.find(name);
         if (it == editableFloatValuesByName.end())
-            throw EditableLineNotExistException(name);
+            throw EditableStringValueNotExistException(name);
         return &it->second;
     }
-    catch (const EditableLineNotExistException &e)
+    catch (const EditableStringValueNotExistException &e)
     {
         std::cout << "Caught an exception: " << e.what() << std::endl;
         exit(1);
@@ -263,10 +263,10 @@ EditableIntegerValue *EngineCreator::getEditableIntegerValue(std::string name)
     {
         auto it = editableIntegerValuesByName.find(name);
         if (it == editableIntegerValuesByName.end())
-            throw EditableLineNotExistException(name);
+            throw EditableStringValueNotExistException(name);
         return &it->second;
     }
-    catch (EditableLineNotExistException &e)
+    catch (EditableStringValueNotExistException &e)
     {
         std::cout << "Caught an exception: " << e.what() << std::endl;
         exit(1);
