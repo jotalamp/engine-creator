@@ -51,6 +51,7 @@ void ImGui_EngineCreator::editText(const std::string &name)
 void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decimals)
 {
     auto line = engineCreator.getEditableFloatValue(name);
+    std::string lineText = line->getLineText();
 
     if (line == nullptr)
     {
@@ -61,7 +62,7 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
     char format[5] = "%.2f";
     format[2] = std::to_string(decimals)[0];
 
-    //if (line->getUnitType() != UnitType::None)
+    // if (line->getUnitType() != UnitType::None)
     {
         ImGui::PushItemWidth(100);
 
@@ -74,7 +75,12 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
             {
                 bool is_selected = (current_item == line->items[n]); // You can store your selection however you want, outside or inside your objects
                 if (ImGui::Selectable(line->items[n], is_selected))
+                {
                     current_item = line->items[n];
+
+                    lineText = engineCreator.replaceTextInText(lineText, line->getEditableText(), line->getEditedValueAsString(decimals));
+                    engineCreator.setUnitType(*line, line->getUnitType(current_item), lineText);
+                }
                 if (is_selected)
                     ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
             }
@@ -91,6 +97,7 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
         if (*line->getEditedFloatValue() < 0)
             *line->getEditedFloatValue() = 0;
         engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString(decimals));
+        const char *current_item = line->getUnitTypeAsString().c_str();
     }
 }
 
@@ -104,7 +111,7 @@ void ImGui_EngineCreator::editInt(const std::string &name)
         exit(0);
     }
 
-    //if (line->getUnitType() != UnitType::None)
+    // if (line->getUnitType() != UnitType::None)
     {
         ImGui::PushItemWidth(100);
         ImGui::PushID(line->getLineNumber());

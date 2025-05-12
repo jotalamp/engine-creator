@@ -1,7 +1,8 @@
 #include "EditableValue.h"
 
-EditableValue::EditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableText)
+EditableValue::EditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText)
 {
+    this->originalLine = lineText;
     this->lineNumber = lineNumber;
     this->name = name;
     this->editableText = editableText;
@@ -17,13 +18,23 @@ std::string EditableValue::getEditableText() const
     return editableText;
 }
 
+std::string EditableValue::getLineText() const
+{
+    return *originalLine;
+}
+
+void EditableValue::setLineText(const std::string &newLineText)
+{
+    *originalLine = newLineText;
+}
+
 unsigned int EditableValue::getLineNumber() const
 {
     return lineNumber;
 }
 
-EditableNumericValue::EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText)
-    : EditableValue(lineNumber, name, editableText)
+EditableNumericValue::EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText)
+    : EditableValue(lineNumber, name, editableText, lineText)
 {
 }
 
@@ -32,19 +43,32 @@ UnitType EditableNumericValue::getUnitType() const
     return unitType;
 }
 
+UnitType EditableNumericValue::getUnitType(const std::string &unitTypeAsString) const
+{
+    return unitTypes2[unitTypeAsString];
+}
+
 std::string EditableNumericValue::getUnitTypeAsString() const
+{
+    return unitTypes[this->unitType];
+}
+
+std::string EditableNumericValue::getUnitTypeAsString(const UnitType &unitType) const
 {
     return unitTypes[unitType];
 }
 
-inline const std::unordered_map<UnitType, std::string>& EditableNumericValue::getUnitTypes()
+inline const std::unordered_map<UnitType, std::string> &EditableNumericValue::getUnitTypes()
 {
     return unitTypes;
 }
 
-void EditableNumericValue::setUnitType(const std::string &originalLine)
+void EditableNumericValue::setUnitType()
 {
-    std::string line = originalLine;
+    if (originalLine == nullptr)
+        throw LineTextNotExistException(name);
+
+    std::string line = *originalLine;
 
     for (auto anUnitType : unitTypes)
     {
@@ -59,8 +83,25 @@ void EditableNumericValue::setUnitType(const std::string &originalLine)
     }
 }
 
-EditableStringValue::EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText)
-    : EditableValue(lineNumber, name, editableText)
+void EditableNumericValue::setUnitType(const UnitType &unitType)
+{
+    if (originalLine == nullptr)
+        throw LineTextNotExistException(name);
+
+    std::string line = *originalLine;
+
+    std::string textToReplace = unitTypes[this->unitType];
+
+    auto &&pos = line.find(textToReplace, size_t{});
+    if (pos != std::string::npos)
+    {
+        this->unitType = unitType;
+    }
+    this->unitType = unitType;
+}
+
+EditableStringValue::EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText)
+    : EditableValue(lineNumber, name, editableText, lineText)
 {
     this->editedText = editableText;
 }
@@ -70,8 +111,8 @@ std::string *EditableStringValue::getEditedText()
     return &editedText;
 }
 
-EditableFloatValue::EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText)
-    : EditableNumericValue(lineNumber, name, editableText)
+EditableFloatValue::EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText)
+    : EditableNumericValue(lineNumber, name, editableText, lineText)
 {
     try
     {
@@ -96,8 +137,8 @@ std::string EditableFloatValue::getEditedValueAsString(unsigned char decimals)
     return stream.str();
 }
 
-EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, const std::string &name, const std::string &editableText)
-    : EditableNumericValue(lineNumber, name, editableText)
+EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText)
+    : EditableNumericValue(lineNumber, name, editableText, lineText)
 {
     try
     {

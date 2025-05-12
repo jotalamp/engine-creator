@@ -41,6 +41,25 @@ std::string EngineCreator::shortestStringRepresentation(float n) const
     return std::string(buf.data(), result.ptr - buf.data());
 }
 
+std::string EngineCreator::setUnitType(EditableNumericValue& editableNumericValue, const UnitType &unitType, std::string text)
+{
+    auto line = editableNumericValue;
+    //std::string lineText = editedLines[editableNumericValue.getLineNumber()];
+    std::string lineText = text;
+    //std::string lineText = editableNumericValue.getEditableText();
+    std::cout << "\n Line text: " << lineText;
+    std::string textToReplace = line.getUnitTypeAsString();
+    std::cout << "\n textToReplace: " << textToReplace;
+    std::string newText = line.unitTypes[unitType];
+    std::cout << "\n newText: " << newText << "\n\n";
+
+    replaceTextInLine(line.getLineNumber(), textToReplace, newText);
+    text = replaceTextInText(text, textToReplace, newText);
+
+    editableNumericValue.setUnitType();
+    return text;
+}
+
 std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber) const
 {
     std::vector<std::string> lines;
@@ -148,67 +167,100 @@ void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textT
         pos = textToReplace.find(textToReplace, pos + newText.length());
     }
     editedLines[lineNumber] = line;
+    std::cout << "\n" << editedLines[lineNumber];
 }
 
-void EngineCreator::addEditableStringValue(const EditableStringValue &EditableStringValue)
+std::string EngineCreator::replaceEditedTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText)
 {
-    if (!textExistsInOriginalLine(EditableStringValue.getLineNumber(), EditableStringValue.getEditableText()))
+    std::string line = editedLines[lineNumber];
+
+    auto &&pos = line.find(textToReplace, size_t{});
+    if (pos != std::string::npos)
     {
-        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " + std::to_string(EditableStringValue.getLineNumber()) + " : " + EditableStringValue.getEditableText());
+        line.replace(pos, textToReplace.length(), newText);
+        pos = textToReplace.find(textToReplace, pos + newText.length());
     }
-    editableTextValuesByName.insert(std::make_pair(EditableStringValue.getName(), EditableStringValue));
+    editedLines[lineNumber] = line;
+    std::cout << "\n" << editedLines[lineNumber];
 }
 
-void EngineCreator::addEditableFloatValue(EditableFloatValue& editableFloatValue)
+std::string EngineCreator::replaceTextInText(std::string& text, const std::string& textToReplace, const std::string& newText)
+{
+    std::string line = text;
+
+    auto &&pos = line.find(textToReplace, size_t{});
+    if (pos != std::string::npos)
+    {
+        line.replace(pos, textToReplace.length(), newText);
+        pos = textToReplace.find(textToReplace, pos + newText.length());
+    }
+    return line;
+}
+
+EditableStringValue EngineCreator::addEditableStringValue(const EditableStringValue &editableStringValue)
+{
+    if (!textExistsInOriginalLine(editableStringValue.getLineNumber(), editableStringValue.getEditableText()))
+    {
+        throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " + std::to_string(editableStringValue.getLineNumber()) + " : " + editableStringValue.getEditableText());
+    }
+    editableTextValuesByName.insert(std::make_pair(editableStringValue.getName(), editableStringValue));
+    return editableStringValue;
+}
+
+EditableFloatValue EngineCreator::addEditableFloatValue(EditableFloatValue& editableFloatValue)
 {
     if (!textExistsInOriginalLine(editableFloatValue.getLineNumber(), editableFloatValue.getEditableText()))
     {
         throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " + std::to_string(editableFloatValue.getLineNumber()) + " : " + editableFloatValue.getEditableText());
     }
     editableFloatValuesByName.insert(std::make_pair(editableFloatValue.getName(), editableFloatValue));
+    return editableFloatValue;
 }
 
-void EngineCreator::addEditableIntegerValue(EditableIntegerValue& editableIntegerValue)
+EditableIntegerValue EngineCreator::addEditableIntegerValue(EditableIntegerValue& editableIntegerValue)
 {
     if (!textExistsInOriginalLine(editableIntegerValue.getLineNumber(), editableIntegerValue.getEditableText()))
     {
         throw TextNotFoundFromTemplateFileException("\nText not found in orginal file: Line " + std::to_string(editableIntegerValue.getLineNumber()) + " : " + editableIntegerValue.getEditableText());
     }
     editableIntegerValuesByName.insert(std::make_pair(editableIntegerValue.getName(), editableIntegerValue));
+    return editableIntegerValue;
 }
 
-void EngineCreator::addEditableStringValue(unsigned int lineNumber, std::string name, std::string editableText)
+EditableStringValue EngineCreator::addEditableStringValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    addEditableStringValue(EditableStringValue(lineNumber, name, editableText));
+    return addEditableStringValue(EditableStringValue(lineNumber, name, editableText, &editedLines[lineNumber]));
 }
 
-void EngineCreator::addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText)
+EditableFloatValue EngineCreator::addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    EditableFloatValue e(lineNumber, name, editableText);
-    e.setUnitType(getOriginalLine(e.getLineNumber()));
+    EditableFloatValue e(lineNumber, name, editableText, &editedLines[lineNumber]);
+    e.setUnitType();
     addEditableFloatValue(e);
+    return e;
 }
 
-void EngineCreator::addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText)
+EditableIntegerValue EngineCreator::addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    EditableIntegerValue e(lineNumber, name, editableText);
-    e.setUnitType(getOriginalLine(e.getLineNumber()));
+    EditableIntegerValue e(lineNumber, name, editableText, &editedLines[lineNumber]);
+    e.setUnitType();
     addEditableIntegerValue(e);
+    return e;
 }
 
-void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue)
+EditableStringValue EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue)
 {
-    addEditableStringValue(lineNumber, name, editableValue);
+    return addEditableStringValue(lineNumber, name, editableValue);
 }
 
-void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, double editableValue)
+EditableFloatValue EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, double editableValue)
 {
-    addEditableFloatValue(lineNumber, name, shortestStringRepresentation(editableValue));
+    return addEditableFloatValue(lineNumber, name, shortestStringRepresentation(editableValue));
 }
 
-void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, int editableValue)
+EditableIntegerValue EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, int editableValue)
 {
-    addEditableIntegerValue(lineNumber, name, shortestStringRepresentation(editableValue));
+    return addEditableIntegerValue(lineNumber, name, shortestStringRepresentation(editableValue));
 }
 
 unsigned int EngineCreator::getLineCount() const

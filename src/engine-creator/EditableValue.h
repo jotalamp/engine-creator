@@ -33,10 +33,16 @@ public:
     CanNotConvertStringToIntException(const std::string &message) : EditableValueException(message) {}
 };
 
+class LineTextNotExistException : public EditableValueException
+{
+public:
+    LineTextNotExistException(const std::string &message) : EditableValueException("Line text not exist! " + message) {}
+};
+
 class EditableValue
 {
 public:
-    EditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableText);
+    EditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr);
     virtual bool operator==(const EditableValue &e2) const
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
@@ -48,17 +54,21 @@ public:
     virtual unsigned int getLineNumber() const;
     virtual std::string getName() const;
     virtual std::string getEditableText() const;
+    virtual std::string getLineText() const;
+    virtual void setLineText(const std::string &newLineText);
 
 protected:
     unsigned int lineNumber;
     std::string name;
     std::string editableText;
+    std::string *editedText = nullptr;
+    std::string *originalLine = nullptr;
 };
 
 class EditableStringValue : public EditableValue
 {
 public:
-    EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText);
+    EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr);
     std::string *getEditedText();
 
 protected:
@@ -82,10 +92,13 @@ enum class UnitType
 class EditableNumericValue : public EditableValue
 {
 public:
-    EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText);
-    void setUnitType(const std::string &originalLine);
+    EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr);
+    void setUnitType(const UnitType &unitType);
+    void setUnitType();
     UnitType getUnitType() const;
+    UnitType getUnitType(const std::string& unitTypeAsString) const;
     std::string getUnitTypeAsString() const;
+    std::string getUnitTypeAsString(const UnitType &unitType) const;
     const static inline std::unordered_map<UnitType, std::string> &getUnitTypes();
     static inline std::unordered_map<UnitType, std::string> unitTypes = {
         {UnitType::None, "units.none"},
@@ -98,6 +111,17 @@ public:
         {UnitType::Rpm, "units.rpm"},
         {UnitType::Inch, "units.inch"},
         {UnitType::Kg, "units.kg"}};
+    static inline std::unordered_map<std::string, UnitType> unitTypes2 = {
+        {"units.none", UnitType::None},
+        {"units.deg", UnitType::Deg},
+        {"units.cc", UnitType::Cc},
+        {"units.thou", UnitType::Thou},
+        {"units.lb_ft", UnitType::Lb_ft},
+        {"units.mm", UnitType::mm},
+        {"units.g", UnitType::g},
+        {"units.rpm", UnitType::Rpm},
+        {"units.inch", UnitType::Inch},
+        {"units.kg", UnitType::Kg}};
     static const inline char *items[]{"units.none",
                                       "units.deg",
                                       "units.cc",
@@ -116,7 +140,7 @@ protected:
 class EditableFloatValue : public EditableNumericValue
 {
 public:
-    EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText);
+    EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr);
     bool operator==(const EditableFloatValue &e2) const
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && editedFloatValue == e2.editedFloatValue;
@@ -135,7 +159,7 @@ private:
 class EditableIntegerValue : public EditableNumericValue
 {
 public:
-    EditableIntegerValue(unsigned int lineNumber, const std::string &name, const std::string &editableText);
+    EditableIntegerValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr);
     bool operator==(const EditableIntegerValue &e2) const
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && editedIntValue == e2.editedIntValue;
