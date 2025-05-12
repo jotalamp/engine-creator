@@ -46,8 +46,6 @@ void EditableNumericValue::setUnitType(const std::string &originalLine)
 {
     std::string line = originalLine;
 
-    std::cout << "\n" << line/* << "\n"*/;
-
     for (auto anUnitType : unitTypes)
     {
         auto it = unitTypes.find(anUnitType.first);
@@ -57,8 +55,6 @@ void EditableNumericValue::setUnitType(const std::string &originalLine)
         if (pos != std::string::npos)
         {
             this->unitType = anUnitType.first;
-            std::cout << "\n" << anUnitType.second << "\n";
-            std::cout << unitTypes[this->unitType] << "\n";
         }
     }
 }

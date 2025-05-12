@@ -128,7 +128,6 @@ TEST_F(AnEditableFloatValue, GivesCorrectUnitTypeWhenUnitTypeExistInLine)
 {
     const unsigned int lineNumber = 18;
     const std::string name = "rev_limit";
-    const int editableIntValue = 7500;
     const std::string editableText = "7500";
     EditableFloatValue editableFloatValue(lineNumber, name, editableText);
     editableFloatValue.setUnitType("    input rev_limit: 7500 * units.rpm;");
