@@ -44,14 +44,9 @@ std::string EngineCreator::shortestStringRepresentation(float n) const
 std::string EngineCreator::setUnitType(EditableNumericValue& editableNumericValue, const UnitType &unitType, std::string text)
 {
     auto line = editableNumericValue;
-    //std::string lineText = editedLines[editableNumericValue.getLineNumber()];
     std::string lineText = text;
-    //std::string lineText = editableNumericValue.getEditableText();
-    std::cout << "\n Line text: " << lineText;
     std::string textToReplace = line.getUnitTypeAsString();
-    std::cout << "\n textToReplace: " << textToReplace;
     std::string newText = line.unitTypes[unitType];
-    std::cout << "\n newText: " << newText << "\n\n";
 
     replaceTextInLine(line.getLineNumber(), textToReplace, newText);
     text = replaceTextInText(text, textToReplace, newText);
@@ -167,7 +162,6 @@ void EngineCreator::replaceTextInLine(unsigned int lineNumber, std::string textT
         pos = textToReplace.find(textToReplace, pos + newText.length());
     }
     editedLines[lineNumber] = line;
-    std::cout << "\n" << editedLines[lineNumber];
 }
 
 std::string EngineCreator::replaceEditedTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText)
@@ -181,7 +175,7 @@ std::string EngineCreator::replaceEditedTextInLine(unsigned int lineNumber, std:
         pos = textToReplace.find(textToReplace, pos + newText.length());
     }
     editedLines[lineNumber] = line;
-    std::cout << "\n" << editedLines[lineNumber];
+    return line;
 }
 
 std::string EngineCreator::replaceTextInText(std::string& text, const std::string& textToReplace, const std::string& newText)
