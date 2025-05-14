@@ -51,7 +51,7 @@ void ImGui_EngineCreator::editText(const std::string &name)
 void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decimals)
 {
     auto line = engineCreator.getEditableFloatValue(name);
-    std::string lineText = line->getLineText();
+    std::string lineText = line->getOriginalText();
 
     if (line == nullptr)
     {
@@ -78,8 +78,9 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
                 {
                     current_item = line->items[n];
 
-                    lineText = engineCreator.replaceTextInText(lineText, line->getEditableText(), line->getEditedValueAsString(decimals));
-                    engineCreator.setUnitType(*line, line->getUnitType(current_item), lineText);
+                    //lineText = engineCreator.replaceTextInText(lineText, line->getEditableText(), line->getEditedValueAsString(decimals));
+                    //engineCreator.setUnitType(*line, line->getUnitType(current_item), lineText);
+                    line->setUnitType(UnitType::mm);
                 }
                 if (is_selected)
                     ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)

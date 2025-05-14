@@ -1,5 +1,3 @@
-#include <charconv>
-
 #include "EngineCreator.h"
 
 EngineCreator::EngineCreator()
@@ -223,12 +221,12 @@ EditableIntegerValue EngineCreator::addEditableIntegerValue(EditableIntegerValue
 
 EditableStringValue EngineCreator::addEditableStringValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    return addEditableStringValue(EditableStringValue(lineNumber, name, editableText, &editedLines[lineNumber]));
+    return addEditableStringValue(EditableStringValue(lineNumber, name, editableText, &editedLines[lineNumber], &editedLines[lineNumber]));
 }
 
 EditableFloatValue EngineCreator::addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    EditableFloatValue e(lineNumber, name, editableText, &editedLines[lineNumber]);
+    EditableFloatValue e(lineNumber, name, editableText, &editedLines[lineNumber], &editedLines[lineNumber]);
     e.setUnitType();
     addEditableFloatValue(e);
     return e;
@@ -236,7 +234,7 @@ EditableFloatValue EngineCreator::addEditableFloatValue(unsigned int lineNumber,
 
 EditableIntegerValue EngineCreator::addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    EditableIntegerValue e(lineNumber, name, editableText, &editedLines[lineNumber]);
+    EditableIntegerValue e(lineNumber, name, editableText, &editedLines[lineNumber], &editedLines[lineNumber]);
     e.setUnitType();
     addEditableIntegerValue(e);
     return e;
