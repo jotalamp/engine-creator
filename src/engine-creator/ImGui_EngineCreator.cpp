@@ -55,7 +55,7 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
 
     if (line == nullptr)
     {
-        std::cout << "\nEditbleLine: " + name + " not found!";
+        std::cout << "\nEditableLine: " + name + " not found!";
         exit(0);
     }
 
@@ -97,7 +97,6 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
         if (*line->getEditedFloatValue() < 0)
             *line->getEditedFloatValue() = 0;
         engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString(decimals));
-        const char *current_item = line->getUnitTypeAsString().c_str();
     }
 }
 
