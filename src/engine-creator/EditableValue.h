@@ -46,6 +46,12 @@ public:
     EditedTextIsNullPointerException(const std::string &message) : EditableValueException("Edited text is nullpointer! " + message) {}
 };
 
+class TextNotFoundException : public EditableValueException
+{
+public:
+    TextNotFoundException(const std::string &message) : EditableValueException("\n\tText not found: \n\t" + message + "\n") {}
+};
+
 class EditableValue
 {
 public:
@@ -64,14 +70,19 @@ public:
     virtual std::string getOriginalText() const;
     virtual std::string getEditedText() const;
     virtual void setLineText(const std::string &newLineText);
+    unsigned int getStartTextEndLetterPosition() const;
+    std::string getTextStart() const;
 
 protected:
+    void calculateStartTextEndLetterPosition();
     std::string replaceTextInText(const std::string& text, const std::string& textToReplace, const std::string& newText);
     unsigned int lineNumber;
     std::string name;
     std::string editableText;
+    std::string editedValue;
     std::string *editedText = nullptr;
     std::string *originalLine = nullptr;
+    unsigned int startTextEndLetterPosition = 0;
 };
 
 class EditableStringValue : public EditableValue
@@ -109,6 +120,10 @@ public:
     std::string getUnitTypeAsString() const;
     std::string getUnitTypeAsString(const UnitType &unitType) const;
     const static inline std::unordered_map<UnitType, std::string> &getUnitTypes();
+    std::string getTextEnd() const;
+    std::string getTextMiddle() const;
+    unsigned int getEndTextStartLetterPosition() const;
+    std::tuple<std::string,std::string,std::string,std::string,std::string> split();
     static inline std::unordered_map<UnitType, std::string> unitTypes = {
         {UnitType::None, "units.none"},
         {UnitType::Deg, "units.deg"},
@@ -142,8 +157,11 @@ public:
                                       "units.inch",
                                       "units.kg"};
     UnitType unitType = UnitType::None;
+    UnitType originalUnitType = UnitType::None;
 
 protected:
+    void calculateEndTextStartLetterPosition();
+    unsigned int endTextStartLetterPosition = 0;
 };
 
 class EditableFloatValue : public EditableNumericValue
@@ -179,6 +197,7 @@ public:
     {
         return !(*this == e2);
     }
+    void setValue(const int newValue);
     int *getEditedIntegerValue();
     std::string getEditedValueAsString();
 

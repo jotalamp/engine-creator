@@ -78,9 +78,9 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
                 {
                     current_item = line->items[n];
 
-                    //lineText = engineCreator.replaceTextInText(lineText, line->getEditableText(), line->getEditedValueAsString(decimals));
-                    //engineCreator.setUnitType(*line, line->getUnitType(current_item), lineText);
-                    line->setUnitType(UnitType::mm);
+                    // lineText = engineCreator.replaceTextInText(lineText, line->getEditableText(), line->getEditedValueAsString(decimals));
+                    // engineCreator.setUnitType(*line, line->getUnitType(current_item), lineText);
+                    line->setUnitType(line->getUnitType(current_item));
                 }
                 if (is_selected)
                     ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
@@ -97,7 +97,9 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
         setScroll(line->getLineNumber());
         if (*line->getEditedFloatValue() < 0)
             *line->getEditedFloatValue() = 0;
-        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString(decimals));
+
+        line->setValue(*line->getEditedFloatValue());
+        // engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString(decimals));
     }
 }
 
@@ -122,7 +124,11 @@ void ImGui_EngineCreator::editInt(const std::string &name)
             {
                 bool is_selected = (current_item == line->items[n]); // You can store your selection however you want, outside or inside your objects
                 if (ImGui::Selectable(line->items[n], is_selected))
+                {
                     current_item = line->items[n];
+
+                    line->setUnitType(line->getUnitType(current_item));
+                }
                 if (is_selected)
                     ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
             }
@@ -138,7 +144,8 @@ void ImGui_EngineCreator::editInt(const std::string &name)
         setScroll(line->getLineNumber());
         if (*line->getEditedIntegerValue() < 0)
             *line->getEditedIntegerValue() = 0;
-        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString());
+        line->setValue(*line->getEditedIntegerValue());
+        //engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString());
     }
 }
 

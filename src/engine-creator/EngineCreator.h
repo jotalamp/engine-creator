@@ -72,7 +72,7 @@ public:
     unsigned int getLineCount() const;
     std::string getEditedLine(unsigned int lineNumber) const;
     std::string shortestStringRepresentation(float n) const;
-    std::string setUnitType(EditableNumericValue& editableNumericValue, const UnitType& unitType, std::string text);
+    //std::string setUnitType(EditableNumericValue& editableNumericValue, const UnitType& unitType, std::string text);
 
 private:
     std::string getOriginalLine(unsigned int lineNumber) const;

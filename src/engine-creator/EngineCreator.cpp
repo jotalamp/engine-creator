@@ -38,7 +38,7 @@ std::string EngineCreator::shortestStringRepresentation(float n) const
     auto result = std::to_chars(buf.data(), buf.data() + buf.size(), n, std::chars_format::fixed);
     return std::string(buf.data(), result.ptr - buf.data());
 }
-
+/*
 std::string EngineCreator::setUnitType(EditableNumericValue& editableNumericValue, const UnitType &unitType, std::string text)
 {
     auto line = editableNumericValue;
@@ -52,7 +52,7 @@ std::string EngineCreator::setUnitType(EditableNumericValue& editableNumericValu
     editableNumericValue.setUnitType();
     return text;
 }
-
+*/
 std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber) const
 {
     std::vector<std::string> lines;
@@ -221,12 +221,12 @@ EditableIntegerValue EngineCreator::addEditableIntegerValue(EditableIntegerValue
 
 EditableStringValue EngineCreator::addEditableStringValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    return addEditableStringValue(EditableStringValue(lineNumber, name, editableText, &editedLines[lineNumber], &editedLines[lineNumber]));
+    return addEditableStringValue(EditableStringValue(lineNumber, name, editableText, &originalLines[lineNumber], &editedLines[lineNumber]));
 }
 
 EditableFloatValue EngineCreator::addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    EditableFloatValue e(lineNumber, name, editableText, &editedLines[lineNumber], &editedLines[lineNumber]);
+    EditableFloatValue e(lineNumber, name, editableText, &originalLines[lineNumber], &editedLines[lineNumber]);
     e.setUnitType();
     addEditableFloatValue(e);
     return e;
@@ -234,7 +234,7 @@ EditableFloatValue EngineCreator::addEditableFloatValue(unsigned int lineNumber,
 
 EditableIntegerValue EngineCreator::addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText)
 {
-    EditableIntegerValue e(lineNumber, name, editableText, &editedLines[lineNumber], &editedLines[lineNumber]);
+    EditableIntegerValue e(lineNumber, name, editableText, &originalLines[lineNumber], &editedLines[lineNumber]);
     e.setUnitType();
     addEditableIntegerValue(e);
     return e;
