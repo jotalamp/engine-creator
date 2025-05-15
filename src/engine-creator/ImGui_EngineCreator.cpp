@@ -35,23 +35,23 @@ void ImGui_EngineCreator::editText(const std::string &name)
         exit(0);
     }
 
-    if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedText()))
+    if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedLine()))
     {
-        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), *line->getEditedText());
+        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), *line->getEditedLine());
         setScroll(line->getLineNumber());
     }
 
-    if ((*line->getEditedText()).size() == 0)
+    if ((*line->getEditedLine()).size() == 0)
     {
-        *line->getEditedText() = line->getEditableText();
-        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), *line->getEditedText());
+        *line->getEditedLine() = line->getEditableText();
+        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), *line->getEditedLine());
     }
 }
 
 void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decimals)
 {
     auto line = engineCreator.getEditableFloatValue(name);
-    std::string lineText = line->getOriginalText();
+    std::string lineText = line->getOriginalLine();
 
     if (line == nullptr)
     {

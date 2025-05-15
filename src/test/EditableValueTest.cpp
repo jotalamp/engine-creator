@@ -1,6 +1,5 @@
 #include "../engine-creator/EditableValue.h"
 #include "gmock/gmock.h"
-#include <bits/stdc++.h>
 
 using namespace testing;
 using ::testing::Eq;
@@ -11,23 +10,23 @@ protected:
     const unsigned int lineNumber = 123;
     const std::string name = "TestName";
     const std::string editableText = "200";
-    std::string lineText = "        starter_torque: 200 * units.lb_ft,";
-    std::string editedText = "        starter_torque: 200 * units.lb_ft,";
+    std::string originalLine = "        starter_torque: 200 * units.lb_ft,";
+    std::string editedLine = "        starter_torque: 200 * units.lb_ft,";
 
-    EditableValue editableValue{lineNumber, name, editableText, &lineText, &editedText};
+    EditableValue editableValue{lineNumber, name, editableText, &originalLine, &editedLine};
 };
 
-TEST_F(AnEditableValue, GivesCorrectLineText)
+TEST_F(AnEditableValue, GivesCorrectOriginalLine)
 {
-    ASSERT_THAT(editableValue.getOriginalText(), Eq(lineText));
+    ASSERT_THAT(editableValue.getOriginalLine(), Eq(originalLine));
 }
 
-TEST_F(AnEditableValue, CanSetLineText)
+TEST_F(AnEditableValue, CanSetOriginalLine)
 {
-    const std::string newLineText = "        starter_torque: 234 * units.lb_ft,";
-    editableValue.setLineText(newLineText);
+    const std::string newOriginalLine = "        starter_torque: 234 * units.lb_ft,";
+    editableValue.setEditedLine(newOriginalLine);
 
-    ASSERT_THAT(editableValue.getEditedText(), Eq(newLineText));
+    ASSERT_THAT(editableValue.getEditedLine(), Eq(newOriginalLine));
 }
 
 TEST_F(AnEditableValue, GivesCorrectLineNumber)
@@ -65,9 +64,9 @@ TEST_F(AnEditableValue, IsNotEqualWithDifferentEditableValue)
 
 TEST_F(AnEditableValue, GivesCorrectStartPartOfText)
 {
-    std::string lineText = "        starter_torque: 200 * units.lb_ft,";
+    std::string originalLine = "        starter_torque: 200 * units.lb_ft,";
 
-    EditableNumericValue editableNumericValue{lineNumber, name, "200", &lineText, &editedText};
+    EditableNumericValue editableNumericValue{lineNumber, name, "200", &originalLine, &editedLine};
 
     ASSERT_THAT(editableNumericValue.getTextStart(), Eq("        starter_torque: "));
 }
@@ -80,7 +79,7 @@ protected:
 
 TEST_F(AnEditableStringValue, GetsEditableTextAsEditedTextWhenCreated)
 {
-    ASSERT_THAT(*editableStringValue.getEditedText(), Eq(editableText));
+    ASSERT_THAT(*editableStringValue.getEditedLine(), Eq(editableText));
 }
 
 TEST_F(AnEditableStringValue, IsEqualWithSimilarEditableStringValue)
@@ -104,32 +103,32 @@ class AnEditableNumericValue : public AnEditableValue
 protected:
     const std::string editableTextSimilarToFloat = "79.5";
     const float floatSimilarToEditableText = 79.5;
-    std::string lineText = "    label stroke(79.5 * units.mm)";
-    std::string editedText = "    label stroke(79.5 * units.mm)";
-    EditableNumericValue editableNumericValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
+    std::string editedLine = "    label stroke(79.5 * units.mm)";
+    EditableNumericValue editableNumericValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 };
 
-TEST_F(AnEditableNumericValue, ThrowsWhenLineTextIsNullPointer)
+TEST_F(AnEditableNumericValue, ThrowsWhenOriginalLineIsNullPointer)
 {
-    ASSERT_THROW(EditableNumericValue(lineNumber, name, editableText, nullptr), OriginalTextIsNullPointerException);
+    ASSERT_THROW(EditableNumericValue(lineNumber, name, editableText, nullptr), OriginalLineIsNullPointerException);
 }
 
 TEST_F(AnEditableNumericValue, GivesCorrectMiddlePartOfText)
 {
     const std::string editableTextSimilarToFloat = "79.5";
-    std::string lineText = "    label stroke(79.5 * units.mm)";
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
 
-    EditableNumericValue editableNumericValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    EditableNumericValue editableNumericValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 
     ASSERT_THAT(editableNumericValue.getTextMiddle(), Eq(" * "));
 }
 
 TEST_F(AnEditableNumericValue, CanSetUnitType)
 {
-    std::string lineText = "    label stroke(79.5 * units.mm)";
-    std::string editedText = "    label stroke(79.5 * units.mm)";
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
+    std::string editedLine = "    label stroke(79.5 * units.mm)";
     const std::string editableTextSimilarToFloat = "79.5";
-    EditableNumericValue editableNumericValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    EditableNumericValue editableNumericValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 
     const UnitType unitType = UnitType::Inch;
     editableNumericValue.setUnitType(unitType);
@@ -139,68 +138,68 @@ TEST_F(AnEditableNumericValue, CanSetUnitType)
 class AnEditableFloatValue : public AnEditableNumericValue
 {
 protected:
-    std::string lineText = "    label stroke(79.5 * units.mm)";
-    std::string editedText = "    label stroke(79.5 * units.mm)";
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
+    std::string editedLine = "    label stroke(79.5 * units.mm)";
     const std::string editableTextSimilarToFloat = "79.5";
     const float floatSimilarToEditableText = 79.5;
-    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 };
 
 TEST_F(AnEditableFloatValue, GivesCorrectStartOfText)
 {
-    std::string lineText = "    label stroke(79.5 * units.mm)";
-    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 
     ASSERT_THAT(editableFloatValue.getTextStart(), Eq("    label stroke("));
 }
 
 TEST_F(AnEditableFloatValue, GivesCorrectEndOfText)
 {
-    std::string lineText = "    label stroke(79.5 * units.mm)";
-    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 
     ASSERT_THAT(editableFloatValue.getTextEnd(), Eq(")"));
 }
 
 TEST_F(AnEditableFloatValue, CanSetValue)
 {
-    std::string lineText = "    label stroke(79.5 * units.mm)";
-    std::string editedText = "    label stroke(79.5 * units.mm)";
-    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
+    std::string editedLine = "    label stroke(79.5 * units.mm)";
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 
     float newValue = 1.23;
     const std::string newValueAsString = "1.23";
 
     editableFloatValue.setValue(newValue);
 
-    std::string newLineText = "    label stroke(1.230 * units.mm)";
+    std::string newOriginalLine = "    label stroke(1.230 * units.mm)";
 
     ASSERT_THAT(*editableFloatValue.getEditedFloatValue(), Eq(newValue));
     ASSERT_THAT(editableFloatValue.getEditedValueAsString(2), Eq(newValueAsString));
     //ASSERT_THAT(editableFloatValue.getEditableText(), Eq(newValueAsString));
-    ASSERT_THAT(editableFloatValue.getEditedText(), Eq(newLineText));
+    ASSERT_THAT(editableFloatValue.getEditedLine(), Eq(newOriginalLine));
 }
 
 TEST_F(AnEditableFloatValue, CanSetUnitType)
 {
-    std::string lineText = "    label stroke(79.5 * units.mm)";
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
     const std::string editableTextSimilarToFloat = "79.5";
-    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 
     const UnitType newUnitType = UnitType::Inch;
 
     editableFloatValue.setUnitType(newUnitType);
 
-    std::string newLineText = "    label stroke(79.5 * units.inch)";
+    std::string newOriginalLine = "    label stroke(79.5 * units.inch)";
 
-    ASSERT_THAT(editableFloatValue.getEditedText(), Eq(newLineText));
+    ASSERT_THAT(editableFloatValue.getEditedLine(), Eq(newOriginalLine));
     ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(editableFloatValue.unitTypes[newUnitType]));
 }
 
 TEST_F(AnEditableFloatValue, CanSetValueAndUnitType)
 {
-    std::string lineText = "    label stroke(79.5 * units.mm)";
-    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 
     float newValue = 1.23;
     const std::string newValueAsString = "1.23";
@@ -211,28 +210,28 @@ TEST_F(AnEditableFloatValue, CanSetValueAndUnitType)
 
     editableFloatValue.setUnitType(newUnitType);
 
-    std::string newLineText = "    label stroke(1.230 * units.inch)";
+    std::string newOriginalLine = "    label stroke(1.230 * units.inch)";
 
     ASSERT_THAT(*editableFloatValue.getEditedFloatValue(), Eq(newValue));
     ASSERT_THAT(editableFloatValue.getEditedValueAsString(2), Eq(newValueAsString));
-    ASSERT_THAT(editableFloatValue.getEditedText(), Eq(newLineText));
+    ASSERT_THAT(editableFloatValue.getEditedLine(), Eq(newOriginalLine));
     ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(editableFloatValue.unitTypes[newUnitType]));
 }
 
 TEST_F(AnEditableFloatValue, CanDetectUnitType)
 {
-    std::string lineText = "    label stroke(79.5 * units.mm)";
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
     const UnitType unitType = UnitType::mm;
-    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 
     ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(editableFloatValue.unitTypes[unitType]));
 }
 
 TEST_F(AnEditableFloatValue, CanSplitTextToEditableTextUnitTypeAndRest)
 {
-    std::string lineText = "    label stroke(79.5 * units.mm)";
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
     const std::string editableTextSimilarToFloat = "79.5";
-    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 
     auto [textStart, editableText, textMiddle, unitAsString, textEnd] = editableFloatValue.split();
 
@@ -241,20 +240,20 @@ TEST_F(AnEditableFloatValue, CanSplitTextToEditableTextUnitTypeAndRest)
     ASSERT_THAT(textMiddle, Eq(" * "));
     ASSERT_THAT(unitAsString, Eq("units.mm"));
     ASSERT_THAT(textEnd, Eq(")"));
-    ASSERT_THAT(textStart + editableText + textMiddle + unitAsString + textEnd, Eq(lineText));
+    ASSERT_THAT(textStart + editableText + textMiddle + unitAsString + textEnd, Eq(originalLine));
 }
 
 TEST_F(AnEditableFloatValue, CanSetValueAndKeepUnitType)
 {
-    std::string lineText = "    label stroke(79.5 * units.mm)";
-    std::string editedText = "    label stroke(79.5 * units.mm)";
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
+    std::string editedLine = "    label stroke(79.5 * units.mm)";
     const std::string editableTextSimilarToFloat = "79.5";
-    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &lineText, &editedText};
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
 
     const UnitType newUnitType = UnitType::Inch;
     float newValue = 1.23;
     const std::string newValueAsString = "1.23";
-    std::string newLineText = "    label stroke(1.230 * units.inch)";
+    std::string newOriginalLine = "    label stroke(1.230 * units.inch)";
 
     editableFloatValue.setValue(newValue);
     editableFloatValue.setUnitType(newUnitType);
@@ -263,7 +262,7 @@ TEST_F(AnEditableFloatValue, CanSetValueAndKeepUnitType)
     ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(editableFloatValue.unitTypes[newUnitType]));
     ASSERT_THAT(*editableFloatValue.getEditedFloatValue(), Eq(newValue));
     ASSERT_THAT(editableFloatValue.getEditedValueAsString(2), Eq(newValueAsString));
-    ASSERT_THAT(editableFloatValue.getEditedText(), Eq(newLineText));
+    ASSERT_THAT(editableFloatValue.getEditedLine(), Eq(newOriginalLine));
 }
 
 TEST_F(AnEditableFloatValue, ConvertsGivenStringToCorrespondingFloatValue)
@@ -273,10 +272,10 @@ TEST_F(AnEditableFloatValue, ConvertsGivenStringToCorrespondingFloatValue)
 
 TEST_F(AnEditableFloatValue, ThrowsWhenStringCanNotBeConvertedToFloat)
 {
-    std::string lineText = "    label stroke(A123.0 * units.mm)";
+    std::string originalLine = "    label stroke(A123.0 * units.mm)";
     const std::string stringThatCanNotBeConvertedToFloat = "A123.0";
 
-    ASSERT_THROW(EditableFloatValue(lineNumber, name, stringThatCanNotBeConvertedToFloat, &lineText, &editedText), CanNotConvertStringToFloatException);
+    ASSERT_THROW(EditableFloatValue(lineNumber, name, stringThatCanNotBeConvertedToFloat, &originalLine, &editedLine), CanNotConvertStringToFloatException);
 }
 
 TEST_F(AnEditableFloatValue, IsNotEqualWithDifferentEditableFloatValue)
@@ -295,22 +294,22 @@ TEST_F(AnEditableFloatValue, IsNotEqualWithDifferentEditableFloatValue)
 
 TEST_F(AnEditableFloatValue, IsEqualWithSimilarEditableFloatValue)
 {
-    std::string lineText = "    label stroke(1.00 * units.mm)";
-    std::string editedText = "    label stroke(1.00 * units.mm)";
+    std::string originalLine = "    label stroke(1.00 * units.mm)";
+    std::string editedLine = "    label stroke(1.00 * units.mm)";
     const std::string editableText = "1.00";
-    EditableFloatValue editableFloatValue1(lineNumber, name, editableText, &lineText, &editedText);
-    EditableFloatValue editableFloatValue2(lineNumber, name, editableText, &lineText, &editedText);
+    EditableFloatValue editableFloatValue1(lineNumber, name, editableText, &originalLine, &editedLine);
+    EditableFloatValue editableFloatValue2(lineNumber, name, editableText, &originalLine, &editedLine);
 
     ASSERT_THAT(editableFloatValue1, Eq(editableFloatValue2));
 }
 
 TEST_F(AnEditableFloatValue, GivesUnitTypeNoneWhenAnyUnitTypeNotExistInLine)
 {
-    std::string lineText = "            limiter_duration: 0.1";
+    std::string originalLine = "            limiter_duration: 0.1";
     const unsigned int lineNumber = 23;
     const std::string name = "limiter_duration";
     const std::string editableText = "0.1";
-    EditableFloatValue editableFloatValue(lineNumber, name, editableText, &lineText, &editedText);
+    EditableFloatValue editableFloatValue(lineNumber, name, editableText, &originalLine, &editedLine);
 
     ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), editableFloatValue.unitTypes[UnitType::None]);
     ASSERT_THAT(editableFloatValue.getUnitType(), UnitType::None);
@@ -321,8 +320,8 @@ TEST_F(AnEditableFloatValue, GivesCorrectUnitTypeWhenUnitTypeExistInLine)
     const unsigned int lineNumber = 18;
     const std::string name = "rev_limit";
     const std::string editableText = "7500";
-    std::string lineText = "    input rev_limit: 7500 * units.rpm;";
-    EditableFloatValue editableFloatValue(lineNumber, name, editableText, &lineText, &editedText);
+    std::string originalLine = "    input rev_limit: 7500 * units.rpm;";
+    EditableFloatValue editableFloatValue(lineNumber, name, editableText, &originalLine, &editedLine);
     editableFloatValue.setUnitType();
     ASSERT_THAT(editableFloatValue.getUnitType(), UnitType::Rpm);
 }
@@ -330,10 +329,10 @@ TEST_F(AnEditableFloatValue, GivesCorrectUnitTypeWhenUnitTypeExistInLine)
 class AnEditableIntegerValue : public AnEditableNumericValue
 {
 protected:
-    std::string lineText = "    input rev_limit: 7500 * units.rpm;";
+    std::string originalLine = "    input rev_limit: 7500 * units.rpm;";
     const std::string editableTextSimilarToInt = "7500";
     const int integerSimilarToEditableText = 7500;
-    EditableIntegerValue editableIntegerValue{lineNumber, name, editableTextSimilarToInt, &lineText, &editedText};
+    EditableIntegerValue editableIntegerValue{lineNumber, name, editableTextSimilarToInt, &originalLine, &editedLine};
 };
 
 TEST_F(AnEditableIntegerValue, ConvertsGivenStringToCorrespondingFloatValue)
@@ -343,10 +342,10 @@ TEST_F(AnEditableIntegerValue, ConvertsGivenStringToCorrespondingFloatValue)
 
 TEST_F(AnEditableIntegerValue, ThrowsWhenStringCanNotBeConvertedToInt)
 {
-    std::string lineText = "    input rev_limit: A123.0 * units.rpm;";
+    std::string originalLine = "    input rev_limit: A123.0 * units.rpm;";
     const std::string stringThatCanNotBeConvertedToInt = "A123.0";
 
-    ASSERT_THROW(EditableIntegerValue(lineNumber, name, stringThatCanNotBeConvertedToInt, &lineText, &editedText), CanNotConvertStringToIntException);
+    ASSERT_THROW(EditableIntegerValue(lineNumber, name, stringThatCanNotBeConvertedToInt, &originalLine, &editedLine), CanNotConvertStringToIntException);
 }
 
 TEST_F(AnEditableIntegerValue, IsNotEqualWithDifferentEditableIntegerValue)
@@ -355,18 +354,18 @@ TEST_F(AnEditableIntegerValue, IsNotEqualWithDifferentEditableIntegerValue)
     std::string lineText2 = "    input rev_limit: 2 * units.rpm;";
     const std::string editableText1 = "1";
     const std::string editableText2 = "2";
-    EditableIntegerValue editableIntegerValue1(lineNumber, name, editableText1, &lineText1, &editedText);
-    EditableIntegerValue editableIntegerValue2(lineNumber, name, editableText2, &lineText2, &editedText);
+    EditableIntegerValue editableIntegerValue1(lineNumber, name, editableText1, &lineText1, &editedLine);
+    EditableIntegerValue editableIntegerValue2(lineNumber, name, editableText2, &lineText2, &editedLine);
 
     ASSERT_THAT(editableIntegerValue1, Ne(editableIntegerValue2));
 }
 
 TEST_F(AnEditableIntegerValue, IsEqualWithSimilarEditableIntValue)
 {
-    std::string lineText = "    input rev_limit: 1 * units.rpm;";
+    std::string originalLine = "    input rev_limit: 1 * units.rpm;";
     const std::string editableText = "1";
-    EditableIntegerValue editableIntValue1(lineNumber, name, editableText, &lineText, &editedText);
-    EditableIntegerValue editableIntValue2(lineNumber, name, editableText, &lineText, &editedText);
+    EditableIntegerValue editableIntValue1(lineNumber, name, editableText, &originalLine, &editedLine);
+    EditableIntegerValue editableIntValue2(lineNumber, name, editableText, &originalLine, &editedLine);
 
     ASSERT_THAT(editableIntValue1, Eq(editableIntValue2));
 }

@@ -1,4 +1,5 @@
 {
+    "editor.autoClosingBrackets": "never",
     "files.associations": {
         "iostream": "cpp",
         "bitset": "cpp",

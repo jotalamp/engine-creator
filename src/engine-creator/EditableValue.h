@@ -1,9 +1,6 @@
 #pragma once
 
-#include <iostream>
 #include <bits/stdc++.h>
-#include <sstream>
-#include <charconv>
 
 class EditableValueException : public std::exception
 {
@@ -25,25 +22,25 @@ protected:
 class CanNotConvertStringToFloatException : public EditableValueException
 {
 public:
-    CanNotConvertStringToFloatException(const std::string &message) : EditableValueException(message) {}
+    CanNotConvertStringToFloatException(const std::string &message) : EditableValueException("Can not convert string to float! " + message) {}
 };
 
 class CanNotConvertStringToIntException : public EditableValueException
 {
 public:
-    CanNotConvertStringToIntException(const std::string &message) : EditableValueException(message) {}
+    CanNotConvertStringToIntException(const std::string &message) : EditableValueException("Can not convert string to int! " + message) {}
 };
 
-class OriginalTextIsNullPointerException : public EditableValueException
+class OriginalLineIsNullPointerException : public EditableValueException
 {
 public:
-    OriginalTextIsNullPointerException(const std::string &message) : EditableValueException("Original text is nullpointer! " + message) {}
+    OriginalLineIsNullPointerException(const std::string &message) : EditableValueException("Original text is nullpointer! " + message) {}
 };
 
-class EditedTextIsNullPointerException : public EditableValueException
+class EditedLineIsNullPointerException : public EditableValueException
 {
 public:
-    EditedTextIsNullPointerException(const std::string &message) : EditableValueException("Edited text is nullpointer! " + message) {}
+    EditedLineIsNullPointerException(const std::string &message) : EditableValueException("Edited text is nullpointer! " + message) {}
 };
 
 class TextNotFoundException : public EditableValueException
@@ -55,7 +52,7 @@ public:
 class EditableValue
 {
 public:
-    EditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr, std::string *editedText = nullptr);
+    EditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr, std::string *editedLine = nullptr);
     virtual bool operator==(const EditableValue &e2) const
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name;
@@ -67,9 +64,9 @@ public:
     virtual unsigned int getLineNumber() const;
     virtual std::string getName() const;
     virtual std::string getEditableText() const;
-    virtual std::string getOriginalText() const;
-    virtual std::string getEditedText() const;
-    virtual void setLineText(const std::string &newLineText);
+    virtual std::string getOriginalLine() const;
+    virtual std::string getEditedLine() const;
+    virtual void setEditedLine(const std::string &newEditedLine);
     unsigned int getStartTextEndLetterPosition() const;
     std::string getTextStart() const;
 
@@ -80,7 +77,7 @@ protected:
     std::string name;
     std::string editableText;
     std::string editedValue;
-    std::string *editedText = nullptr;
+    std::string *editedLine = nullptr;
     std::string *originalLine = nullptr;
     unsigned int startTextEndLetterPosition = 0;
 };
@@ -88,11 +85,11 @@ protected:
 class EditableStringValue : public EditableValue
 {
 public:
-    EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr, std::string *editedText = nullptr);
-    std::string *getEditedText();
+    EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr, std::string *editedLine = nullptr);
+    std::string *getEditedLine();
 
 protected:
-    std::string editedText;
+    std::string editedLine;
 };
 
 enum class UnitType
@@ -112,7 +109,7 @@ enum class UnitType
 class EditableNumericValue : public EditableValue
 {
 public:
-    EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr, std::string *editedText = nullptr);
+    EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr, std::string *editedLine = nullptr);
     void setUnitType(const UnitType &unitType);
     void setUnitType();
     UnitType getUnitType() const;
@@ -167,7 +164,7 @@ protected:
 class EditableFloatValue : public EditableNumericValue
 {
 public:
-    EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr, std::string *editedText = nullptr);
+    EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr, std::string *editedLine = nullptr);
     bool operator==(const EditableFloatValue &e2) const
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && editedFloatValue == e2.editedFloatValue;
@@ -188,7 +185,7 @@ private:
 class EditableIntegerValue : public EditableNumericValue
 {
 public:
-    EditableIntegerValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr, std::string *editedText = nullptr);
+    EditableIntegerValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText = nullptr, std::string *editedLine = nullptr);
     bool operator==(const EditableIntegerValue &e2) const
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && editedIntValue == e2.editedIntValue;

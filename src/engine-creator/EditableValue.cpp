@@ -1,12 +1,12 @@
 #include "EditableValue.h"
 
-EditableValue::EditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText, std::string *editedText)
+EditableValue::EditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *originalLine, std::string *editedLine)
 {
-    this->originalLine = lineText;
+    this->originalLine = originalLine;
     this->lineNumber = lineNumber;
     this->name = name;
     this->editableText = editableText;
-    this->editedText = editedText;
+    this->editedLine = editedLine;
     this->editedValue = editableText;
 
     calculateStartTextEndLetterPosition();
@@ -22,28 +22,28 @@ std::string EditableValue::getEditableText() const
     return editableText;
 }
 
-std::string EditableValue::getOriginalText() const
+std::string EditableValue::getOriginalLine() const
 {
     if (originalLine == nullptr)
-        throw OriginalTextIsNullPointerException(name);
+        throw OriginalLineIsNullPointerException(name);
 
     return *originalLine;
 }
 
-std::string EditableValue::getEditedText() const
+std::string EditableValue::getEditedLine() const
 {
-    if (editedText == nullptr)
-        throw EditedTextIsNullPointerException(name);
+    if (editedLine == nullptr)
+        throw EditedLineIsNullPointerException(name);
 
-    return *editedText;
+    return *editedLine;
 }
 
-void EditableValue::setLineText(const std::string &newLineText)
+void EditableValue::setEditedLine(const std::string &newEditedLine)
 {
-    if (editedText == nullptr)
-        throw EditedTextIsNullPointerException(name);
+    if (editedLine == nullptr)
+        throw EditedLineIsNullPointerException(name);
 
-    *editedText = newLineText;
+    *editedLine = newEditedLine;
 }
 
 unsigned int EditableValue::getStartTextEndLetterPosition() const
@@ -53,7 +53,7 @@ unsigned int EditableValue::getStartTextEndLetterPosition() const
 
 std::string EditableValue::getTextStart() const
 {
-    return getOriginalText().substr(0, getStartTextEndLetterPosition());
+    return getOriginalLine().substr(0, getStartTextEndLetterPosition());
 }
 
 unsigned int EditableValue::getLineNumber() const
@@ -61,11 +61,11 @@ unsigned int EditableValue::getLineNumber() const
     return lineNumber;
 }
 
-EditableNumericValue::EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText, std::string *editedText)
-    : EditableValue(lineNumber, name, editableText, lineText, editedText)
+EditableNumericValue::EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *originalLine, std::string *editedLine)
+    : EditableValue(lineNumber, name, editableText, originalLine, editedLine)
 {
-    if (lineText == nullptr)
-        throw OriginalTextIsNullPointerException(name);
+    if (originalLine == nullptr)
+        throw OriginalLineIsNullPointerException(name);
     setUnitType();
     originalUnitType = this->unitType;
     calculateEndTextStartLetterPosition();
@@ -74,16 +74,16 @@ EditableNumericValue::EditableNumericValue(unsigned int lineNumber, const std::s
 std::string EditableNumericValue::getTextEnd() const
 {
     int p = getEndTextStartLetterPosition();
-    int l = getOriginalText().length();
+    int l = getOriginalLine().length();
     if (p > l)
         throw TextNotFoundException(std::to_string(p) + ":" + std::to_string(l));
-    return getOriginalText().substr(getEndTextStartLetterPosition());
+    return getOriginalLine().substr(getEndTextStartLetterPosition());
 }
 
 std::string EditableNumericValue::getTextMiddle() const
 {
     return " * ";
-    // return getOriginalText().substr(getEditableTextStartLetterPosition() + editableText.length(), getUnitEndLetterPosition() - 1-unitTypes[unitType].length());
+    // return getOriginalLine().substr(getEditableTextStartLetterPosition() + editableText.length(), getUnitEndLetterPosition() - 1-unitTypes[unitType].length());
 }
 
 unsigned int EditableNumericValue::getEndTextStartLetterPosition() const
@@ -119,7 +119,7 @@ inline const std::unordered_map<UnitType, std::string> &EditableNumericValue::ge
 void EditableNumericValue::setUnitType()
 {
     if (originalLine == nullptr)
-        throw OriginalTextIsNullPointerException(name);
+        throw OriginalLineIsNullPointerException(name);
 
     std::string line = *originalLine;
 
@@ -139,9 +139,9 @@ void EditableNumericValue::setUnitType()
 void EditableNumericValue::setUnitType(const UnitType &unitType)
 {
     if (originalLine == nullptr)
-        throw OriginalTextIsNullPointerException(name);
+        throw OriginalLineIsNullPointerException(name);
 
-    *editedText = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
+    *editedLine = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
 
     this->unitType = unitType;
 }
@@ -162,13 +162,13 @@ void EditableNumericValue::calculateEndTextStartLetterPosition()
     }
     else
     {
-        auto &&pos = getOriginalText().find(unitTypes[originalUnitType], size_t{});
+        auto &&pos = getOriginalLine().find(unitTypes[originalUnitType], size_t{});
         if (pos != std::string::npos)
         {
             endTextStartLetterPosition = pos + unitTypes[originalUnitType].length();
         }
         else
-            throw TextNotFoundException(unitTypes[originalUnitType] + " : " + getOriginalText());
+            throw TextNotFoundException(unitTypes[originalUnitType] + " : " + getOriginalLine());
     }
 }
 
@@ -177,13 +177,13 @@ void EditableValue::calculateStartTextEndLetterPosition()
     if (originalLine == nullptr)
         return;
 
-    auto &&pos = getOriginalText().find(editableText, size_t{});
+    auto &&pos = getOriginalLine().find(editableText, size_t{});
     if (pos != std::string::npos)
     {
         startTextEndLetterPosition = pos;
     }
     else
-        throw TextNotFoundException(editableText + " : " + getOriginalText());
+        throw TextNotFoundException(editableText + " : " + getOriginalLine());
 }
 
 std::string EditableValue::replaceTextInText(const std::string &text, const std::string &textToReplace, const std::string &newText)
@@ -199,19 +199,19 @@ std::string EditableValue::replaceTextInText(const std::string &text, const std:
     return line;
 }
 
-EditableStringValue::EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText, std::string *editedText)
-    : EditableValue(lineNumber, name, editableText, lineText, editedText)
+EditableStringValue::EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *originalLine, std::string *editedLine)
+    : EditableValue(lineNumber, name, editableText, originalLine, editedLine)
 {
-    this->editedText = editableText;
+    this->editedLine = editableText;
 }
 
-std::string *EditableStringValue::getEditedText()
+std::string *EditableStringValue::getEditedLine()
 {
-    return &editedText;
+    return &editedLine;
 }
 
-EditableFloatValue::EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText, std::string *editedText)
-    : EditableNumericValue(lineNumber, name, editableText, lineText, editedText)
+EditableFloatValue::EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *originalLine, std::string *editedLine)
+    : EditableNumericValue(lineNumber, name, editableText, originalLine, editedLine)
 {
     try
     {
@@ -226,8 +226,8 @@ EditableFloatValue::EditableFloatValue(unsigned int lineNumber, const std::strin
 
 void EditableFloatValue::setValue(const float newValue)
 {
-    if (editedText == nullptr)
-        throw EditedTextIsNullPointerException(name);
+    if (editedLine == nullptr)
+        throw EditedLineIsNullPointerException(name);
 
     editedFloatValue = newValue;
 
@@ -235,9 +235,9 @@ void EditableFloatValue::setValue(const float newValue)
     editedValue = getEditedValueAsString(3);
 
     if (unitType == UnitType::None)
-        *editedText = getTextStart() + editedValue + getTextEnd();
+        *editedLine = getTextStart() + editedValue + getTextEnd();
     else
-        *editedText = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
+        *editedLine = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
 }
 
 float *EditableFloatValue::getEditedFloatValue()
@@ -264,8 +264,8 @@ std::string EditableFloatValue::shortestStringRepresentation(float n) const
     return std::string(buf.data(), result.ptr - buf.data());
 }
 
-EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *lineText, std::string *editedText)
-    : EditableNumericValue(lineNumber, name, editableText, lineText, editedText)
+EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *originalLine, std::string *editedLine)
+    : EditableNumericValue(lineNumber, name, editableText, originalLine, editedLine)
 {
     try
     {
@@ -280,14 +280,14 @@ EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, const std::s
 
 void EditableIntegerValue::setValue(const int newValue)
 {
-    if (editedText == nullptr)
-        throw EditedTextIsNullPointerException(name);
+    if (editedLine == nullptr)
+        throw EditedLineIsNullPointerException(name);
 
     editedIntValue = newValue;
 
     editedValue = std::to_string(newValue);
 
-    *editedText = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
+    *editedLine = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
 }
 
 int *EditableIntegerValue::getEditedIntegerValue()

@@ -95,9 +95,9 @@ std::string EngineCreator::getLineFromCreatedFile(unsigned int lineNumber) const
     return getLineFromFile(createdEngineName, lineNumber);
 }
 
-void EngineCreator::changeLineTo(unsigned int lineNumber, std::string newLineText)
+void EngineCreator::changeLineTo(unsigned int lineNumber, std::string newEditedLine)
 {
-    editedLines[lineNumber] = newLineText;
+    editedLines[lineNumber] = newEditedLine;
 }
 
 void EngineCreator::writeAllLinesToFile() const

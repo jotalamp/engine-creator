@@ -77,7 +77,7 @@ public:
 private:
     std::string getOriginalLine(unsigned int lineNumber) const;
     std::string getLineFromCreatedFile(unsigned int lineNumber) const;
-    void changeLineTo(unsigned int lineNumber, std::string newLineText);
+    void changeLineTo(unsigned int lineNumber, std::string newEditedLine);
     bool textExistsInOriginalLine(unsigned int lineNumber, std::string textToFind) const;
     bool textExistsInEditedLine(unsigned int lineNumber, std::string textToFind) const;
 
