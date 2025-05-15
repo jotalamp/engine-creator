@@ -135,6 +135,21 @@ TEST_F(AnEditableNumericValue, CanSetUnitType)
     ASSERT_THAT(editableNumericValue.getUnitTypeAsString(), Eq(editableNumericValue.unitTypes[unitType]));
 }
 
+TEST_F(AnEditableNumericValue, DoesNotShowUnitWhenUnitTypeNoneIsSelected)
+{
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
+    std::string editedLine = "    label stroke(79.5 * units.mm)";
+    const std::string editableTextSimilarToFloat = "79.5";
+    EditableNumericValue editableNumericValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
+
+    const UnitType unitType = UnitType::None;
+    editableNumericValue.setUnitType(unitType);
+
+    std::string editedLineAfterUnitTypeChangedToNone = "    label stroke(79.5)";
+
+    ASSERT_THAT(editableNumericValue.getEditedLine(), Eq(editedLineAfterUnitTypeChangedToNone));
+}
+
 class AnEditableFloatValue : public AnEditableNumericValue
 {
 protected:
@@ -194,6 +209,23 @@ TEST_F(AnEditableFloatValue, CanSetUnitType)
 
     ASSERT_THAT(editableFloatValue.getEditedLine(), Eq(newOriginalLine));
     ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(editableFloatValue.unitTypes[newUnitType]));
+}
+
+TEST_F(AnEditableFloatValue, DoesNotShowUnitWhenUnitTypeNoneIsSelectedAndValueIsChanged)
+{
+    std::string originalLine = "    label stroke(79.5 * units.mm)";
+    std::string editedLine = "    label stroke(79.5 * units.mm)";
+    const std::string editableTextSimilarToFloat = "79.5";
+    EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &originalLine, &editedLine};
+
+    const UnitType unitType = UnitType::None;
+    editableFloatValue.setUnitType(unitType);
+
+    editableFloatValue.setValue(12.3);
+
+    std::string editedLineAfterUnitTypeChangedToNone = "    label stroke(12.300)";
+
+    ASSERT_THAT(editableFloatValue.getEditedLine(), Eq(editedLineAfterUnitTypeChangedToNone));
 }
 
 TEST_F(AnEditableFloatValue, CanSetValueAndUnitType)

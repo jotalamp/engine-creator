@@ -51,7 +51,7 @@ void ImGui_EngineCreator::editText(const std::string &name)
 void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decimals)
 {
     auto line = engineCreator.getEditableFloatValue(name);
-    std::string lineText = line->getOriginalLine();
+    //std::string originalLine = line->getOriginalLine();
 
     if (line == nullptr)
     {
@@ -144,6 +144,7 @@ void ImGui_EngineCreator::editInt(const std::string &name)
         setScroll(line->getLineNumber());
         if (*line->getEditedIntegerValue() < 0)
             *line->getEditedIntegerValue() = 0;
+
         line->setValue(*line->getEditedIntegerValue());
         //engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString());
     }

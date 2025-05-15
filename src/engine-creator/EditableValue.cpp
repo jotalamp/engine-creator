@@ -141,9 +141,16 @@ void EditableNumericValue::setUnitType(const UnitType &unitType)
     if (originalLine == nullptr)
         throw OriginalLineIsNullPointerException(name);
 
-    *editedLine = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
-
     this->unitType = unitType;
+
+    if (unitType == UnitType::None)
+    {
+        *editedLine = getTextStart() + editedValue + getTextEnd();
+    }
+    else
+    {
+        *editedLine = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
+    }
 }
 
 std::tuple<std::string, std::string, std::string, std::string, std::string> EditableNumericValue::split()
@@ -231,13 +238,17 @@ void EditableFloatValue::setValue(const float newValue)
 
     editedFloatValue = newValue;
 
-    //editedValue = shortestStringRepresentation(newValue);
+    // editedValue = shortestStringRepresentation(newValue);
     editedValue = getEditedValueAsString(3);
 
     if (unitType == UnitType::None)
+    {
         *editedLine = getTextStart() + editedValue + getTextEnd();
+    }
     else
+    {
         *editedLine = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
+    }
 }
 
 float *EditableFloatValue::getEditedFloatValue()
@@ -287,7 +298,14 @@ void EditableIntegerValue::setValue(const int newValue)
 
     editedValue = std::to_string(newValue);
 
-    *editedLine = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
+    if (unitType == UnitType::None)
+    {
+        *editedLine = getTextStart() + editedValue + getTextEnd();
+    }
+    else
+    {
+        *editedLine = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
+    }
 }
 
 int *EditableIntegerValue::getEditedIntegerValue()
