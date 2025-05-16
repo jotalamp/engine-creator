@@ -1,6 +1,5 @@
 #include "EditableValue.h"
 
-//using Units::unitTypes;
 Units::Unit unitTypes;
 
 EditableValue::EditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine)
