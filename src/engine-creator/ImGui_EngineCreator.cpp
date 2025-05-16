@@ -35,23 +35,21 @@ void ImGui_EngineCreator::editText(const std::string &name)
         exit(0);
     }
 
-    if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedLine()))
+    if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedValue()))
     {
-        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), *line->getEditedLine());
+        line->setValue(*line->getEditedValue());
         setScroll(line->getLineNumber());
     }
 
-    if ((*line->getEditedLine()).size() == 0)
+    if ((*line->getEditedValue()).size() == 0)
     {
-        *line->getEditedLine() = line->getEditableText();
-        engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), *line->getEditedLine());
+        line->setValue(line->getEditableText().c_str());
     }
 }
 
 void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decimals)
 {
     auto line = engineCreator.getEditableFloatValue(name);
-    //std::string originalLine = line->getOriginalLine();
 
     if (line == nullptr)
     {
@@ -77,9 +75,6 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
                 if (ImGui::Selectable(line->items[n], is_selected))
                 {
                     current_item = line->items[n];
-
-                    // lineText = engineCreator.replaceTextInText(lineText, line->getEditableText(), line->getEditedValueAsString(decimals));
-                    // engineCreator.setUnitType(*line, line->getUnitType(current_item), lineText);
                     line->setUnitType(line->getUnitType(current_item));
                 }
                 if (is_selected)
@@ -99,7 +94,6 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
             *line->getEditedFloatValue() = 0;
 
         line->setValue(*line->getEditedFloatValue());
-        // engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString(decimals));
     }
 }
 
@@ -146,7 +140,6 @@ void ImGui_EngineCreator::editInt(const std::string &name)
             *line->getEditedIntegerValue() = 0;
 
         line->setValue(*line->getEditedIntegerValue());
-        //engineCreator.replaceTextInLine(line->getLineNumber(), line->getEditableText(), line->getEditedValueAsString());
     }
 }
 

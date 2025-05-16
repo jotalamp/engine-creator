@@ -72,13 +72,10 @@ public:
     unsigned int getLineCount() const;
     std::string getEditedLine(unsigned int lineNumber) const;
     std::string shortestStringRepresentation(float n) const;
-    //std::string setUnitType(EditableNumericValue& editableNumericValue, const UnitType& unitType, std::string text);
 
 private:
-    std::string getOriginalLine(unsigned int lineNumber) const;
     std::string getLineFromCreatedFile(unsigned int lineNumber) const;
     void changeLineTo(unsigned int lineNumber, std::string newEditedLine);
-    bool textExistsInOriginalLine(unsigned int lineNumber, std::string textToFind) const;
     bool textExistsInEditedLine(unsigned int lineNumber, std::string textToFind) const;
 
     EditableStringValue addEditableStringValue(unsigned int lineNumber, std::string name, std::string editableText);
@@ -95,7 +92,6 @@ private:
     EditableFloatValue addEditableFloatValue(EditableFloatValue &editableFloatValue);
     EditableIntegerValue addEditableIntegerValue(EditableIntegerValue &editableIntegerValue);
 
-    std::vector<std::string> originalLines;
     std::vector<std::string> editedLines;
     std::unordered_map<std::string, EditableStringValue> editableTextValuesByName;
     std::unordered_map<std::string, EditableFloatValue> editableFloatValuesByName;
