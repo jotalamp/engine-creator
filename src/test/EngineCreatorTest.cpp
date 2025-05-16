@@ -62,3 +62,4 @@ TEST_F(AnEngineCreator, GivesShortestStringRepresentationOfFloat)
     ASSERT_THAT(engineCreator.shortestStringRepresentation(-1), Eq("-1"));
     ASSERT_THAT(engineCreator.shortestStringRepresentation(1.0), Eq("1.0"));
 }
+    

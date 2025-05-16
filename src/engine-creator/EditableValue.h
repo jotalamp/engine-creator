@@ -1,6 +1,10 @@
 #pragma once
 
 #include <bits/stdc++.h>
+#include <string_view>
+#include "Units.h"
+
+using Units::UnitType;
 
 class EditableValueException : public std::exception
 {
@@ -64,10 +68,9 @@ public:
     virtual unsigned int getLineNumber() const;
     virtual std::string getName() const;
     virtual std::string getEditableText() const;
-    virtual std::string* getEditedValue();
+    virtual std::string *getEditedValue();
     virtual std::string getOriginalLine() const;
-    virtual std::string getEditedLine() const;
-    virtual void setEditedLine(const std::string &newEditedLine);
+    virtual std::string &getEditedLine() const;
     std::string getTextStart() const;
 
 protected:
@@ -90,26 +93,12 @@ class EditableStringValue : public EditableValue
 {
 public:
     EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine);
-    void setValue(const std::string& newValue);
-    std::string *getEditedLine();
+    void setValue(const std::string &newValue);
+    std::string &getEditedLine();
 
 protected:
     std::string getTextEnd() const;
     std::string editableText;
-};
-
-enum class UnitType
-{
-    None,
-    Rpm,
-    Deg,
-    Cc,
-    Thou,
-    Lb_ft,
-    mm,
-    g,
-    Kg,
-    Inch
 };
 
 class EditableNumericValue : public EditableValue
@@ -119,50 +108,30 @@ public:
     void setUnitType(const UnitType &unitType);
     void setUnitType();
     UnitType getUnitType() const;
-    UnitType getUnitType(const std::string &unitTypeAsString) const;
+    //UnitType getUnitType(const std::string &unitTypeAsString) const;
     std::string getUnitTypeAsString() const;
     std::string getUnitTypeAsString(const UnitType &unitType) const;
     const static inline std::unordered_map<UnitType, std::string> &getUnitTypes();
     std::string getTextEnd() const;
     std::string getTextMiddle() const;
-    std::tuple<std::string, std::string, std::string, std::string, std::string> split();
-    static inline std::unordered_map<UnitType, std::string> unitTypes = {
-        {UnitType::None, "units.none"},
-        {UnitType::Deg, "units.deg"},
-        {UnitType::Cc, "units.cc"},
-        {UnitType::Thou, "units.thou"},
-        {UnitType::Lb_ft, "units.lb_ft"},
-        {UnitType::mm, "units.mm"},
-        {UnitType::g, "units.g"},
-        {UnitType::Rpm, "units.rpm"},
-        {UnitType::Inch, "units.inch"},
-        {UnitType::Kg, "units.kg"}};
-    static inline std::unordered_map<std::string, UnitType> unitTypes2 = {
-        {"units.none", UnitType::None},
-        {"units.deg", UnitType::Deg},
-        {"units.cc", UnitType::Cc},
-        {"units.thou", UnitType::Thou},
-        {"units.lb_ft", UnitType::Lb_ft},
-        {"units.mm", UnitType::mm},
-        {"units.g", UnitType::g},
-        {"units.rpm", UnitType::Rpm},
-        {"units.inch", UnitType::Inch},
-        {"units.kg", UnitType::Kg}};
-    static const inline char *items[]{"units.none",
-                                      "units.deg",
-                                      "units.cc",
-                                      "units.thou",
-                                      "units.lb_ft",
-                                      "units.mm",
-                                      "units.g",
-                                      "units.rpm",
-                                      "units.inch",
-                                      "units.kg"};
+
+     
     UnitType unitType = UnitType::None;
     UnitType originalUnitType = UnitType::None;
 
+     static const inline char *items[]{"units.none",
+                                  "units.deg",
+                                  "units.cc",
+                                  "units.thou",
+                                  "units.lb_ft",
+                                  "units.mm",
+                                  "units.g",
+                                  "units.rpm",
+                                  "units.inch",
+                                  "units.kg"};
+
 protected:
-    void calculateEndTextStartLetterPosition() override; 
+    void calculateEndTextStartLetterPosition() override;
 };
 
 class EditableFloatValue : public EditableNumericValue

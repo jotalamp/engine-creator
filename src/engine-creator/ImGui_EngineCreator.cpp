@@ -1,5 +1,7 @@
 #include "ImGui_EngineCreator.h"
 
+Units::Unit convert;
+
 ImGui_EngineCreator::ImGui_EngineCreator()
 {
     show_save_as_window = false;
@@ -75,7 +77,7 @@ void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decim
                 if (ImGui::Selectable(line->items[n], is_selected))
                 {
                     current_item = line->items[n];
-                    line->setUnitType(line->getUnitType(current_item));
+                    line->setUnitType(convert[current_item]);
                 }
                 if (is_selected)
                     ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
@@ -121,7 +123,7 @@ void ImGui_EngineCreator::editInt(const std::string &name)
                 {
                     current_item = line->items[n];
 
-                    line->setUnitType(line->getUnitType(current_item));
+                    line->setUnitType(convert[current_item]);
                 }
                 if (is_selected)
                     ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(engine-creator)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 
 set(OpenGL_GL_PREFERENCE GLVND)
 

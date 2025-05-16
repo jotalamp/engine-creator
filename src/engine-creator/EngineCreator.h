@@ -2,6 +2,7 @@
 
 #include <charconv>
 
+#include "Units.h"
 #include "EditableValue.h"
 
 class EngineCreatorException : public std::exception

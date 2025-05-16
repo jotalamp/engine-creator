@@ -1,6 +1,7 @@
 set(SOURCES 
     ../engine-creator/EngineCreator.cpp
     ../engine-creator/EditableValue.cpp
+    ../engine-creator/Units.cpp
     EngineCreatorTest.cpp
     EditableValueTest.cpp
     mainTest.cpp)
