@@ -21,20 +21,14 @@ protected:
     std::string message;
 };
 
-class TextNotFoundFromTemplateFileException : public EngineCreatorException
+class EditableValueNotExistException : public EngineCreatorException
 {
 public:
-    TextNotFoundFromTemplateFileException(const std::string& message) : EngineCreatorException(message) {}
-};
-
-class EditableStringValueNotExistException : public EngineCreatorException
-{
-public:
-    EditableStringValueNotExistException(unsigned int lineNumber) : EngineCreatorException("Editable line not exist at line: " + std::to_string(lineNumber))
+    EditableValueNotExistException(unsigned int lineNumber) : EngineCreatorException("Editable line not exist at line: " + std::to_string(lineNumber))
     {
     }
 
-    EditableStringValueNotExistException(const std::string& name) : EngineCreatorException("Editable line not exist: " + name)
+    EditableValueNotExistException(const std::string& name) : EngineCreatorException("Editable line not exist: " + name)
     {
     }
 
@@ -54,23 +48,21 @@ class EngineCreator
 {
 public:
     EngineCreator();
+
     EditableStringValue *getEditableStringValue(std::string name);
     EditableFloatValue *getEditableFloatValue(std::string name);
     EditableIntegerValue *getEditableIntegerValue(std::string name);
-    void replaceTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText);
-    std::string replaceEditedTextInLine(unsigned int lineNumber, std::string textToReplace, std::string newText);
-    std::string replaceTextInText(std::string& text, const std::string& textToReplace, const std::string& newText);
+
     void writeAllLinesToFile() const;
     std::string getAllEditedLinesAsString() const;
     bool fileNameIsCorrect(std::string newFileName) const;
     bool setCreatedEngineFileName(std::string newFileName);
 
-    EditableStringValue addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue);
-    EditableFloatValue addEditableValue(unsigned int lineNumber, std::string name, double editableValue);
-    EditableIntegerValue addEditableValue(unsigned int lineNumber, std::string name, int editableValue);
+    void addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue);
+    void addEditableValue(unsigned int lineNumber, std::string name, double editableValue);
+    void addEditableValue(unsigned int lineNumber, std::string name, int editableValue);
 
     unsigned int getLineCount() const;
-    std::string getEditedLine(unsigned int lineNumber) const;
     std::string shortestStringRepresentation(float n) const;
 
 private:
@@ -78,9 +70,9 @@ private:
     void changeLineTo(unsigned int lineNumber, std::string newEditedLine);
     bool textExistsInEditedLine(unsigned int lineNumber, std::string textToFind) const;
 
-    EditableStringValue addEditableStringValue(unsigned int lineNumber, std::string name, std::string editableText);
-    EditableFloatValue addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText);
-    EditableIntegerValue addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText);
+    void addEditableStringValue(unsigned int lineNumber, std::string name, std::string editableText);
+    void addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText);
+    void addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText);
 
     std::unordered_map<std::string, EditableStringValue> getEditableTextValuesByName() const;
     std::unordered_map<std::string, EditableFloatValue> getEditableFloatValuesByName() const;
@@ -88,9 +80,9 @@ private:
 
     EditableStringValue *getEditableStringValue(unsigned int lineNumber);
 
-    EditableStringValue addEditableStringValue(const EditableStringValue &EditableStringValue);
-    EditableFloatValue addEditableFloatValue(EditableFloatValue &editableFloatValue);
-    EditableIntegerValue addEditableIntegerValue(EditableIntegerValue &editableIntegerValue);
+    void addEditableStringValue(const EditableStringValue &EditableStringValue);
+    void addEditableFloatValue(const EditableFloatValue &editableFloatValue);
+    void addEditableIntegerValue(const EditableIntegerValue &editableIntegerValue);
 
     std::vector<std::string> editedLines;
     std::unordered_map<std::string, EditableStringValue> editableTextValuesByName;
