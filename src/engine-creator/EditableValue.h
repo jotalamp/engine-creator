@@ -72,6 +72,8 @@ public:
     virtual std::string getOriginalLine() const;
     virtual std::string &getEditedLine() const;
     std::string getTextStart() const;
+    void updateLine();
+    void setValue(const std::string &newValue);
 
 protected:
     void calculateStartTextEndLetterPosition();
@@ -79,6 +81,7 @@ protected:
     std::string replaceTextInText(const std::string &text, const std::string &textToReplace, const std::string &newText);
     unsigned int getStartTextEndLetterPosition() const;
     unsigned int getEndTextStartLetterPosition() const;
+    std::string getTextEnd() const;
     unsigned int lineNumber;
     std::string name;
     std::string editableText;
@@ -93,11 +96,9 @@ class EditableStringValue : public EditableValue
 {
 public:
     EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine);
-    void setValue(const std::string &newValue);
     std::string &getEditedLine();
 
 protected:
-    std::string getTextEnd() const;
     std::string editableText;
 };
 
@@ -108,10 +109,7 @@ public:
     void setUnitType(const UnitType &unitType);
     void setUnitType();
     UnitType getUnitType() const;
-    //UnitType getUnitType(const std::string &unitTypeAsString) const;
     std::string getUnitTypeAsString() const;
-    std::string getUnitTypeAsString(const UnitType &unitType) const;
-    const static inline std::unordered_map<UnitType, std::string> &getUnitTypes();
     std::string getTextEnd() const;
     std::string getTextMiddle() const;
 
@@ -137,7 +135,7 @@ protected:
 class EditableFloatValue : public EditableNumericValue
 {
 public:
-    EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine);
+    EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine, unsigned int decimals=3);
     bool operator==(const EditableFloatValue &e2) const
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && editedFloatValue == e2.editedFloatValue;
@@ -146,12 +144,15 @@ public:
     {
         return !(*this == e2);
     }
+    void updateLine();
     void setValue(const float newValue);
     float *getEditedFloatValue();
+    unsigned int getDecimals() const;
     std::string getEditedValueAsString(unsigned char decimals);
 
 private:
     float editedFloatValue;
+    unsigned int decimals;
     std::string shortestStringRepresentation(float n) const;
 };
 
@@ -167,6 +168,7 @@ public:
     {
         return !(*this == e2);
     }
+    void updateLine();
     void setValue(const int newValue);
     int *getEditedIntegerValue();
     std::string getEditedValueAsString();

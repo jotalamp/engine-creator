@@ -28,7 +28,7 @@ std::string EditableValue::getEditableText() const
     return editableText;
 }
 
-std::string* EditableValue::getEditedValue()
+std::string *EditableValue::getEditedValue()
 {
     return &editedValue;
 }
@@ -38,7 +38,7 @@ std::string EditableValue::getOriginalLine() const
     return originalLine;
 }
 
-std::string& EditableValue::getEditedLine() const
+std::string &EditableValue::getEditedLine() const
 {
     if (editedLine == nullptr)
         throw EditedLineIsNullPointerException(name);
@@ -177,14 +177,7 @@ std::string EditableValue::replaceTextInText(const std::string &text, const std:
     return line;
 }
 
-EditableStringValue::EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine)
-    : EditableValue(lineNumber, name, editableText, editedLine)
-{
-    this->editableText = editableText;
-    this->editedValue = editableText;
-}
-
-std::string EditableStringValue::getTextEnd() const
+std::string EditableValue::getTextEnd() const
 {
     int p = getEndTextStartLetterPosition();
     int l = getOriginalLine().length();
@@ -193,14 +186,22 @@ std::string EditableStringValue::getTextEnd() const
     return getOriginalLine().substr(getEndTextStartLetterPosition());
 }
 
-void EditableStringValue::setValue(const std::string& newValue)
+void EditableValue::setValue(const std::string &newValue)
 {
-    //if (editedLine == nullptr)
-      //  throw EditedLineIsNullPointerException(name);
-
     editedValue = newValue;
+    updateLine();
+}
 
+void EditableValue::updateLine()
+{
     *editedLine = getTextStart() + editedValue + getTextEnd();
+}
+
+EditableStringValue::EditableStringValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine)
+    : EditableValue(lineNumber, name, editableText, editedLine)
+{
+    this->editableText = editableText;
+    this->editedValue = editableText;
 }
 
 std::string &EditableStringValue::getEditedLine()
@@ -208,7 +209,7 @@ std::string &EditableStringValue::getEditedLine()
     return *editedLine;
 }
 
-EditableFloatValue::EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine)
+EditableFloatValue::EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine, unsigned int decimals)
     : EditableNumericValue(lineNumber, name, editableText, editedLine)
 {
     try
@@ -220,17 +221,13 @@ EditableFloatValue::EditableFloatValue(unsigned int lineNumber, const std::strin
     {
         throw CanNotConvertStringToFloatException(editableText);
     }
+    this->decimals = decimals;
 }
 
-void EditableFloatValue::setValue(const float newValue)
+void EditableFloatValue::updateLine()
 {
-    //if (editedLine == nullptr)
-       // throw EditedLineIsNullPointerException(name);
-
-    editedFloatValue = newValue;
-
-    // editedValue = shortestStringRepresentation(newValue);
-    editedValue = getEditedValueAsString(3);
+    // editedValue = shortestStringRepresentation(editedFloatValue);
+    editedValue = getEditedValueAsString(decimals);
 
     if (unitType == UnitType::None)
     {
@@ -242,9 +239,20 @@ void EditableFloatValue::setValue(const float newValue)
     }
 }
 
+void EditableFloatValue::setValue(const float newValue)
+{
+    editedFloatValue = newValue;
+    updateLine();
+}
+
 float *EditableFloatValue::getEditedFloatValue()
 {
     return &editedFloatValue;
+}
+
+unsigned int EditableFloatValue::getDecimals() const
+{
+    return decimals;
 }
 
 std::string EditableFloatValue::getEditedValueAsString(unsigned char decimals)
@@ -280,14 +288,9 @@ EditableIntegerValue::EditableIntegerValue(unsigned int lineNumber, const std::s
     }
 }
 
-void EditableIntegerValue::setValue(const int newValue)
+void EditableIntegerValue::updateLine()
 {
-    //if (editedLine == nullptr)
-       // throw EditedLineIsNullPointerException(name);
-
-    editedIntValue = newValue;
-
-    editedValue = std::to_string(newValue);
+    editedValue = std::to_string(editedIntValue);
 
     if (unitType == UnitType::None)
     {
@@ -297,6 +300,12 @@ void EditableIntegerValue::setValue(const int newValue)
     {
         *editedLine = getTextStart() + editedValue + getTextMiddle() + unitTypes[unitType] + getTextEnd();
     }
+}
+
+void EditableIntegerValue::setValue(const int newValue)
+{
+    editedIntValue = newValue;
+    updateLine();
 }
 
 int *EditableIntegerValue::getEditedIntegerValue()

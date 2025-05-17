@@ -9,7 +9,7 @@ class ImGui_EngineCreator
 public:
     ImGui_EngineCreator();
     void editText(const std::string& name);
-    void editFloat(const std::string& name, unsigned char decimals = 2);
+    void editFloat(const std::string& name);
     void editInt(const std::string& name);
     void showSaveButton();
     void showEditedEngineFile();

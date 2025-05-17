@@ -18,7 +18,7 @@ EngineCreator::EngineCreator()
     // completely read
     while (getline(file, s))
     {
-        //originalLines.push_back(s);
+        // originalLines.push_back(s);
         editedLines.push_back(s);
         linesCount++;
     }
@@ -30,50 +30,13 @@ EngineCreator::EngineCreator()
 std::string EngineCreator::shortestStringRepresentation(float n) const
 {
     if (n == 1.0f)
-        return "1.0"; //special case to get smaller increment steps 
+        return "1.0"; // special case to get smaller increment steps
 
     // https://www.reddit.com/user/isfooTM/
     // https://www.reddit.com/r/AskProgramming/comments/swmb96/converting_a_float_to_the_shortest_uniquely/
     std::array<char, 64> buf;
     auto result = std::to_chars(buf.data(), buf.data() + buf.size(), n, std::chars_format::fixed);
     return std::string(buf.data(), result.ptr - buf.data());
-}
-
-std::string EngineCreator::getLineFromFile(std::string fileName, unsigned int lineNumber) const
-{
-    std::vector<std::string> lines;
-    std::ifstream file = std::ifstream(path + fileName);
-
-    // Check if the file is successfully opened
-    if (!file.is_open())
-    {
-        std::cerr << "Error opening the file!";
-    }
-
-    // String variable to store the read data
-    std::string s;
-
-    // Read each line of the file and print it to the
-    // standard output stream till the whole file is
-    // completely read
-    while (getline(file, s))
-    {
-        lines.push_back(s);
-    }
-
-    // Close the file
-    file.close();
-    return lines[lineNumber];
-}
-
-std::string EngineCreator::getLineFromCreatedFile(unsigned int lineNumber) const
-{
-    return getLineFromFile(createdEngineName, lineNumber);
-}
-
-void EngineCreator::changeLineTo(unsigned int lineNumber, std::string newEditedLine)
-{
-    editedLines[lineNumber] = newEditedLine;
 }
 
 void EngineCreator::writeAllLinesToFile() const
@@ -88,16 +51,6 @@ void EngineCreator::writeAllLinesToFile() const
     file.close();
 }
 
-bool EngineCreator::setCreatedEngineFileName(std::string newFileName)
-{
-    if (fileNameIsCorrect(newFileName))
-    {
-        createdEngineName = newFileName + ".mr";
-        return true;
-    }
-    return false;
-}
-
 std::string EngineCreator::getAllEditedLinesAsString() const
 {
     std::string allLines;
@@ -108,61 +61,51 @@ std::string EngineCreator::getAllEditedLinesAsString() const
     return allLines;
 }
 
-bool EngineCreator::fileNameIsCorrect(std::string newFileName) const
+bool EngineCreator::fileNameIsCorrect(const std::string &newFileName) const
 {
     if (newFileName == "")
         return false;
     return true;
 }
 
-bool EngineCreator::textExistsInEditedLine(unsigned int lineNumber, std::string textToFind) const
+bool EngineCreator::setCreatedEngineFileName(const std::string &newFileName)
 {
-    return (editedLines[lineNumber].find(textToFind) != std::string::npos);
+    if (fileNameIsCorrect(newFileName))
+    {
+        createdEngineName = newFileName + ".mr";
+        return true;
+    }
+    return false;
 }
 
-void EngineCreator::addEditableStringValue(const EditableStringValue &editableStringValue)
+void EngineCreator::addEditableValue(const EditableStringValue &editableStringValue)
 {
     editableTextValuesByName.insert(std::make_pair(editableStringValue.getName(), editableStringValue));
 }
 
-void EngineCreator::addEditableFloatValue(const EditableFloatValue &editableFloatValue)
+void EngineCreator::addEditableValue(const EditableFloatValue &editableFloatValue)
 {
     editableFloatValuesByName.insert(std::make_pair(editableFloatValue.getName(), editableFloatValue));
 }
 
-void EngineCreator::addEditableIntegerValue(const EditableIntegerValue &editableIntegerValue)
+void EngineCreator::addEditableValue(const EditableIntegerValue &editableIntegerValue)
 {
     editableIntegerValuesByName.insert(std::make_pair(editableIntegerValue.getName(), editableIntegerValue));
 }
 
-void EngineCreator::addEditableStringValue(unsigned int lineNumber, std::string name, std::string editableText)
+void EngineCreator::addEditableValue(const unsigned int lineNumber, const std::string &name, const std::string &editableValue)
 {
-    addEditableStringValue(EditableStringValue(lineNumber, name, editableText, &editedLines[lineNumber]));
+    addEditableValue(EditableStringValue(lineNumber, name, editableValue, &editedLines[lineNumber]));
 }
 
-void EngineCreator::addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText)
+void EngineCreator::addEditableValue(const unsigned int lineNumber, const std::string &name, double editableValue, unsigned int decimals)
 {
-    addEditableFloatValue(EditableFloatValue(lineNumber, name, editableText, &editedLines[lineNumber]));
+    addEditableValue(EditableFloatValue(lineNumber, name, shortestStringRepresentation(editableValue), &editedLines[lineNumber], decimals));
 }
 
-void EngineCreator::addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText)
+void EngineCreator::addEditableValue(const unsigned int lineNumber, const std::string &name, int editableValue)
 {
-    addEditableIntegerValue(EditableIntegerValue(lineNumber, name, editableText, &editedLines[lineNumber]));
-}
-
-void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue)
-{
-    addEditableStringValue(lineNumber, name, editableValue);
-}
-
-void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, double editableValue)
-{
-    addEditableFloatValue(lineNumber, name, shortestStringRepresentation(editableValue));
-}
-
-void EngineCreator::addEditableValue(unsigned int lineNumber, std::string name, int editableValue)
-{
-    addEditableIntegerValue(lineNumber, name, shortestStringRepresentation(editableValue));
+    addEditableValue(EditableIntegerValue(lineNumber, name, shortestStringRepresentation(editableValue), &editedLines[lineNumber]));
 }
 
 unsigned int EngineCreator::getLineCount() const
@@ -170,63 +113,47 @@ unsigned int EngineCreator::getLineCount() const
     return linesCount;
 }
 
-std::unordered_map<std::string, EditableStringValue> EngineCreator::getEditableTextValuesByName() const
+auto EngineCreator::getEditableTextValuesByName() const
 {
     return editableTextValuesByName;
 }
 
-std::unordered_map<std::string, EditableFloatValue> EngineCreator::getEditableFloatValuesByName() const
+auto EngineCreator::getEditableFloatValuesByName() const
 {
     return editableFloatValuesByName;
 }
 
-std::unordered_map<std::string, EditableIntegerValue> EngineCreator::getEditableIntegerValuesByName() const
+auto EngineCreator::getEditableIntegerValuesByName() const
 {
     return editableIntegerValuesByName;
 }
 
-EditableStringValue *EngineCreator::getEditableStringValue(std::string name)
+EditableStringValue *EngineCreator::getEditableStringValue(const std::string &name)
 {
     auto it = editableTextValuesByName.find(name);
-    if (it != editableTextValuesByName.end())
-    {
-        return &it->second;
-    }
-    else
+    if (it == editableTextValuesByName.end())
     {
         throw EditableValueNotExistException(name);
-        return nullptr;
     }
+    return &it->second;
 }
 
-EditableFloatValue *EngineCreator::getEditableFloatValue(std::string name)
+EditableFloatValue *EngineCreator::getEditableFloatValue(const std::string &name)
 {
-    try
+    auto it = editableFloatValuesByName.find(name);
+    if (it == editableFloatValuesByName.end())
     {
-        auto it = editableFloatValuesByName.find(name);
-        if (it == editableFloatValuesByName.end())
-            throw EditableValueNotExistException(name);
-        return &it->second;
+        throw EditableValueNotExistException(name);
     }
-    catch (const EditableValueNotExistException &e)
-    {
-        std::cout << "Caught an exception: " << e.what() << std::endl;
-        exit(1);
-    }
+    return &it->second;
 }
 
-EditableIntegerValue *EngineCreator::getEditableIntegerValue(std::string name)
+EditableIntegerValue *EngineCreator::getEditableIntegerValue(const std::string &name)
 {
-    try
+    auto it = editableIntegerValuesByName.find(name);
+    if (it == editableIntegerValuesByName.end())
     {
-        auto it = editableIntegerValuesByName.find(name);
-        if (it == editableIntegerValuesByName.end())
-            throw EditableValueNotExistException(name);
-        return &it->second;
+        throw EditableValueNotExistException(name);
     }
-    catch (EditableValueNotExistException &e)
-    {
-        std::cout << "Caught an exception: " << e.what() << std::endl;
-        exit(1);
-    }
+    return &it->second;
 }

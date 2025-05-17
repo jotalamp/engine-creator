@@ -8,7 +8,7 @@
 class EngineCreatorException : public std::exception
 {
 public:
-    EngineCreatorException(const std::string& message)
+    EngineCreatorException(const std::string &message)
     {
         this->message = message;
     }
@@ -29,7 +29,7 @@ public:
     {
     }
 
-    EditableValueNotExistException(const std::string& name) : EngineCreatorException("Editable line not exist: " + name)
+    EditableValueNotExistException(const std::string &name) : EngineCreatorException("Editable value not exist: '" + name + "'")
     {
     }
 
@@ -42,7 +42,7 @@ public:
 class FileNotFoundException : public EngineCreatorException
 {
 public:
-    FileNotFoundException(const std::string& message) : EngineCreatorException(message) {}
+    FileNotFoundException(const std::string &message) : EngineCreatorException(message) {}
 };
 
 class EngineCreator
@@ -50,46 +50,36 @@ class EngineCreator
 public:
     EngineCreator();
 
-    EditableStringValue *getEditableStringValue(std::string name);
-    EditableFloatValue *getEditableFloatValue(std::string name);
-    EditableIntegerValue *getEditableIntegerValue(std::string name);
+    EditableStringValue *getEditableStringValue(const std::string &name);
+    EditableFloatValue *getEditableFloatValue(const std::string &name);
+    EditableIntegerValue *getEditableIntegerValue(const std::string &name);
 
     void writeAllLinesToFile() const;
     std::string getAllEditedLinesAsString() const;
-    bool fileNameIsCorrect(std::string newFileName) const;
-    bool setCreatedEngineFileName(std::string newFileName);
+    bool fileNameIsCorrect(const std::string &newFileName) const;
+    bool setCreatedEngineFileName(const std::string &newFileName);
 
-    void addEditableValue(unsigned int lineNumber, std::string name, std::string editableValue);
-    void addEditableValue(unsigned int lineNumber, std::string name, double editableValue);
-    void addEditableValue(unsigned int lineNumber, std::string name, int editableValue);
+    void addEditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableValue);
+    void addEditableValue(unsigned int lineNumber, const std::string &name, double editableValue, unsigned int decimals=3);
+    void addEditableValue(unsigned int lineNumber, const std::string &name, int editableValue);
 
     unsigned int getLineCount() const;
     std::string shortestStringRepresentation(float n) const;
 
 private:
-    std::string getLineFromCreatedFile(unsigned int lineNumber) const;
-    void changeLineTo(unsigned int lineNumber, std::string newEditedLine);
-    bool textExistsInEditedLine(unsigned int lineNumber, std::string textToFind) const;
+    auto getEditableTextValuesByName() const;
+    auto getEditableFloatValuesByName() const;
+    auto getEditableIntegerValuesByName() const;
 
-    void addEditableStringValue(unsigned int lineNumber, std::string name, std::string editableText);
-    void addEditableFloatValue(unsigned int lineNumber, std::string name, std::string editableText);
-    void addEditableIntegerValue(unsigned int lineNumber, std::string name, std::string editableText);
+    void addEditableValue(const EditableStringValue &EditableStringValue);
+    void addEditableValue(const EditableFloatValue &editableFloatValue);
+    void addEditableValue(const EditableIntegerValue &editableIntegerValue);
 
-    std::unordered_map<std::string, EditableStringValue> getEditableTextValuesByName() const;
-    std::unordered_map<std::string, EditableFloatValue> getEditableFloatValuesByName() const;
-    std::unordered_map<std::string, EditableIntegerValue> getEditableIntegerValuesByName() const;
-
-    EditableStringValue *getEditableStringValue(unsigned int lineNumber);
-
-    void addEditableStringValue(const EditableStringValue &EditableStringValue);
-    void addEditableFloatValue(const EditableFloatValue &editableFloatValue);
-    void addEditableIntegerValue(const EditableIntegerValue &editableIntegerValue);
-
-    std::vector<std::string> editedLines;
     std::unordered_map<std::string, EditableStringValue> editableTextValuesByName;
     std::unordered_map<std::string, EditableFloatValue> editableFloatValuesByName;
     std::unordered_map<std::string, EditableIntegerValue> editableIntegerValuesByName;
-    std::string getLineFromFile(std::string fileName, unsigned int lineNumber) const;
+
+    std::vector<std::string> editedLines;
     static const inline std::string path = "../bin/";
     static const inline std::string templateEngineName = "template_engine.mr";
     static inline std::string createdEngineName = "created_engine.mr";

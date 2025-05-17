@@ -6,24 +6,24 @@ ImGui_EngineCreator::ImGui_EngineCreator()
 {
     show_save_as_window = false;
     engineCreator.addEditableValue(18, "wb_ignition.rev_limit", 7500);
-    engineCreator.addEditableValue(23, "wb_ignition.limiter_duration", 0.1);
+    engineCreator.addEditableValue(23, "wb_ignition.limiter_duration", 0.1, 2);
     engineCreator.addEditableValue(134, "engine.name", "Audi 2.3 inline 5");
     engineCreator.addEditableValue(135, "engine.starter_torque", 200);
     engineCreator.addEditableValue(136, "engine.redline", 6000);
-    engineCreator.addEditableValue(138, "fuel.max_turbulence_effect", 2.5);
-    engineCreator.addEditableValue(139, "fuel.max_burning_efficiency", 0.75);
-    engineCreator.addEditableValue(140, "engine.hf_gain", 0.01);
-    engineCreator.addEditableValue(141, "engine.noise", 1.0);
+    engineCreator.addEditableValue(138, "fuel.max_turbulence_effect", 2.5, 2);
+    engineCreator.addEditableValue(139, "fuel.max_burning_efficiency", 0.75, 3);
+    engineCreator.addEditableValue(140, "engine.hf_gain", 0.01, 3);
+    engineCreator.addEditableValue(141, "engine.noise", 1.0, 2);
     engineCreator.addEditableValue(142, "engine.jitter", 0.299);
     engineCreator.addEditableValue(143, "engine.simulation_frequency", 10000);
 
-    engineCreator.addEditableValue(146, "stroke", 79.5);
-    engineCreator.addEditableValue(147, "bore", 86.4);
+    engineCreator.addEditableValue(146, "stroke", 79.5, 2);
+    engineCreator.addEditableValue(147, "bore", 86.4, 2);
     engineCreator.addEditableValue(148, "rod_length", 5.142);
     engineCreator.addEditableValue(149, "rod_mass", 535);
-    engineCreator.addEditableValue(150, "compression_height", 32.8);
-    engineCreator.addEditableValue(151, "crank_mass", 9.39);
-    engineCreator.addEditableValue(152, "flywheel_mass", 6.8);
+    engineCreator.addEditableValue(150, "compression_height", 32.8, 2);
+    engineCreator.addEditableValue(151, "crank_mass", 9.39, 3);
+    engineCreator.addEditableValue(152, "flywheel_mass", 6.8, 2);
     engineCreator.addEditableValue(153, "flywheel_radius", 6);
 }
 
@@ -31,15 +31,9 @@ void ImGui_EngineCreator::editText(const std::string &name)
 {
     auto line = engineCreator.getEditableStringValue(name);
 
-    if (line == nullptr)
-    {
-        std::cout << "\nEditbleLine: " + name + " not found!";
-        exit(0);
-    }
-
     if (ImGui::InputTextWithHint(line->getName().c_str(), line->getEditableText().c_str(), line->getEditedValue()))
     {
-        line->setValue(*line->getEditedValue());
+        line->updateLine();
         setScroll(line->getLineNumber());
     }
 
@@ -49,53 +43,65 @@ void ImGui_EngineCreator::editText(const std::string &name)
     }
 }
 
-void ImGui_EngineCreator::editFloat(const std::string &name, unsigned char decimals)
+void ImGui_EngineCreator::editFloat(const std::string &name)
 {
     auto line = engineCreator.getEditableFloatValue(name);
 
-    if (line == nullptr)
-    {
-        std::cout << "\nEditableLine: " + name + " not found!";
-        exit(0);
-    }
-
     char format[5] = "%.2f";
-    format[2] = std::to_string(decimals)[0];
+    format[2] = std::to_string(line->getDecimals())[0];
 
-    // if (line->getUnitType() != UnitType::None)
+    ImGui::PushItemWidth(100);
+
+    ImGui::PushID(line->getLineNumber());
+
+    const char *current_item = line->getUnitTypeAsString().c_str();
+    if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
     {
-        ImGui::PushItemWidth(100);
-
-        ImGui::PushID(line->getLineNumber());
-
-        const char *current_item = line->getUnitTypeAsString().c_str();
-        if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
+        for (int n = 0; n < IM_ARRAYSIZE(line->items); n++)
         {
-            for (int n = 0; n < IM_ARRAYSIZE(line->items); n++)
+            bool is_selected = (current_item == line->items[n]); // You can store your selection however you want, outside or inside your objects
+            if (ImGui::Selectable(line->items[n], is_selected))
             {
-                bool is_selected = (current_item == line->items[n]); // You can store your selection however you want, outside or inside your objects
-                if (ImGui::Selectable(line->items[n], is_selected))
-                {
-                    current_item = line->items[n];
-                    line->setUnitType(convert[current_item]);
-                }
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+                current_item = line->items[n];
+                line->setUnitType(convert[current_item]);
             }
-            ImGui::EndCombo();
+            if (is_selected)
+                ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
         }
-        ImGui::PopID();
-        ImGui::PopItemWidth();
-        ImGui::SameLine();
+        ImGui::EndCombo();
     }
+    ImGui::PopID();
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
 
-    if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloatValue(), 0.1f, 1.0f, format, ImGuiInputTextFlags_CharsDecimal))
+    float step;
+    switch (line->getDecimals())
+    {
+    case 0:
+        step = 1.0f;
+        break;
+    case 1:
+        step = 0.1f;
+        break;
+    case 2:
+        step = 0.01f;
+        break;
+    case 3:
+        step = 0.001f;
+        break;
+    default:
+        step = 0.0001f;
+        break;
+    }
+    const float stepFast = 100 * step;
+
+    if (ImGui::InputFloat(line->getName().c_str(), line->getEditedFloatValue(), step, stepFast, format, ImGuiInputTextFlags_CharsDecimal))
     {
         setScroll(line->getLineNumber());
         if (*line->getEditedFloatValue() < 0)
             *line->getEditedFloatValue() = 0;
 
-        line->setValue(*line->getEditedFloatValue());
+        line->updateLine();
     }
 }
 
@@ -103,45 +109,51 @@ void ImGui_EngineCreator::editInt(const std::string &name)
 {
     auto line = engineCreator.getEditableIntegerValue(name);
 
-    if (line == nullptr)
+    ImGui::PushItemWidth(100);
+    ImGui::PushID(line->getLineNumber());
+    const char *current_item = line->getUnitTypeAsString().c_str();
+    if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
     {
-        std::cout << "\nEditbleLine: " + name + " not found!";
-        exit(0);
-    }
-
-    // if (line->getUnitType() != UnitType::None)
-    {
-        ImGui::PushItemWidth(100);
-        ImGui::PushID(line->getLineNumber());
-        const char *current_item = line->getUnitTypeAsString().c_str();
-        if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
+        for (int n = 0; n < IM_ARRAYSIZE(line->items); n++)
         {
-            for (int n = 0; n < IM_ARRAYSIZE(line->items); n++)
+            bool is_selected = (current_item == line->items[n]); // You can store your selection however you want, outside or inside your objects
+            if (ImGui::Selectable(line->items[n], is_selected))
             {
-                bool is_selected = (current_item == line->items[n]); // You can store your selection however you want, outside or inside your objects
-                if (ImGui::Selectable(line->items[n], is_selected))
-                {
-                    current_item = line->items[n];
+                current_item = line->items[n];
 
-                    line->setUnitType(convert[current_item]);
-                }
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+                line->setUnitType(convert[current_item]);
             }
-            ImGui::EndCombo();
+            if (is_selected)
+                ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
         }
-        ImGui::PopID();
-        ImGui::PopItemWidth();
-        ImGui::SameLine();
+        ImGui::EndCombo();
     }
+    ImGui::PopID();
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
 
-    if (ImGui::InputInt(line->getName().c_str(), line->getEditedIntegerValue(), 10.0f, 100.0f, ImGuiInputTextFlags_CharsDecimal))
+    unsigned int step = 1;
+    if (*line->getEditedIntegerValue() < 100)
+    {
+        step = 1;
+    }
+    else if (*line->getEditedIntegerValue() < 1000)
+    {
+        step = 10;
+    }
+    else
+    {
+        step = 100;
+    }
+    const unsigned int stepFast = 10 * step;
+    if (ImGui::InputInt(line->getName().c_str(), line->getEditedIntegerValue(), step, stepFast, ImGuiInputTextFlags_CharsDecimal))
     {
         setScroll(line->getLineNumber());
         if (*line->getEditedIntegerValue() < 0)
             *line->getEditedIntegerValue() = 0;
 
-        line->setValue(*line->getEditedIntegerValue());
+        // line->setValue(*line->getEditedIntegerValue());
+        line->updateLine();
     }
 }
 
@@ -163,18 +175,18 @@ void ImGui_EngineCreator::showInputValues()
     editFloat("fuel.max_burning_efficiency");
     editFloat("engine.hf_gain");
     editFloat("engine.noise");
-    editFloat("engine.jitter", 3);
+    editFloat("engine.jitter");
     editInt("engine.simulation_frequency");
 
     ImGui::Separator();
 
-    editFloat("stroke", 1);
-    editFloat("bore", 1);
-    editFloat("rod_length", 3);
+    editFloat("stroke");
+    editFloat("bore");
+    editFloat("rod_length");
     editInt("rod_mass");
-    editFloat("compression_height", 1);
-    editFloat("crank_mass", 2);
-    editFloat("flywheel_mass", 1);
+    editFloat("compression_height");
+    editFloat("crank_mass");
+    editFloat("flywheel_mass");
     editInt("flywheel_radius");
 
     ImGui::Separator();
