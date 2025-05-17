@@ -2,8 +2,9 @@
 
 #include <unordered_map>
 #include <string>
+#include <iostream>
 
-namespace Units
+namespace Units2
 {
     enum class UnitType
     {
@@ -19,15 +20,15 @@ namespace Units
         Inch
     };
 
-    struct Unit
+    class Unit
     {
     public:
         std::string operator[](UnitType unitType) noexcept;
         UnitType operator[](std::string_view unitType) noexcept;
-        const std::unordered_map<UnitType, std::string> &getUnitToStringMap();
+        std::unordered_map<UnitType, std::string> &getUnitToStringMap();
 
     private:
-        static inline std::unordered_map<std::string_view, UnitType> stringToUnit = {
+        std::unordered_map<std::string_view, UnitType> stringToUnit = {
             {"units.none", UnitType::None},
             {"units.deg", UnitType::Deg},
             {"units.cc", UnitType::Cc},
@@ -39,7 +40,7 @@ namespace Units
             {"units.inch", UnitType::Inch},
             {"units.kg", UnitType::Kg}};
 
-        static inline std::unordered_map<UnitType, std::string> unitToString = {
+        std::unordered_map<UnitType, std::string> unitToString = {
             {UnitType::None, "units.none"},
             {UnitType::Deg, "units.deg"},
             {UnitType::Cc, "units.cc"},
@@ -50,5 +51,7 @@ namespace Units
             {UnitType::Rpm, "units.rpm"},
             {UnitType::Inch, "units.inch"},
             {UnitType::Kg, "units.kg"}};
+
+        static inline unsigned int i = 0;
     };
 }

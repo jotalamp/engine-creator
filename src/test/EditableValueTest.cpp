@@ -3,10 +3,12 @@
 
 using namespace testing;
 using ::testing::Eq;
-using namespace Units;
 
 class AnEditableValue : public Test
 {
+public:
+    static inline Units2::Unit unitTypes;
+
 protected:
     const unsigned int lineNumber = 123;
     const std::string name = "TestName";
@@ -14,12 +16,11 @@ protected:
     std::string editedLine = "        starter_torque: 200 * units.lb_ft,";
 
     EditableValue editableValue{lineNumber, name, editableText, &editedLine};
-    Unit unit{};
 };
 
 TEST_F(AnEditableValue, TestUnits)
 {
-    ASSERT_THAT(unit[UnitType::Cc], Eq("units.cc"));
+    ASSERT_THAT(unitTypes[UnitType::Cc], Eq("units.cc"));
 }
 
 TEST_F(AnEditableValue, GivesCorrectOriginalLine)
@@ -129,7 +130,7 @@ TEST_F(AnEditableNumericValue, CanSetUnitType)
 
     const UnitType unitType = UnitType::Inch;
     editableNumericValue.setUnitType(unitType);
-    ASSERT_THAT(editableNumericValue.getUnitTypeAsString(), Eq(Units::Unit{}[unitType]));
+    ASSERT_THAT(editableNumericValue.getUnitTypeAsString(), Eq(unitTypes[unitType]));
 }
 
 TEST_F(AnEditableNumericValue, DoesNotShowUnitWhenUnitTypeNoneIsSelected)
@@ -199,7 +200,7 @@ TEST_F(AnEditableFloatValue, CanSetUnitType)
     std::string newEditedLine = "    label stroke(79.5 * units.inch)";
 
     ASSERT_THAT(editableFloatValue.getEditedLine(), Eq(newEditedLine));
-    ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(Units::Unit{}[newUnitType]));
+    ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(unitTypes[newUnitType]));
 }
 
 TEST_F(AnEditableFloatValue, DoesNotShowUnitWhenUnitTypeNoneIsSelectedAndValueIsChanged)
@@ -236,7 +237,7 @@ TEST_F(AnEditableFloatValue, CanSetValueAndUnitType)
     ASSERT_THAT(*editableFloatValue.getEditedFloatValue(), Eq(newValue));
     ASSERT_THAT(editableFloatValue.getEditedValueAsString(2), Eq(newValueAsString));
     ASSERT_THAT(editableFloatValue.getEditedLine(), Eq(newOriginalLine));
-    ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(Units::Unit{}[newUnitType]));
+    ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(unitTypes[newUnitType]));
 }
 
 TEST_F(AnEditableFloatValue, CanDetectUnitType)
@@ -244,7 +245,7 @@ TEST_F(AnEditableFloatValue, CanDetectUnitType)
     const UnitType unitType = UnitType::mm;
     EditableFloatValue editableFloatValue{lineNumber, name, editableTextSimilarToFloat, &editedLine};
 
-    ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(Units::Unit{}[unitType]));
+    ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(unitTypes[unitType]));
 }
 
 TEST_F(AnEditableFloatValue, TextStartIsCorrect)
@@ -302,7 +303,7 @@ TEST_F(AnEditableFloatValue, CanSetValueAndKeepUnitType)
     editableFloatValue.setUnitType(newUnitType);
     editableFloatValue.setValue(newValue);
 
-    ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(Units::Unit{}[newUnitType]));
+    ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Eq(unitTypes[newUnitType]));
     ASSERT_THAT(*editableFloatValue.getEditedFloatValue(), Eq(newValue));
     ASSERT_THAT(editableFloatValue.getEditedValueAsString(2), Eq(newValueAsString));
     ASSERT_THAT(editableFloatValue.getEditedLine(), Eq(newOriginalLine));
@@ -354,7 +355,7 @@ TEST_F(AnEditableFloatValue, GivesUnitTypeNoneWhenAnyUnitTypeNotExistInLine)
     const std::string editableText = "0.1";
     EditableFloatValue editableFloatValue(lineNumber, name, editableText, &editedLine);
 
-    ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), Units::Unit{}[UnitType::None]);
+    ASSERT_THAT(editableFloatValue.getUnitTypeAsString(), unitTypes[UnitType::None]);
     ASSERT_THAT(editableFloatValue.getUnitType(), UnitType::None);
 }
 

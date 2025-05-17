@@ -4,7 +4,7 @@
 #include <string_view>
 #include "Units.h"
 
-using Units::UnitType;
+using Units2::UnitType;
 
 class EditableValueException : public std::exception
 {
@@ -74,6 +74,7 @@ public:
     std::string getTextStart() const;
     void updateLine();
     void setValue(const std::string &newValue);
+    static inline Units2::Unit unitTypes;
 
 protected:
     void calculateStartTextEndLetterPosition();
@@ -106,10 +107,10 @@ class EditableNumericValue : public EditableValue
 {
 public:
     EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine);
-    void setUnitType(const UnitType &unitType);
+    void setUnitType(const Units2::UnitType &unitType);
     void setUnitType();
     UnitType getUnitType() const;
-    std::string getUnitTypeAsString() const;
+    std::string getUnitTypeAsString();
     std::string getTextEnd() const;
     std::string getTextMiddle() const;
 

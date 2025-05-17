@@ -1,7 +1,5 @@
 #include "EditableValue.h"
 
-Units::Unit unitTypes;
-
 EditableValue::EditableValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine)
 {
     if (editedLine == nullptr)
@@ -99,18 +97,18 @@ UnitType EditableNumericValue::getUnitType() const
     return unitType;
 }
 
-std::string EditableNumericValue::getUnitTypeAsString() const
+std::string EditableNumericValue::getUnitTypeAsString()
 {
-    return Units::Unit{}[this->unitType];
+    return unitTypes[this->unitType];
 }
 
 void EditableNumericValue::setUnitType()
 {
     std::string line = originalLine;
 
-    for (auto anUnitType : Units::Unit{}.getUnitToStringMap())
+    for (auto anUnitType : unitTypes.getUnitToStringMap())
     {
-        auto it = Units::Unit{}.getUnitToStringMap().find(anUnitType.first);
+        auto it = unitTypes.getUnitToStringMap().find(anUnitType.first);
         std::string textToReplace = it->second;
 
         auto &&pos = line.find(textToReplace, size_t{});

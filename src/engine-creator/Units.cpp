@@ -1,11 +1,11 @@
 #include "Units.h"
 
-namespace Units
+namespace Units2
 {
-    const std::unordered_map<UnitType, std::string> &Unit::getUnitToStringMap()
+    std::unordered_map<UnitType, std::string> &Unit::getUnitToStringMap()
     {
         return unitToString;
-    } 
+    }
 
     std::string Unit::operator[](UnitType unitType) noexcept
     {
