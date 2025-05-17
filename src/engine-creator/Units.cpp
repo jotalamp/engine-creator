@@ -1,19 +1,24 @@
 #include "Units.h"
 
-namespace Units2
+namespace Unit
 {
-    std::unordered_map<UnitType, std::string> &Unit::getUnitToStringMap()
-    {
-        return unitToString;
-    }
-
-    std::string Unit::operator[](UnitType unitType) noexcept
+    std::string Units::operator[](UnitType unitType) noexcept
     {
         return unitToString[unitType];
     }
 
-    UnitType Unit::operator[](std::string_view unitType) noexcept
+    UnitType Units::operator[](std::string_view unitType) noexcept
     {
         return stringToUnit[unitType];
+    }
+
+    std::unordered_map<UnitType, std::string> &Units::getUnitToStringMap()
+    {
+        return unitToString;
+    }
+
+    std::unordered_map<std::string_view, UnitType> &Units::getStringToUnitMap()
+    {
+        return stringToUnit;
     }
 };

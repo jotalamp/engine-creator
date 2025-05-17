@@ -4,7 +4,7 @@
 #include <string_view>
 #include "Units.h"
 
-using Units2::UnitType;
+using Unit::UnitType;
 
 class EditableValueException : public std::exception
 {
@@ -74,10 +74,11 @@ public:
     std::string getTextStart() const;
     void updateLine();
     void setValue(const std::string &newValue);
-    static inline Units2::Unit unitTypes;
+    static inline Unit::Units unitTypes;
 
 protected:
-    void calculateStartTextEndLetterPosition();
+    void
+    calculateStartTextEndLetterPosition();
     virtual void calculateEndTextStartLetterPosition();
     std::string replaceTextInText(const std::string &text, const std::string &textToReplace, const std::string &newText);
     unsigned int getStartTextEndLetterPosition() const;
@@ -107,27 +108,15 @@ class EditableNumericValue : public EditableValue
 {
 public:
     EditableNumericValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine);
-    void setUnitType(const Units2::UnitType &unitType);
+    void setUnitType(const Unit::UnitType &unitType);
     void setUnitType();
     UnitType getUnitType() const;
     std::string getUnitTypeAsString();
     std::string getTextEnd() const;
     std::string getTextMiddle() const;
 
-     
     UnitType unitType = UnitType::None;
     UnitType originalUnitType = UnitType::None;
-
-     static const inline char *items[]{"units.none",
-                                  "units.deg",
-                                  "units.cc",
-                                  "units.thou",
-                                  "units.lb_ft",
-                                  "units.mm",
-                                  "units.g",
-                                  "units.rpm",
-                                  "units.inch",
-                                  "units.kg"};
 
 protected:
     void calculateEndTextStartLetterPosition() override;
@@ -136,7 +125,7 @@ protected:
 class EditableFloatValue : public EditableNumericValue
 {
 public:
-    EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine, unsigned int decimals=3);
+    EditableFloatValue(unsigned int lineNumber, const std::string &name, const std::string &editableText, std::string *editedLine, unsigned int decimals = 3);
     bool operator==(const EditableFloatValue &e2) const
     {
         return lineNumber == e2.lineNumber && editableText == e2.editableText && name == e2.name && editedFloatValue == e2.editedFloatValue;

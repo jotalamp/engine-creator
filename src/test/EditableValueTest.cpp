@@ -7,7 +7,7 @@ using ::testing::Eq;
 class AnEditableValue : public Test
 {
 public:
-    static inline Units2::Unit unitTypes;
+    static inline Unit::Units unitTypes;
 
 protected:
     const unsigned int lineNumber = 123;
@@ -20,7 +20,28 @@ protected:
 
 TEST_F(AnEditableValue, TestUnits)
 {
-    ASSERT_THAT(unitTypes[UnitType::Cc], Eq("units.cc"));
+    for (const auto &unitType : unitTypes.getUnitToStringMap())
+    {
+        ASSERT_THAT(unitTypes[unitType.second], Eq(unitType.first));
+        ASSERT_THAT(unitTypes[unitType.first], Eq(unitType.second));
+    }
+
+    bool allFound = true;
+    std::string stringThatIsNotUnit;
+    for (auto unitAsString : unitTypes.unitsAsStrings)
+    {
+        if (auto search = unitTypes.getStringToUnitMap().find(unitAsString); search != unitTypes.getStringToUnitMap().end())
+        {
+        }
+        else
+        {
+            allFound = false;
+            stringThatIsNotUnit = unitAsString;
+            std::cout << "\n" << stringThatIsNotUnit << "\n";
+        }
+    }
+
+    ASSERT_THAT(allFound, Eq(true));
 }
 
 TEST_F(AnEditableValue, GivesCorrectOriginalLine)

@@ -1,5 +1,7 @@
 #include "ImGui_EngineCreator.h"
 
+using Unit::Units;
+
 ImGui_EngineCreator::ImGui_EngineCreator()
 {
     show_save_as_window = false;
@@ -55,13 +57,13 @@ void ImGui_EngineCreator::editFloat(const std::string &name)
     const char *current_item = line->getUnitTypeAsString().c_str();
     if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
     {
-        for (int n = 0; n < IM_ARRAYSIZE(line->items); n++)
+        for (int n = 0; n < IM_ARRAYSIZE(Units::unitsAsStrings); n++)
         {
-            bool is_selected = (current_item == line->items[n]); // You can store your selection however you want, outside or inside your objects
-            if (ImGui::Selectable(line->items[n], is_selected))
+            bool is_selected = (current_item == Units::unitsAsStrings[n]); // You can store your selection however you want, outside or inside your objects
+            if (ImGui::Selectable(Units::unitsAsStrings[n], is_selected))
             {
-                current_item = line->items[n];
-                line->setUnitType(line->unitTypes[current_item]);
+                current_item = Units::unitsAsStrings[n];
+                line->setUnitType(unitTypes[current_item]);
             }
             if (is_selected)
                 ImGui::SetItemDefaultFocus(); // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
@@ -112,12 +114,12 @@ void ImGui_EngineCreator::editInt(const std::string &name)
     const char *current_item = line->getUnitTypeAsString().c_str();
     if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
     {
-        for (int n = 0; n < IM_ARRAYSIZE(line->items); n++)
+        for (int n = 0; n < IM_ARRAYSIZE(Units::unitsAsStrings); n++)
         {
-            bool is_selected = (current_item == line->items[n]); // You can store your selection however you want, outside or inside your objects
-            if (ImGui::Selectable(line->items[n], is_selected))
+            bool is_selected = (current_item == Units::unitsAsStrings[n]); // You can store your selection however you want, outside or inside your objects
+            if (ImGui::Selectable(Units::unitsAsStrings[n], is_selected))
             {
-                current_item = line->items[n];
+                current_item = Units::unitsAsStrings[n];
 
                 line->setUnitType(line->unitTypes[current_item]);
             }

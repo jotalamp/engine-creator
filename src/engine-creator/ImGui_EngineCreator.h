@@ -23,4 +23,5 @@ private:
     char newFileName[128] = "NewFileName";
     bool scrollToLine;
     unsigned int lineToScroll;
+    static inline Unit::Units unitTypes;
 };
