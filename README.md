@@ -1,8 +1,8 @@
 # Engine Creator
 
-### Tool for creating engines for AngeTheGreat's [Engine Simulator](https://github.com/ange-yaghi/engine-sim)
+Tool for creating engines for AngeTheGreat's [Engine Simulator](https://github.com/ange-yaghi/engine-sim)
 
-#### Can change values and units of template_engine.mr and save to file
+Can change values and units of template_engine.mr and save to file
 
 ```
 gh repo clone jotalamp/engine-creator -- --recurse-submodules 
