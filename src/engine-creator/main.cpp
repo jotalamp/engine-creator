@@ -21,7 +21,6 @@
 
 #include <string.h>
 
-
 #if defined(_MSC_VER)
 #include <__msvc_all_public_headers.hpp>
 #elif defined(__GNUC__)
@@ -52,8 +51,8 @@ static void glfw_error_callback(int error, const char *description)
 // Main code
 int main(int, char **)
 {
-    std::cout << "\n\nEngine Creator v0.01\n";
-    
+    const std::string version = "v0.1";
+    std::cout << "\n\nEngine Creator " << version << "\n";
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -83,7 +82,8 @@ int main(int, char **)
 #endif
 
     // Create window with graphics context
-    GLFWwindow *window = glfwCreateWindow(1920, 1080, "Engine Creator", nullptr, nullptr);
+    const std::string title = "Engine Creator " + version;
+    GLFWwindow *window = glfwCreateWindow(1920, 1080, title.c_str(), nullptr, nullptr);
     if (window == nullptr)
         return 1;
     glfwMakeContextCurrent(window);
