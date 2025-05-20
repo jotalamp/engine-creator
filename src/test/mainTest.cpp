@@ -1,4 +1,4 @@
-#include "gmock/gmock.h"
+#include "../../3rdparty/googletest/googlemock/include/gmock/gmock.h"
 
 int main(int argc, char **argv)
 {

@@ -1,6 +1,13 @@
 #include "../engine-creator/EngineCreator.h"
 #include "gmock/gmock.h"
+
+#if defined(_MSC_VER)
+#include <__msvc_all_public_headers.hpp>
+#elif defined(__GNUC__)
 #include <bits/stdc++.h>
+#else
+#error "Unsupported compiler"
+#endif
 
 using namespace testing;
 using ::testing::Eq;

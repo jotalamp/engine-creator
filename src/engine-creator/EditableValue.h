@@ -1,6 +1,13 @@
 #pragma once
 
+#if defined(_MSC_VER)
+#include <__msvc_all_public_headers.hpp>
+#elif defined(__GNUC__)
 #include <bits/stdc++.h>
+#else
+#error "Unsupported compiler"
+#endif
+
 #include <string_view>
 #include "Units.h"
 
