@@ -25,4 +25,6 @@ cmake ..
 ```
 Open solution in Visual Studio
 
+### Screenshots
+
 ![Screenshot of EngineCreator app running](images/engine-creator-01.png)
